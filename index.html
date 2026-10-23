@@ -187,12 +187,12 @@ const RHYME_FAMILIES={
 function rhymeKey(word){return String(word||"").toLocaleLowerCase("fr").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’']/g," ").replace(/[^a-z -]/g," ").trim().split(/\s+/).filter(Boolean).pop()||""}
 function rhymeSuggestions(word){
  const key=rhymeKey(word);if(!key)return [];
- const exact=RHYME_FAMILIES[key]||RHYME_FAMILIES[String(word||"").toLocaleLowerCase("fr").trim()];
+ const exact=RHYME_FAMILIES[key]||Object.entries(RHYME_FAMILIES).find(([family])=>rhymeKey(family)===key)?.[1];
  if(exact)return [...new Set(exact)].filter(w=>rhymeKey(w)!==key).slice(0,12);
  // Approximation orthographique prudente : proposer uniquement des fins assez longues.
  const clean=key.replace(/[^a-z]/g,"");
  const endings=[clean.slice(-5),clean.slice(-4),clean.slice(-3)];
- for(const ending of endings){if(ending.length<3)continue;const candidates=Object.keys(RHYME_FAMILIES).filter(k=>k!==key&&k.endsWith(ending));if(candidates.length>=2)return [...new Set(candidates.concat(...candidates.slice(0,3).map(k=>RHYME_FAMILIES[k]||[])))].filter(w=>rhymeKey(w)!==key).slice(0,12)}
+ for(const ending of endings){if(ending.length<3)continue;const candidates=Object.keys(RHYME_FAMILIES).filter(k=>rhymeKey(k)!==key&&rhymeKey(k).endsWith(ending));if(candidates.length>=2)return [...new Set(candidates.concat(...candidates.slice(0,3).map(k=>RHYME_FAMILIES[k]||[])))].filter(w=>rhymeKey(w)!==key).slice(0,12)}
  return [];
 }
 function renderRhymeHelper(word){
