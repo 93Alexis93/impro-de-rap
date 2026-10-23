@@ -21,7 +21,7 @@ def main():
         member = max(candidates, key=lambda n: z.getinfo(n).file_size)
         with z.open(member) as raw:
             text = io.TextIOWrapper(raw, encoding="utf-8-sig", errors="replace")
-            reader = csv.DictReader(text, delimiter="\\t")
+            reader = csv.DictReader(text, delimiter="\t")
             if not reader.fieldnames:
                 raise RuntimeError("En-têtes absents du fichier Lexique.")
             headers = {re.sub(r"[^a-z0-9]", "", h.lower()): h for h in reader.fieldnames}
@@ -37,7 +37,7 @@ def main():
             gram_col = pick("5cgram", "cgram", "categoriegrammaticale", "pos")
             if not word_col or not phon_col:
                 raise RuntimeError("Colonnes non reconnues : " + repr(reader.fieldnames))
-            families, seen = {}, set()
+            families, seen, word_index = {}, set(), {}
             count = 0
             for row in reader:
                 word = clean_word(row.get(word_col, ""))
@@ -54,6 +54,8 @@ def main():
                     syllables = [re.sub(r"[^a-zɑɐɒæɔəɛɜɪŋɔœøɶɯɤʁʃʒʎɥɲɡɾɹʔʰ̃ː]", "", phon)]
                 if not syllables or not syllables[-1]:
                     continue
+                syllables = [x for x in syllables if x]
+                word_index.setdefault(word, []).append({"phon": phon, "syllables": syllables, "frequency": 0.0})
                 try:
                     frequency = float((row.get(freq_col, "0") if freq_col else "0").replace(",", "."))
                 except (ValueError, AttributeError):
@@ -63,6 +65,10 @@ def main():
                     continue
                 seen.add(ident)
                 count += 1
+                try:
+                    word_index[word][-1]["frequency"] = float((row.get(freq_col, "0") if freq_col else "0").replace(",", "."))
+                except (ValueError, AttributeError):
+                    pass
                 # Index final syllable and the last two/three syllables for richer matches.
                 for n in (1, 2, 3):
                     if len(syllables) >= n:
@@ -86,7 +92,8 @@ def main():
             "license":"CC BY-SA 4.0",
             "generated_rows":count,
             "method":"finales syllabiques exactes (1 à 3 syllabes), triées par fréquence",
-            "families":compact
+            "families":compact,
+            "word_index":word_index
         }, f, ensure_ascii=False, separators=(",", ":"))
     print(f"Index créé : {count:,} formes, {len(compact):,} finales, {os.path.getsize(OUT):,} octets", flush=True)
 
