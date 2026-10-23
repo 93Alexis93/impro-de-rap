@@ -78,6 +78,18 @@ def main():
                 unique[e[0]] = e
         if len(unique) >= 3:
             compact[key] = [e[0] for e in sorted(unique.values(), key=lambda e: (-e[1], len(e[0]), e[0]))[:100]]
+    # Garde-fous : éviter de publier silencieusement un index incomplet ou mal formé.
+    required_words = ("amour", "liberté", "nuit", "rêve", "chanson", "oeuvre")
+    missing = [word for word in required_words if word not in word_index]
+    if missing:
+        raise RuntimeError("Validation Lexique échouée, mots attendus absents : " + ", ".join(missing))
+    if len(word_index.get("plus", [])) < 2:
+        raise RuntimeError("Validation Lexique échouée : les prononciations multiples de « plus » ne sont pas présentes.")
+    malformed = [word for word, entries in word_index.items()
+                 if not entries or any(not entry.get("phon") or not entry.get("syllables") for entry in entries)]
+    if malformed:
+        raise RuntimeError(f"Validation Lexique échouée : {len(malformed)} entrées mal formées.")
+    print("Validation réussie : mots accentués, graphie oe, prononciations multiples et structure contrôlés.", flush=True)
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump({
