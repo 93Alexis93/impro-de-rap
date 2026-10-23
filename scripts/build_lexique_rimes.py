@@ -69,9 +69,7 @@ def main():
                 for n in (1, 2, 3):
                     if len(syllables) >= n:
                         key = ".".join(syllables[-n:])
-                        families.setdefault(key, []).append([
-                            word, frequency, phon, row.get(gram_col, "") if gram_col else ""
-                        ])
+                        families.setdefault(key, []).append([word, frequency])
     compact = {}
     for key, entries in families.items():
         unique = {}
