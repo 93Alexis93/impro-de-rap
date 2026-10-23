@@ -33,7 +33,7 @@ jobs:
           assert len(data.get("families", {})) >= 1000, "Trop peu de finales"
           assert len(data.get("word_index", {})) >= 100000, "Index de mots incomplet"
           assert all(isinstance(k, str) and isinstance(v, list) for k, v in data["families"].items())
-          assert all(len(entry) == 2 and isinstance(entry[0], str) and isinstance(entry[1], (int, float)) for values in data["families"].values() for entry in values)
+          assert all(isinstance(entry, str) and len(entry) >= 2 for values in data["families"].values() for entry in values)
           print(f"Validation OK : {data['generated_rows']} formes, {len(data['word_index'])} clés, {len(data['families'])} finales, {os.path.getsize(path)} octets")
           PY
       - name: Commit generated data
