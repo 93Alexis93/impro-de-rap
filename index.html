@@ -217,10 +217,23 @@ for(const group of RHYME_CURATED_GROUPS){
  }
 }
 function rhymeKey(word){return String(word||"").toLocaleLowerCase("fr").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’']/g," ").replace(/[^a-z -]/g," ").trim().split(/\s+/).filter(Boolean).pop()||""}
+let lexiqueRimes=null;
+fetch("data/lexique-rimes.json").then(r=>{if(!r.ok)throw new Error("Index de rimes indisponible");return r.json()}).then(data=>{if(data&&data.families&&data.word_index)lexiqueRimes=data}).catch(()=>{});
 function rhymeSuggestions(word){
  const key=rhymeKey(word);if(!key)return [];
  const exact=RHYME_FAMILIES[key]||Object.entries(RHYME_FAMILIES).find(([family])=>rhymeKey(family)===key)?.[1];
  if(exact)return [...new Set(exact)].filter(w=>rhymeKey(w)!==key).slice(0,12);
+ // Corpus Lexique : recherche par finale phonologique, sans remplacer les pistes éditoriales.
+ if(lexiqueRimes){
+  const entries=lexiqueRimes.word_index[key]||[];
+  const syllables=entries.sort((a,b)=>(b.frequency||0)-(a.frequency||0))[0]?.syllables||[];
+  const ending=syllables[syllables.length-1];
+  if(ending){
+   const group=lexiqueRimes.families[ending]||[];
+   const corpus=[...new Set(group.map(e=>e[0]).filter(w=>rhymeKey(w)!==key))];
+   if(corpus.length>=3)return corpus.slice(0,12);
+  }
+ }
  // Cherche d'abord des finales orthographiques proches.
  const clean=key.replace(/[^a-z]/g,"");
  const endings=[clean.slice(-5),clean.slice(-4),clean.slice(-3)];
