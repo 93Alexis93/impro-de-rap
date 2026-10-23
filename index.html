@@ -261,14 +261,13 @@ function rhymeSuggestions(word){
   [/on$|ont$/,["son","nom","ton","fond","rond","long","maison","raison","chanson","horizon"]],
   [/ou$|out$|oux$/,["fou","tout","bout","goût","genou","bijou","caillou","debout","partout","atout"]],
   [/i$|ie$|is$|it$/,["vie","envie","avis","souris","défi","oubli","infini","joli","pari","survie"]],
-  [/é$|er$|ez$|et$/,["été","beauté","vérité","liberté","fierté","santé","projet","secret","parfait","effet"]],
+  [/e$|er$|ez$|et$/,["été","beauté","vérité","liberté","fierté","santé","projet","secret","parfait","effet","idée","armée","fumée","journée","année","allée","arrivée"]],
   [/a$|as$|at$/,["éclat","combat","ébat","appât","éclatant","épatant","écrasera","bras"]],
   [/o$|eau$|ot$|os$/,["mot","trop","dos","chaud","faux","défaut","niveau","zéro","héros","écho"]],
   [/ar$|ard$|art$/,["regard","retard","hasard","bavard","départ","espoir","bizarre","tard"]],
   [/in$|ain$|ein$|im$/,["demain","chemin","destin","malin","soudain","humain","terrain","lointain","main"]],
   [/ui$|uit$|uie$/,["nuit","bruit","fruit","fuite","ennui","appui","conduit","aujourd'hui"]],
-  [/el$|elle$|eil$|eille$/,["soleil","réveil","pareil","conseil","sommeil","merveille","oreille","belle","rebelle"]],
-  [/é$|ée$|er$/,["idée","armée","fumée","journée","année","allée","arrivée","vérité","liberté"]]
+  [/el$|elle$|eil$|eille$/,["soleil","réveil","pareil","conseil","sommeil","merveille","oreille","belle","rebelle"]]
  ];
  const match=fallback.find(([re])=>re.test(clean));
  if(match){const found=match[1].filter(w=>rhymeKey(w)!==key);if(found.length)return found.slice(0,12)}
