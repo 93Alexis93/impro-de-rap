@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "scripts/build_lexique_rimes.py"
+      - "scripts/test_lexique_rimes.py"
       - ".github/workflows/build-lexique-rimes.yml"
 
 permissions:
@@ -36,6 +37,8 @@ jobs:
           assert all(isinstance(entry, str) and len(entry) >= 2 for values in data["families"].values() for entry in values)
           print(f"Validation OK : {data['generated_rows']} formes, {len(data['word_index'])} clés, {len(data['families'])} finales, {os.path.getsize(path)} octets")
           PY
+      - name: Test representative phonological rhyme pairs
+        run: python3 scripts/test_lexique_rimes.py
       - name: Commit generated data
         run: |
           git config user.name "github-actions[bot]"
