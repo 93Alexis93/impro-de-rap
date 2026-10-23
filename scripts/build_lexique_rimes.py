@@ -77,7 +77,7 @@ def main():
             if e[0] not in unique or e[1] > unique[e[0]][1]:
                 unique[e[0]] = e
         if len(unique) >= 3:
-            compact[key] = sorted(unique.values(), key=lambda e: (-e[1], len(e[0]), e[0]))[:100]
+            compact[key] = [e[0] for e in sorted(unique.values(), key=lambda e: (-e[1], len(e[0]), e[0]))[:100]]
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump({
