@@ -40,4 +40,6 @@ Le script `scripts/build_lexique_rimes.py` télécharge l’archive officielle L
 
 Pour vérifier la publication : consulter l’exécution [Build Lexique rhyme database](https://github.com/93Alexis93/impro-de-rap/actions/runs/39920912274) et le fichier [data/lexique-rimes.json](https://github.com/93Alexis93/impro-de-rap/blob/main/data/lexique-rimes.json). La taille importante du JSON peut empêcher certains aperçus GitHub de l’afficher, sans empêcher le téléchargement par le navigateur.
 
+Le script `scripts/test_lexique_rimes.py` vérifie maintenant automatiquement des paires représentatives (`amour/humour`, `maison/raison`, `bateau/gâteau`, `musique/physique`, `liberté/vérité`), les mots accentués, les transcriptions et la présence des paires dans les familles. Le workflow exécute ces tests avant de publier le résultat. Ces tests valident la cohérence de l’index sur des exemples ciblés ; ils ne prouvent pas encore l’exhaustivité de toutes les rimes ni la justesse de chaque suggestion.
+
 La prochaine amélioration linguistique consiste à calculer les phonèmes communs en fin de transcription, puis à étiqueter séparément rimes riches, suffisantes, pauvres et assonances. Ne pas confondre ce classement avec les regroupements de finales syllabiques actuels.
