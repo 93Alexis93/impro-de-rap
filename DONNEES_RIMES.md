@@ -2,7 +2,9 @@
 
 ## État actuel
 
-Le moteur de suggestions intégré à `index.html` contient des familles éditoriales conçues pour le freestyle. Elles sont utiles pour amorcer une rime, mais ne constituent pas un dictionnaire phonétique exhaustif et certaines propositions peuvent être des assonances plutôt que des rimes parfaites.
+Le moteur combine les familles éditoriales de `index.html` avec un index dérivé de Lexique 4.00 généré automatiquement dans `data/lexique-rimes.json`. Le 23 octobre 2026, le workflow GitHub Actions a téléchargé l’archive officielle, indexé 170 948 formes et produit un fichier d’environ 17,2 Mo. Le fichier est chargé côté navigateur ; en cas d’échec de chargement, les suggestions éditoriales et les solutions de secours restent disponibles.
+
+**Limite importante :** cette première intégration regroupe les mots par finale syllabique exacte, mais ne calcule pas encore de manière fiable les catégories « riche / suffisante / pauvre » à partir du nombre de phonèmes communs. Certaines suggestions doivent donc être considérées comme des pistes sonores, pas comme une validation linguistique garantie. L’index est une base de travail, pas un arbitre de rimes.
 
 ## Sources étudiées et réutilisation
 
@@ -32,6 +34,10 @@ Le moteur de suggestions intégré à `index.html` contient des familles éditor
 
 Le classement doit se faire à partir de la transcription phonologique (phonèmes), et non de la seule terminaison écrite : l'orthographe française ne permet pas de garantir une rime à elle seule.
 
-## Limite d'import de cette version
+## Import et maintenance
 
-La source officielle a été identifiée, mais l'archive ZIP complète n'a pas pu être téléchargée dans l'environnement de travail lors de cette opération. **Aucune des 190 000 formes n'est donc présentée comme importée**. Le corpus devra être téléchargé, contrôlé et transformé en fichier léger indexé par finale phonologique avant d'être intégré à l'application. Conserver ce fichier de licence, les crédits, la version du corpus et le lien source avec les données dérivées.
+Le script `scripts/build_lexique_rimes.py` télécharge l’archive officielle Lexique 4.00, construit l’index compact et renseigne la source, la version et la licence dans le JSON. Le workflow `.github/workflows/build-lexique-rimes.yml` permet de régénérer l’index à la demande et lors des changements du script ou du workflow. Les doublons exacts (mot + transcription phonologique) sont filtrés avant insertion afin d’éviter des entrées d’index mal associées.
+
+Pour vérifier la publication : consulter l’exécution [Build Lexique rhyme database](https://github.com/93Alexis93/impro-de-rap/actions/runs/39918089421) et le fichier [data/lexique-rimes.json](https://github.com/93Alexis93/impro-de-rap/blob/main/data/lexique-rimes.json). La taille importante du JSON peut empêcher certains aperçus GitHub de l’afficher, sans empêcher le téléchargement par le navigateur.
+
+La prochaine amélioration linguistique consiste à calculer les phonèmes communs en fin de transcription, puis à étiqueter séparément rimes riches, suffisantes, pauvres et assonances. Ne pas confondre ce classement avec les regroupements de finales syllabiques actuels.
