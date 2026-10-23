@@ -227,7 +227,7 @@ function rhymeSuggestions(word){
  // Corpus Lexique : recherche par finale phonologique, sans remplacer les pistes éditoriales.
  if(lexiqueRimes){
   const entries=lexiqueRimes.word_index[lexiqueWordKey(word)]||[];
-  const syllables=entries.sort((a,b)=>(b.frequency||0)-(a.frequency||0))[0]?.syllables||[];
+  const syllables=[...entries].sort((a,b)=>(b.frequency||0)-(a.frequency||0))[0]?.syllables||[];
   const ending=syllables[syllables.length-1];
   if(ending){
    const group=lexiqueRimes.families[ending]||[];
