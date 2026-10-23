@@ -11,10 +11,10 @@ Application web de freestyle rap, pensée d’abord pour le téléphone. Elle pr
 ## Ce qui est disponible dans la version actuelle
 
 - Interface sombre à contraste élevé, avec un écran de session épuré.
-- Sept thèmes et un mélange surprise, en conservant le corpus de mots initial.
-- Trois niveaux : Chauffe, Équilibré et Technique.
+- Sept thèmes et un mélange surprise, avec le corpus initial conservé et enrichi.
+- Trois niveaux : Chauffe (mots concrets), Équilibré (vocabulaire concret, intermédiaire et technique) et Technique (mots plus rares ou abstraits).
 - Six modes : Mot qui tombe, Chaîne, Rime cible, Histoire, Punchline et Chaos.
-- Réglage du BPM (60–160), compte à rebours de quatre temps, pulsation à quatre temps et clic de métronome généré par le navigateur. Les mots arrivent sur les débuts de mesure, selon la cadence choisie.
+- Réglage du BPM (60–160), compte à rebours de quatre temps affichant déjà la consigne du mode choisi, pulsation à quatre temps et clic de métronome généré par le navigateur. Les mots arrivent sur les débuts de mesure, selon la cadence choisie.
 - Sessions de 3, 5 ou 10 minutes, ou sans limite.
 - Aperçu facultatif, mode zéro distraction, pause/reprise et passage manuel au mot suivant.
 - Bilan de session avec auto-évaluation « placé / raté ».
