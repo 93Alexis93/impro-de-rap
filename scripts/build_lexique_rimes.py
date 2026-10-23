@@ -55,20 +55,16 @@ def main():
                 if not syllables or not syllables[-1]:
                     continue
                 syllables = [x for x in syllables if x]
-                word_index.setdefault(word, []).append({"phon": phon, "syllables": syllables, "frequency": 0.0})
-                try:
-                    frequency = float((row.get(freq_col, "0") if freq_col else "0").replace(",", "."))
-                except (ValueError, AttributeError):
-                    frequency = 0.0
                 ident = (word, phon)
                 if ident in seen:
                     continue
                 seen.add(ident)
                 count += 1
                 try:
-                    word_index[word][-1]["frequency"] = float((row.get(freq_col, "0") if freq_col else "0").replace(",", "."))
+                    frequency = float((row.get(freq_col, "0") if freq_col else "0").replace(",", "."))
                 except (ValueError, AttributeError):
-                    pass
+                    frequency = 0.0
+                word_index.setdefault(word, []).append({"phon": phon, "syllables": syllables, "frequency": frequency})
                 # Index final syllable and the last two/three syllables for richer matches.
                 for n in (1, 2, 3):
                     if len(syllables) >= n:
