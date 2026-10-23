@@ -2,7 +2,7 @@
 
 ## État actuel
 
-Le moteur combine les familles éditoriales de `index.html` avec un index dérivé de Lexique 4.00 généré automatiquement dans `data/lexique-rimes.json`. Le 23 octobre 2026, le workflow GitHub Actions a téléchargé l’archive officielle, indexé 171 446 entrées de prononciation, 16 389 finales retenues et produit un fichier d’environ 16,2 Mo. Le fichier est chargé côté navigateur ; en cas d’échec de chargement, les suggestions éditoriales et les solutions de secours restent disponibles.
+Le moteur combine les familles éditoriales de `index.html` avec un index dérivé de Lexique 4.00 généré automatiquement dans `data/lexique-rimes.json`. Le 23 octobre 2026, le workflow GitHub Actions a téléchargé l’archive officielle, indexé 171 446 entrées de prononciation, 28 433 finales syllabiques et produit un fichier JSON de 22,8 Mo. Le fichier est chargé côté navigateur ; en cas d’échec de chargement, les suggestions éditoriales et les solutions de secours restent disponibles.
 
 **Limite importante :** cette première intégration regroupe les mots par finale syllabique exacte, mais ne calcule pas encore de manière fiable les catégories « riche / suffisante / pauvre » à partir du nombre de phonèmes communs. Certaines suggestions doivent donc être considérées comme des pistes sonores, pas comme une validation linguistique garantie. L’index est une base de travail, pas un arbitre de rimes.
 
