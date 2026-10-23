@@ -189,11 +189,38 @@ function rhymeSuggestions(word){
  const key=rhymeKey(word);if(!key)return [];
  const exact=RHYME_FAMILIES[key]||Object.entries(RHYME_FAMILIES).find(([family])=>rhymeKey(family)===key)?.[1];
  if(exact)return [...new Set(exact)].filter(w=>rhymeKey(w)!==key).slice(0,12);
- // Approximation orthographique prudente : proposer uniquement des fins assez longues.
+ // Cherche d'abord des finales orthographiques proches.
  const clean=key.replace(/[^a-z]/g,"");
  const endings=[clean.slice(-5),clean.slice(-4),clean.slice(-3)];
- for(const ending of endings){if(ending.length<3)continue;const candidates=Object.keys(RHYME_FAMILIES).filter(k=>rhymeKey(k)!==key&&rhymeKey(k).endsWith(ending));if(candidates.length>=2)return [...new Set(candidates.concat(...candidates.slice(0,3).map(k=>RHYME_FAMILIES[k]||[])))].filter(w=>rhymeKey(w)!==key).slice(0,12)}
- return [];
+ for(const ending of endings){if(ending.length<3)continue;const candidates=Object.keys(RHYME_FAMILIES).filter(k=>rhymeKey(k)!==key&&rhymeKey(k).endsWith(ending));if(candidates.length>=2){const found=[...new Set(candidates.concat(...candidates.slice(0,4).map(k=>RHYME_FAMILIES[k]||[])))].filter(w=>rhymeKey(w)!==key);if(found.length>=4)return found.slice(0,12)}}
+ // Secours par son final : on privilégie une famille sonore plausible plutôt qu'une zone vide.
+ const fallback=[
+  [/eur$|œur$|oeur$/,["cœur","peur","fleur","sœur","douceur","chaleur","douleur","bonheur","honneur","valeur"]],
+  [/oir$|oire$/,["soir","noir","voir","espoir","miroir","histoire","mémoire","victoire","territoire","gloire"]],
+  [/tion$|sion$|ssion$/,["action","passion","mission","vision","pression","fiction","réaction","création","vibration","nation"]],
+  [/ance$|ence$/,["chance","danse","silence","absence","présence","essence","cadence","sentence","différence","confiance"]],
+  [/ette$|ète$|ê te$/,["tête","fête","quête","conquête","tempête","planète","comète","inquiète"]],
+  [/age$/,["orage","mirage","courage","voyage","visage","partage","message","rivage","carnage","ancrage"]],
+  [/ique$/,["musique","logique","magique","tragique","classique","unique","critique","électrique","poétique"]],
+  [/able$|ible$/,["capable","stable","table","fable","sable","implacable","respectable","invincible","sensible"]],
+  [/ment$/,["temps","vent","enfant","présent","absent","vivant","maintenant","longtemps","gagnant"]],
+  [/an$|ant$|en$|ent$/,["temps","vent","sang","blanc","grand","enfant","présent","absent","vivant","gagnant"]],
+  [/on$|ont$/,["son","nom","ton","fond","rond","long","maison","raison","chanson","horizon"]],
+  [/ou$|out$|oux$/,["fou","tout","bout","goût","genou","bijou","caillou","debout","partout","atout"]],
+  [/i$|ie$|is$|it$/,["vie","envie","avis","souris","défi","oubli","infini","joli","pari","survie"]],
+  [/é$|er$|ez$|et$/,["été","beauté","vérité","liberté","fierté","santé","projet","secret","parfait","effet"]],
+  [/a$|as$|at$/,["éclat","combat","ébat","appât","éclatant","épatant","écrasera","bras"]],
+  [/o$|eau$|ot$|os$/,["mot","trop","dos","chaud","faux","défaut","niveau","zéro","héros","écho"]],
+  [/ar$|ard$|art$/,["regard","retard","hasard","bavard","départ","espoir","bizarre","tard"]],
+  [/in$|ain$|ein$|im$/,["demain","chemin","destin","malin","soudain","humain","terrain","lointain","main"]],
+  [/ui$|uit$|uie$/,["nuit","bruit","fruit","fuite","ennui","appui","conduit","aujourd'hui"]],
+  [/el$|elle$|eil$|eille$/,["soleil","réveil","pareil","conseil","sommeil","merveille","oreille","belle","rebelle"]],
+  [/é$|ée$|er$/,["idée","armée","fumée","journée","année","allée","arrivée","vérité","liberté"]]
+ ];
+ const match=fallback.find(([re])=>re.test(clean));
+ if(match){const found=match[1].filter(w=>rhymeKey(w)!==key);if(found.length)return found.slice(0,12)}
+ // Ultime secours : au moins des pistes rythmiques courantes à tester à voix haute.
+ return ["écho","mots","voix","choix","espoir","histoire","victoire","énergie","sourire","avenir","courage","partage"].filter(w=>rhymeKey(w)!==key).slice(0,12);
 }
 function renderRhymeHelper(word){
  const box=$("rhymeHelper"),chips=$("rhymeChips");if(!box||!chips)return;
