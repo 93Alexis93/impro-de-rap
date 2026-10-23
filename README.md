@@ -18,7 +18,9 @@ Application web de freestyle rap, pensée d’abord pour le téléphone. Elle pr
 - Sessions de 3, 5 ou 10 minutes, ou sans limite.
 - Aperçu facultatif, mode zéro distraction, pause/reprise et passage manuel au mot suivant.
 - Bilan de session avec auto-évaluation « placé / raté ».
-- Favoris, historique de sessions, mots à retravailler et série de jours conservés localement sur l’appareil.
+- Favoris activables/désactivables depuis la session, historique de sessions, mots à retravailler et série de jours conservés localement sur l’appareil.
+- Tirage qui évite autant que possible les mots récemment affichés, tout en remettant en priorité les mots à retravailler.
+- Bilan avec choix exclusif « placé » ou « raté » par mot ; un mot réussi réduit son compteur « à retravailler ».
 - Réglages mémorisés sans compte.
 - Base PWA installable (manifest et icône) avec cache de l’application pour une réouverture hors ligne après le premier chargement.
 
