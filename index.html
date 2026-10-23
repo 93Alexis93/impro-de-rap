@@ -219,7 +219,7 @@ for(const group of RHYME_CURATED_GROUPS){
 function rhymeKey(word){return String(word||"").toLocaleLowerCase("fr").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’']/g," ").replace(/[^a-z -]/g," ").trim().split(/\s+/).filter(Boolean).pop()||""}
 let lexiqueRimes=null;
 fetch("data/lexique-rimes.json").then(r=>{if(!r.ok)throw new Error("Index de rimes indisponible");return r.json()}).then(data=>{if(data&&data.families&&data.word_index)lexiqueRimes=data}).catch(()=>{});
-function lexiqueWordKey(value){return String(value||"").toLocaleLowerCase("fr").normalize("NFC").replace(/[^a-zàâäéèêëîïôöùûüÿçœæ'-]/g,"")}
+function lexiqueWordKey(value){return String(value||"").toLocaleLowerCase("fr").normalize("NFC").replace(/œ/g,"oe").replace(/æ/g,"ae").replace(/[^a-zàâäéèêëîïôöùûüÿç'-]/g,"")}
 function rhymeSuggestions(word){
  const key=rhymeKey(word);if(!key)return [];
  const exact=RHYME_FAMILIES[key]||Object.entries(RHYME_FAMILIES).find(([family])=>rhymeKey(family)===key)?.[1];
