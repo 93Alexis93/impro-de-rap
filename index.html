@@ -185,6 +185,37 @@ const RHYME_FAMILIES={
 "bonheur":["cœur","peur","fleur","douceur","chaleur","douleur","malheur","honneur"],
 "pluie":["ennui","nuit","bruit","fruit","fuite","aujourd'hui","appui"]
 };
+// Extension éditoriale : familles phonétiques pensées pour les finales fréquentes en freestyle.
+const RHYME_CURATED_GROUPS=[
+["amour","toujours","velours","humour","tambour","parcours","secours","retour","détour","discours","recours","concours","contour","bonjour","autour","tour","jour","lourd","vautour"],
+["moi","toi","roi","choix","voix","loi","fois","soi","émoi","exploit","proie","voie","joie","foi","bois","doigt","froid"],
+["temps","sang","blanc","grand","enfant","vivant","présent","absent","gagnant","brillant","longtemps","maintenant","mécontent","évident","parent","devant"],
+["son","nom","ton","fond","rond","long","maison","raison","chanson","horizon","pardon","poisson","garçon","frisson","façon","saison","prison"],
+["cœur","peur","fleur","sœur","douceur","chaleur","douleur","bonheur","malheur","honneur","valeur","couleur","lueur","rumeur","demeure","heure"],
+["noir","soir","voir","espoir","miroir","pouvoir","savoir","devoir","histoire","mémoire","victoire","gloire","territoire","dérisoire","couloir","exutoire"],
+["vie","envie","survie","défi","oubli","infini","récit","merci","pari","avis","souris","folie","jolie","ennemi"],
+["rue","vue","issue","venue","perdue","inconnue","continue","retenue","revenue","connue","déçue","tendue","étendue","entendue"],
+["nuit","bruit","fruit","huit","suite","fuite","conduite","poursuite","réussite","insomnie","ennui","appui","aujourd'hui"],
+["orage","mirage","courage","voyage","visage","partage","message","rivage","carnage","ancrage","virage","fromage","sabotage","naufrage"],
+["musique","logique","magique","tragique","classique","unique","critique","électrique","poétique","politique","comique","technique","mythique"],
+["action","passion","mission","vision","pression","fiction","réaction","création","nation","vibration","tentation","révolution","solution","punition"],
+["tête","fête","quête","conquête","tempête","planète","comète","inquiète","défaite","parfaite","silhouette","recette","casquette"],
+["soleil","réveil","pareil","conseil","appareil","sommeil","merveille","orteil"],
+["clair","éclair","galère","colère","misère","lumière","poussière","prière","frontière","arrière","repère"],
+["matin","chemin","destin","humain","demain","refrain","terrain","chagrin","voisin","malin","écrivain"],
+["capable","stable","table","fable","sable","implacable","respectable","inoubliable","incroyable","véritable","coupable"],
+["maison","raison","saison","chanson","horizon","prison","poisson","garçon","pardon","frisson","façon","blason","poison"],
+["liberté","vérité","fierté","beauté","unité","égalité","humanité","priorité","sincérité","légalité","fatalité","dignité"],
+["chance","danse","silence","absence","présence","essence","cadence","sentence","différence","confiance","puissance","violence","balance"],
+["invincible","sensible","possible","terrible","visible","cible","flexible","invisible","impossible","fusible"],
+["rivière","dernière","carrière","arrière","lumière","poussière","prière","frontière"]
+];
+for(const group of RHYME_CURATED_GROUPS){
+ for(const word of group){
+  const key=word.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("fr");
+  RHYME_FAMILIES[key]=group.filter(w=>w!==word);
+ }
+}
 function rhymeKey(word){return String(word||"").toLocaleLowerCase("fr").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’']/g," ").replace(/[^a-z -]/g," ").trim().split(/\s+/).filter(Boolean).pop()||""}
 function rhymeSuggestions(word){
  const key=rhymeKey(word);if(!key)return [];
