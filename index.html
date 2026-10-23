@@ -20,10 +20,11 @@
 <header class="top"><div class="brand"><div class="logo" aria-hidden="true">IR</div><div><strong>IMPRO DE RAP</strong><small>Un mot. Une mesure. À toi.</small></div></div><span class="tag">SANS COMPTE · GRATUIT</span></header>
 <main>
 <section id="homeView" class="view">
-<div class="hero"><div class="eyebrow">Terrain d'entraînement freestyle</div><h1>Le beat tourne.<br>Les mots tombent.</h1><p>Prépare ton terrain, pose le téléphone et attrape les mots. Ici, le but n’est pas d’être parfait : c’est de ne pas couper le flow.</p></div>
-<div class="quick"><button id="quickWarm"><b>Échauffement</b><small>3 min · simple et fluide</small></button><button id="quickSession"><b>Session</b><small>10 min · polyvalente</small></button><button id="quickChallenge"><b>Défi du jour</b><small>3 min · tirage du jour</small></button><button id="quickReview"><b>Réviser mes mots ratés</b><small>3 min · focus sur tes difficultés</small></button></div>
-<div class="setup-grid">
-<section class="panel"><div class="panel-head"><h2>Prépare ta session</h2><span class="eyebrow">01 / Réglages</span></div>
+<div class="hero"><div class="eyebrow">Terrain d'entraînement freestyle</div><h1>Le beat tourne.<br>Les mots tombent.</h1><p>Lance une session en un geste. Pose le téléphone, attrape les mots et garde le flow : le but n’est pas d’être parfait.</p></div>
+<div class="quick"><button id="quickWarm"><b>Échauffement</b><small>3 min · simple et fluide</small></button><button id="quickSession" class="primary"><b>Session</b><small>10 min · polyvalente</small></button><button id="quickChallenge"><b>Défi du jour</b><small>3 min · tirage du jour</small></button><button id="quickReview"><b>Réviser mes mots ratés</b><small>3 min · focus sur tes difficultés</small></button></div>
+<button id="customizeBtn" class="quiet main-cta" aria-expanded="false" aria-controls="setupGrid" style="margin-bottom:14px">⚙ Personnaliser ma session</button>
+<div class="setup-grid" id="setupGrid" hidden>
+<section class="panel"><div class="panel-head"><h2>Personnalisation</h2><span class="eyebrow">01 / Réglages</span></div>
 <div class="field"><label>Mode d'entraînement</label><div class="modes" id="modeList">
 <button class="mode" data-mode="mot" aria-pressed="true"><b>Mot qui tombe</b><small>Intègre chaque mot dans ton flow.</small></button>
 <button class="mode" data-mode="chaine" aria-pressed="false"><b>Chaîne</b><small>Relie les mots par le sens ou le son.</small></button>
@@ -407,6 +408,6 @@ document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&running)pauseGame();else if(document.visibilityState==="visible"&&running)requestWakeLock()});window.addEventListener("pagehide",()=>{releaseWakeLock();if(raf)cancelAnimationFrame(raf);if(roundTimer)clearTimeout(roundTimer)});
 
 if("serviceWorker" in navigator && location.protocol!=="file:"){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(reg=>reg.update()).catch(()=>{}))}
-const challengeParam=new URLSearchParams(location.search).get("defi");loadSettings();renderStats();if(challengeParam&&/^\d{4}-\d{2}-\d{2}$/.test(challengeParam)){setTimeout(()=>startDailyChallenge(challengeParam),0)}
+const challengeParam=new URLSearchParams(location.search).get("defi");loadSettings();renderStats();$("customizeBtn").addEventListener("click",()=>{const panel=$("setupGrid"),open=panel.hidden;panel.hidden=!open;$("customizeBtn").setAttribute("aria-expanded",String(open));$("customizeBtn").textContent=open?"✕ Masquer les réglages":"⚙ Personnaliser ma session";if(open)panel.scrollIntoView({behavior:"smooth",block:"start"})});if(challengeParam&&/^\d{4}-\d{2}-\d{2}$/.test(challengeParam)){setTimeout(()=>startDailyChallenge(challengeParam),0)}
 </script>
 </body></html>
