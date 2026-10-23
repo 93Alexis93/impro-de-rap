@@ -41,29 +41,20 @@ def main():
             count = 0
             for row in reader:
                 word = clean_word(row.get(word_col, ""))
-                phon = (row.get(phon_col, "") or "").strip().lower()
-                syll = (row.get(syll_col, "") or "").strip().lower() if syll_col else ""
+                phon = (row.get(phon_col, "") or "").strip()
+                syll = (row.get(syll_col, "") or "").strip() if syll_col else ""
                 if not word or not phon or len(word) < 2 or any(c.isspace() for c in word):
                     continue
                 # Lexique syllable notation separates syllables with dots; exact syllabic
                 # endings avoid the false matches caused by arbitrary character suffixes.
-                syllables = [re.sub(r"[^a-zɑɐɒæɓɔɕɗɘəɚɛɜɝɞɟɡɢɣɤɥɦɧɨɪʝɭɬɫɮɯɰŋɲɳɵɸɹɺɻɽɾʀʁɹʃʄʈʉʊʋⱱʌɥɦχʎʒʔʕʢʡθðɖɖʂʐʑʒʤʧʦʣʨʥːˑ̩̯̃ˈˌ]", "", x) for x in re.split(r"[.·]", syll)]
-                syllables = [x for x in syllables if x]
+                # Lexique 4.00 uses hyphens between syllables and meaningful
+                # phonetic symbols such as @, R, O and §. Preserve them exactly.
+                syllables = [part.strip() for part in re.split(r"[-‐‑‒–—]", syll) if part.strip()]
                 if not syllables:
-                    # Conservative fallback: whole phonological transcription as one ending.
-                    syllables = [re.sub(r"[^a-zɑɐɒæɔəɛɜɪŋɔœøɶɯɤʁʃʒʎɥɲɡɾɹʔʰ̃ː]", "", phon)]
+                    # Fallback when a row has no syllabified transcription.
+                    syllables = [phon]
                 if not syllables or not syllables[-1]:
                     continue
-                syllables = [x for x in syllables if x]
-                ident = (word, phon)
-                if ident in seen:
-                    continue
-                seen.add(ident)
-                count += 1
-                try:
-                    frequency = float((row.get(freq_col, "0") if freq_col else "0").replace(",", "."))
-                except (ValueError, AttributeError):
-                    frequency = 0.0
                 word_index.setdefault(word, []).append({"phon": phon, "syllables": syllables, "frequency": frequency})
                 # Index final syllable and the last two/three syllables for richer matches.
                 for n in (1, 2, 3):
