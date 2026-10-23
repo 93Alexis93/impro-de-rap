@@ -20,6 +20,22 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build compact rhyme index from official Lexique data
         run: python3 scripts/build_lexique_rimes.py
+      - name: Validate generated index
+        run: |
+          python3 - <<'PY'
+          import json, os
+          path = "data/lexique-rimes.json"
+          with open(path, encoding="utf-8") as f:
+              data = json.load(f)
+          assert data.get("source") == "Lexique 4.00 officiel", "Source/version absente"
+          assert data.get("license") == "CC BY-SA 4.0", "Licence absente"
+          assert data.get("generated_rows", 0) >= 100000, "Index anormalement petit"
+          assert len(data.get("families", {})) >= 1000, "Trop peu de finales"
+          assert len(data.get("word_index", {})) >= 100000, "Index de mots incomplet"
+          assert all(isinstance(k, str) and isinstance(v, list) for k, v in data["families"].items())
+          assert all(len(entry) >= 3 and isinstance(entry[0], str) for values in data["families"].values() for entry in values)
+          print(f"Validation OK : {data['generated_rows']} formes, {len(data['word_index'])} clés, {len(data['families'])} finales, {os.path.getsize(path)} octets")
+          PY
       - name: Commit generated data
         run: |
           git config user.name "github-actions[bot]"
