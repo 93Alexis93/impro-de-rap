@@ -31,7 +31,7 @@ Application web de freestyle rap, pensée d’abord pour le téléphone. Elle pr
 - Le moteur de tempo utilise l’horloge audio du navigateur pour les pulsations. Le rythme est calé sur les temps et mesures, mais la précision doit encore être testée sur des téléphones réels et sur des sessions longues.
 - Le mode hors ligne nécessite une première ouverture avec connexion et un navigateur qui prend en charge les service workers. Les limites d’installation varient selon le navigateur.
 - Le plein écran et le maintien de l’écran allumé dépendent du navigateur et du système. Sur iPhone, ces capacités peuvent être limitées.
-- Les modes sont une première version : les règles et la variété de leurs exercices devront être enrichies et testées.
+- Les modes proposent des mécaniques distinctes : Chaîne relie deux mots consécutifs, Rime cible conserve le mot plusieurs mesures, Histoire démarre avec trois éléments puis fait progresser le récit, Punchline ajoute un rendez-vous de chute toutes les huit mesures et Chaos lance des virages de consigne. La qualité du freestyle reste auto-évaluée par la personne qui s’entraîne.
 - Les données sont stockées sur l’appareil courant : elles ne se synchronisent pas entre navigateurs ou appareils.
 
 ## Instrumentales et droits
