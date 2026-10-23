@@ -231,7 +231,7 @@ function rhymeSuggestions(word){
   const ending=syllables[syllables.length-1];
   if(ending){
    const group=lexiqueRimes.families[ending]||[];
-   const corpus=[...new Set(group.map(e=>e[0]).filter(w=>rhymeKey(w)!==key))];
+   const corpus=[...new Set(group.map(e=>Array.isArray(e)?e[0]:e).filter(w=>typeof w==="string"&&rhymeKey(w)!==key))];
    if(corpus.length>=3)return corpus.slice(0,12);
   }
  }
