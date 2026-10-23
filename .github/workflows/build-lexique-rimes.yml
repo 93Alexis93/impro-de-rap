@@ -1,0 +1,33 @@
+name: Build Lexique rhyme database
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "scripts/build_lexique_rimes.py"
+      - ".github/workflows/build-lexique-rimes.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build compact rhyme index from official Lexique data
+        run: python3 scripts/build_lexique_rimes.py
+      - name: Commit generated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/lexique-rimes.json
+          if git diff --cached --quiet; then
+            echo "No changes in the generated index."
+          else
+            git commit -m "Build Lexique phonetic rhyme index"
+            git push
+          fi
