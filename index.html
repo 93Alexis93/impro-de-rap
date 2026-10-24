@@ -348,14 +348,14 @@ function renderRhymeHelper(word){
  box.hidden=!active;
  orbit.querySelectorAll(".rhyme-star").forEach(el=>el.remove());
  if(!active)return;
- suggestions.slice(0,6).forEach((candidate,index)=>{
+ const orbitSuggestions=suggestions.slice(0,6);orbitSuggestions.forEach((candidate,index)=>{
   const analysis=rhymeAnalysis(word,candidate);
   const b=document.createElement("button");
   b.type="button";b.className="rhyme-star rhyme-"+analysis.quality;
   b.textContent=candidate;
   if(analysis.multi){const marker=document.createElement("span");marker.className="rhyme-multi";marker.textContent="MULTI";b.append(marker);}
   b.setAttribute("aria-label",candidate+" : "+(analysis.quality==="poor"?"rime pauvre":analysis.quality==="sufficient"?"rime suffisante":analysis.quality==="rich"?"rime riche":"type de rime non vérifié")+(analysis.multi?", multisyllabique":"")+". Toucher pour garder cette piste.");
-  const angle=(-Math.PI/2)+(2*Math.PI*index/Math.max(1,suggestions.length));
+  const angle=(-Math.PI/2)+(2*Math.PI*index/Math.max(1,orbitSuggestions.length));
   b.style.left=(50+Math.cos(angle)*35)+"%";
   b.style.top=(50+Math.sin(angle)*36)+"%";
   b.addEventListener("click",()=>{$("wordMeta").textContent="PISTE DE RIME : "+candidate+" · fais-la sonner dans ta prochaine phrase";$("wordMeta").style.color="var(--yellow)";});
