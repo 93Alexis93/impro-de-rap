@@ -334,7 +334,11 @@ function selectRhymeStars(target,candidates,limit=6){
  const scored=unique.map((word,index)=>{const a=rhymeAnalysis(target,word);return {word,index,...a,rank:(a.multi?1000:0)+(a.quality==="rich"?300:a.quality==="sufficient"?200:a.quality==="poor"?100:0)+Math.min(a.sharedPhonemes||0,8)*4+Math.min(a.sharedSyllables||0,4)*25};});
  // Garantit une vraie variété quand les données le permettent, puis privilégie les pistes techniques.
  scored.sort((a,b)=>{const knownA=a.quality!=="unknown",knownB=b.quality!=="unknown";if(knownA!==knownB)return knownA?-1:1;return b.rank-a.rank||a.index-b.index;});
- return scored.slice(0,limit).map(x=>x.word);
+ const chosen=[];const take=fn=>{const item=scored.find(x=>!chosen.includes(x)&&fn(x));if(item)chosen.push(item)};
+ take(x=>x.multi);take(x=>x.quality==="rich"&&!x.multi);take(x=>x.quality==="sufficient"&&!x.multi);take(x=>x.quality==="poor"&&!x.multi);take(x=>x.quality==="unknown");
+ for(const item of scored){if(chosen.length>=limit)break;if(!chosen.includes(item))chosen.push(item)}
+ chosen.sort((a,b)=>{const knownA=a.quality!=="unknown",knownB=b.quality!=="unknown";if(knownA!==knownB)return knownA?-1:1;return b.rank-a.rank||a.index-b.index});
+ return chosen.slice(0,limit).map(x=>x.word);
 }
 function renderRhymeHelper(word){
  const box=$("rhymeHelper"),orbit=$("rhymeOrbit");if(!box||!orbit)return;
