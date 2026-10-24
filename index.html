@@ -340,7 +340,7 @@ function renderRhymeHelper(word){
  const box=$("rhymeHelper"),orbit=$("rhymeOrbit");if(!box||!orbit)return;
  const active=settings.rhymeAssist!==false&&!!word;
  const suggestions=active?selectRhymeStars(word,rhymeSuggestions(word),6):[];
- if(active&&!lexiqueRimes&&!lexiqueRimesPromise){loadLexiqueRimes().then(data=>{if(data&&settings.level==="easy"&&current)renderRhymeHelper(current)});}
+ if(active&&!lexiqueRimes&&!lexiqueRimesPromise){loadLexiqueRimes().then(data=>{if(data&&settings.rhymeAssist!==false&&current)renderRhymeHelper(current)});}
  box.hidden=!active;
  orbit.querySelectorAll(".rhyme-star").forEach(el=>el.remove());
  if(!active)return;
