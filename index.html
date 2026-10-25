@@ -15117,7 +15117,7 @@ function recStatus(message,live=false){const el=$("recStatus");if(el){el.textCon
 function recResult(message,blob){
  const txt=$("recResultText"),out=$("recPlayback");if(txt)txt.textContent=message;if(!out)return;out.innerHTML="";
  if(recUrl){URL.revokeObjectURL(recUrl);recUrl=null}
- if(blob&&blob.size){recUrl=URL.createObjectURL(blob);const audio=document.createElement("audio");audio.controls=true;audio.src=recUrl;audio.setAttribute("aria-label","Écouter l'enregistrement de la session");const link=document.createElement("a");link.href=recUrl;link.download="impro-de-rap-"+new Date().toISOString().slice(0,10)+".webm";link.textContent="⬇️ Télécharger mon impro";out.append(audio,link);txt.textContent="Enregistrement prêt : écoute-le ou télécharge-le sur ton iPhone."}
+ if(blob&&blob.size){recUrl=URL.createObjectURL(blob);const audio=document.createElement("audio");audio.controls=true;audio.src=recUrl;audio.setAttribute("aria-label","Écouter l'enregistrement de la session");const link=document.createElement("a");link.href=recUrl;link.download="impro-de-rap-"+new Date().toISOString().slice(0,10)+(recBlob.type.includes("mp4")?".m4a":".webm");link.textContent="⬇️ Télécharger mon impro";out.append(audio,link);txt.textContent="Enregistrement prêt : écoute-le ou télécharge-le sur ton iPhone."}
 }
 async function startRecording(){
  if(recording)return;
