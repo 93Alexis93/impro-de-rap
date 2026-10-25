@@ -1,0 +1,28 @@
+name: Application smoke checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Run HTML, asset and app-shell checks
+        run: python tests/smoke.py
+      - name: Check JavaScript syntax
+        run: node --check .smoke-inline.js
+      - name: Remove generated audit file
+        if: always()
+        run: rm -f .smoke-inline.js
