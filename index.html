@@ -28,6 +28,16 @@ small.n{color:var(--m);font-size:12px}
 .rec-panel{background:#16161d;border:1px solid #34343f;border-radius:14px;padding:12px;margin:10px 0}.rec-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rec-actions button{min-height:46px}.rec-main{border-color:#ff3d6e!important;color:#ff8aa6!important}.rec-status{font-size:13px;color:#9a9aa8;margin:8px 0 0}.rec-status.live{color:#ff8aa6}.rec-result audio{width:100%;margin:8px 0}.rec-result a{display:block;color:#ffd21f;font-weight:700;margin:8px 0}.rec-result{overflow-wrap:anywhere}
 
 .home-choices{display:grid;gap:14px;margin:26px 0}.home-choice{width:100%;min-height:150px;text-align:left;padding:20px;border-radius:20px;background:linear-gradient(135deg,#242431,#15151c);border:1px solid #414151}.home-choice strong{display:block;font-size:25px;margin-bottom:8px}.home-choice span{display:block;color:#b5b5c4;font-weight:400;line-height:1.4}.home-choice.impro strong{color:#ffd21f}.home-choice.free strong{color:#ff6488}.home-sub{margin-top:28px;font-size:13px;color:#8c8c9d}.page-title{display:flex;align-items:center;gap:10px;margin:12px 0 16px}.page-title button{min-height:42px}.scroll-window{height:48vh;min-height:240px;max-height:520px;overflow:auto;scrollbar-width:none;background:#101016;border:1px solid #34343f;border-radius:16px;padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:clamp(23px,5vw,34px);line-height:1.6;overscroll-behavior:contain}.scroll-window::-webkit-scrollbar{display:none}.free-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}.free-controls button{min-height:48px}.free-status{font-size:13px;color:#aaaabd;margin:8px 0}.free-status.live{color:#ff6488}.free-speed{display:flex;align-items:center;gap:10px}.free-speed input{flex:1;min-width:0}.free-speed output{min-width:65px;text-align:right;font-weight:700;color:#ffd21f}.free-audio{display:grid;gap:8px}.free-audio audio{width:100%}
+
+body.freestyle-live{overflow:hidden;padding:0}
+body.freestyle-live #freestyle{display:flex!important;position:fixed;inset:0;z-index:9999;background:var(--bg);padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom);flex-direction:column;gap:8px;overflow:hidden}
+body.freestyle-live #freestyle>.page-title,body.freestyle-live #freestyle>.box,body.freestyle-live #freestyle>label{display:none!important}
+#freeLiveTop{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
+#freeLiveTop button{min-height:42px}
+body.freestyle-live #freeScroll{height:auto;min-height:0;max-height:none;flex:1;border:0;border-radius:12px;font-size:clamp(28px,7vw,46px);padding:18px 12px;overflow-y:auto}
+body.freestyle-live .free-controls{flex-shrink:0;margin-top:0!important;grid-template-columns:1fr 1fr}
+body.freestyle-live .free-controls button{min-height:48px}
+body.freestyle-live #freeStatus{flex-shrink:0;margin:0 0 2px}
 </style></head><body>
 <section id="homeStart">
 <h1>IMPRO<br><span>DE RAP</span></h1><p>Choisis ton terrain. Le reste est à toi.</p>
@@ -41,7 +51,7 @@ small.n{color:var(--m);font-size:12px}
 <div class="box"><label for="freeText">Ton texte</label><textarea id="freeText" placeholder="Colle ou écris tes paroles ici…"></textarea><p style="margin-top:8px"><small class="n">Ton texte reste sur cet appareil. Tu peux le modifier avant de lancer le défilement.</small></p></div>
 <div class="box"><label>Instrumentale (facultative)</label><div class="free-audio"><select id="freeBeat"><option value="none">Sans instru</option><option value="boom">Boom-bap</option><option value="lofi">Lo-fi jazzy</option><option value="dark">Trap sombre</option><option value="afro">Afro / Makossa</option><option value="orient">Oriental</option><option value="file">Importer mon instru</option></select><div id="freeFileBox" class="hide"><input id="freeFile" type="file" accept="audio/*"><small class="n">Choisis un fichier audio depuis ton iPhone.</small></div><div id="freeBpmBox" class="g2"><div><label for="freeBpm">Tempo</label><input id="freeBpm" type="number" min="60" max="170" value="90"></div><div><label for="freeVol">Volume instru</label><input id="freeVol" type="range" min="0" max="100" value="65"></div></div><div id="freeAudioPreview"></div></div></div>
 <div class="box"><label for="freeSpeed">Vitesse de défilement</label><div class="free-speed"><span>Lent</span><input id="freeSpeed" type="range" min="10" max="120" step="5" value="35"><output id="freeSpeedValue">35 px/s</output><span>Rapide</span></div></div>
-<label>Lecture du texte</label><div id="freeScroll" class="scroll-window" tabindex="0" aria-label="Texte qui défile automatiquement">Ton texte apparaîtra ici…</div>
+<div id="freeLiveTop" class="hide"><button id="freeExitLive">← Réglages</button><b>📜 FREESTYLE</b></div><label>Lecture du texte</label><div id="freeScroll" class="scroll-window" tabindex="0" aria-label="Texte qui défile automatiquement">Ton texte apparaîtra ici…</div>
 <div class="free-controls" style="margin-top:10px"><button id="freeStart" class="rec-main">▶ Lancer le défilement</button><button id="freePause">Ⅱ Pause</button><button id="freeReset">↺ Revenir au début</button><button id="freeStop">■ Arrêter tout</button></div><p id="freeStatus" class="free-status">Colle ton texte, règle la vitesse, puis lance le défilement.</p>
 </section>
 <section id="setup" class="hide">
@@ -15096,9 +15106,9 @@ $("enterImpro").onclick=()=>showPage("setup");
 $("setupHome").onclick=()=>showPage("homeStart");
 $("enterFreestyle").onclick=()=>showPage("freestyle");
 $("freeHome").onclick=()=>{stopFreeScroll();stopFreeBeat();showPage("homeStart")};
-let freeFrame=0,freeLast=0,freeScrolling=false,freePaused=false,freeFileAudio=null,freeSynth=false,freeBeatTimer=null,freeBeatFrame=0,freeBeatIndex=0,freeBeatNext=0,freeBeatContext=null,freeBeatGain=null,freeBeatSource=null;
+let freeFrame=0,freeLast=0,freeScrollRemainder=0,freeScrollPosition=0,freeScrolling=false,freePaused=false,freeFileAudio=null,freeSynth=false,freeBeatTimer=null,freeBeatFrame=0,freeBeatIndex=0,freeBeatNext=0,freeBeatContext=null,freeBeatGain=null,freeBeatSource=null;
 function freeStatus(t,live=false){$("freeStatus").textContent=t;$("freeStatus").classList.toggle("live",live)}
-function syncFreePreview(){const text=$("freeText").value.trim();$("freeScroll").textContent=text||"Ton texte apparaîtra ici…";$("freeScroll").scrollTop=0}
+function syncFreePreview(){const text=$("freeText").value.trim();$("freeScroll").textContent=text||"Ton texte apparaîtra ici…";$("freeScroll").scrollTop=0;freeScrollPosition=0;freeScrollRemainder=0}
 $("freeText").addEventListener("input",()=>{if(!freeScrolling)syncFreePreview()});
 $("freeSpeed").addEventListener("input",()=>$("freeSpeedValue").textContent=$("freeSpeed").value+" px/s");
 $("freeBeat").addEventListener("change",()=>{
@@ -15127,19 +15137,20 @@ async function startFreeBeat(){
  if(mode==="file"){if(!freeFileAudio){freeStatus("Choisis d’abord ton fichier audio.");return}try{freeFileAudio.currentTime=0;freeFileAudio.volume=(+$("freeVol").value)/100;await freeFileAudio.play()}catch(e){freeStatus("Impossible de lire le fichier audio. Appuie à nouveau sur Lancer.");}return}
  try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC){freeStatus("Le navigateur ne prend pas en charge l’instrumentale intégrée.");return}freeBeatContext=freeBeatContext||new AC();await freeBeatContext.resume();if(freeBeatGain)freeBeatGain.disconnect();freeBeatGain=freeBeatContext.createGain();freeBeatGain.gain.value=(+$("freeVol").value)/100;freeBeatGain.connect(freeBeatContext.destination);freeBeatIndex=0;freeBeatNext=freeBeatContext.currentTime+.05;freeSynth=true;scheduleFreeBeat();freeBeatTimer=setInterval(scheduleFreeBeat,25)}catch(e){freeStatus("Impossible de lancer l’instru intégrée. Réessaie.")}}
 function stopFreeBeat(){freeSynth=false;if(freeBeatTimer){clearInterval(freeBeatTimer);freeBeatTimer=null}if(freeFileAudio){freeFileAudio.pause();try{freeFileAudio.currentTime=0}catch(e){}}if(freeBeatContext&&freeBeatContext.state==="running")freeBeatContext.suspend().catch(()=>{});if(freeBeatGain){try{freeBeatGain.disconnect()}catch(e){}}}
-function stopFreeScroll(){freeScrolling=false;freePaused=false;if(freeFrame)cancelAnimationFrame(freeFrame);freeFrame=0;freeLast=0;$("freePause").textContent="Ⅱ Pause"}
-function freeScrollFrame(now){if(!freeScrolling||freePaused)return;const view=$("freeScroll"),dt=freeLast?Math.min(0.05,(now-freeLast)/1000):0;freeLast=now;view.scrollTop+=dt*(+$("freeSpeed").value||35);if(view.scrollTop+view.clientHeight>=view.scrollHeight-1){stopFreeScroll();freeStatus("Fin du texte. Tu peux revenir au début ou relancer.");return}freeFrame=requestAnimationFrame(freeScrollFrame)}
+function stopFreeScroll(){freeScrolling=false;freePaused=false;if(freeFrame)cancelAnimationFrame(freeFrame);freeFrame=0;freeLast=0;freeScrollRemainder=0;$("freePause").textContent="Ⅱ Pause"}
+function freeScrollFrame(now){if(!freeScrolling||freePaused)return;const view=$("freeScroll"),dt=freeLast?Math.max(0,(now-freeLast)/1000):0;freeLast=now;freeScrollRemainder+=dt*(+$("freeSpeed").value||35);const wholePixels=Math.floor(freeScrollRemainder);if(wholePixels>0){freeScrollPosition+=wholePixels;freeScrollRemainder-=wholePixels;view.scrollTop=freeScrollPosition}if(view.scrollTop+view.clientHeight>=view.scrollHeight-1){stopFreeScroll();freeStatus("Fin du texte. Tu peux revenir au début ou relancer.");return}freeFrame=requestAnimationFrame(freeScrollFrame)}
 $("freeStart").onclick=async()=>{
  if(!$("freeText").value.trim()){freeStatus("Colle ou écris ton texte avant de lancer.");return}
- stopFreeScroll();stopFreeBeat();syncFreePreview();freeScrolling=true;freePaused=false;$("freePause").textContent="Ⅱ Pause";freeStatus("Défilement en cours… ajuste la vitesse quand tu veux.",true);
+ stopFreeScroll();stopFreeBeat();syncFreePreview();freeScrollPosition=0;freeScrollRemainder=0;document.body.classList.add("freestyle-live");$("freeLiveTop").classList.remove("hide");freeScrolling=true;freePaused=false;$("freePause").textContent="Ⅱ Pause";freeStatus("Défilement en cours… ajuste la vitesse quand tu veux.",true);
  await startFreeBeat();if(!freeScrolling)return;freeLast=0;freeFrame=requestAnimationFrame(freeScrollFrame)
 };
 $("freePause").onclick=()=>{
  if(freeScrolling&&!freePaused){freePaused=true;if(freeFrame)cancelAnimationFrame(freeFrame);freeFrame=0;if(freeBeatContext&&freeSynth)freeBeatContext.suspend().catch(()=>{});if(freeFileAudio)freeFileAudio.pause();$("freePause").textContent="▶ Reprendre";freeStatus("En pause. Appuie sur Reprendre pour continuer.")}
  else if(freeScrolling&&freePaused){freePaused=false;freeLast=0;if(freeBeatContext&&freeSynth)freeBeatContext.resume().then(scheduleFreeBeat).catch(()=>{});if(freeFileAudio&&$("freeBeat").value==="file")freeFileAudio.play().catch(()=>{});$("freePause").textContent="Ⅱ Pause";freeStatus("Défilement en cours…",true);freeFrame=requestAnimationFrame(freeScrollFrame)}
 };
-$("freeReset").onclick=()=>{stopFreeScroll();$("freeScroll").scrollTop=0;freeStatus("Texte replacé au début. Appuie sur Lancer pour recommencer.")};
-$("freeStop").onclick=()=>{stopFreeScroll();stopFreeBeat();$("freeScroll").scrollTop=0;freeStatus("Lecture arrêtée. Ton texte est conservé.")};
+$("freeReset").onclick=()=>{stopFreeScroll();freeScrollPosition=0;freeScrollRemainder=0;$("freeScroll").scrollTop=0;freeStatus("Texte replacé au début. Appuie sur Lancer pour recommencer.")};
+$("freeStop").onclick=()=>{stopFreeScroll();stopFreeBeat();document.body.classList.remove("freestyle-live");$("freeLiveTop").classList.add("hide");freeScrollPosition=0;freeScrollRemainder=0;$("freeScroll").scrollTop=0;freeStatus("Lecture arrêtée. Ton texte est conservé.")};
+$("freeExitLive").onclick=()=>{document.body.classList.remove("freestyle-live");$("freeLiveTop").classList.add("hide")};
 $("freeBpm").addEventListener("change",()=>{$("freeBpm").value=Math.max(60,Math.min(170,+$("freeBpm").value||90))});
 function init(){if(ac)return;ac=new(window.AudioContext||window.webkitAudioContext)();mg=ac.createGain();mg.gain.value=.85;const c=ac.createDynamicsCompressor();mg.connect(c);c.connect(ac.destination);nb=ac.createBuffer(1,ac.sampleRate,ac.sampleRate);const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
 const env=(g,t,a,d,v)=>{g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+d)};
