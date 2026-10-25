@@ -78,7 +78,13 @@ try:
     sw = sw_path.read_text(encoding="utf-8")
     match = re.search(r'const\s+APP_SHELL\s*=\s*\[(.*?)\]', sw, re.S)
     assets = re.findall(r'["\']([^"\']+)["\']', match.group(1)) if match else []
-    missing_assets = [asset for asset in assets if not (ROOT / asset.removeprefix("./")).is_file()]
+    missing_assets = []
+    for asset in assets:
+        target = ROOT / asset.removeprefix("./")
+        if target.is_dir():
+            target = target / "index.html"
+        if not target.is_file():
+            missing_assets.append(asset)
     ok &= check(bool(match), "service worker defines an app shell")
     ok &= check(not missing_assets, "all service-worker app-shell files exist" + (f" (missing: {missing_assets})" if missing_assets else ""))
     ok &= check("request.mode===\"navigate\"" in sw and "caches.match(\"./index.html\")" in sw,
