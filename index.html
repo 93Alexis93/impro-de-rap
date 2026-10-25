@@ -24,6 +24,8 @@ select,input[type=number],textarea{width:100%;background:var(--s2);border:1px so
 .foot{position:sticky;bottom:0;display:flex;gap:8px;padding:10px 0 12px;background:linear-gradient(transparent,var(--bg) 25%)}.foot button{flex:1}
 .w{display:inline-block;margin:3px;cursor:pointer}.w[aria-pressed=true]{border-color:var(--p);color:#ff8aa6}
 small.n{color:var(--m);font-size:12px}
+
+.rec-panel{background:#16161d;border:1px solid #34343f;border-radius:14px;padding:12px;margin:10px 0}.rec-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rec-actions button{min-height:46px}.rec-main{border-color:#ff3d6e!important;color:#ff8aa6!important}.rec-status{font-size:13px;color:#9a9aa8;margin:8px 0 0}.rec-status.live{color:#ff8aa6}.rec-result audio{width:100%;margin:8px 0}.rec-result a{display:block;color:#ffd21f;font-weight:700;margin:8px 0}.rec-result{overflow-wrap:anywhere}
 </style></head><body>
 <section id="setup">
 <h1>IMPRO<br><span>DE RAP</span></h1><p>Des mots, des rimes, un beat. Tu fais le reste.</p>
@@ -42,8 +44,9 @@ small.n{color:var(--m);font-size:12px}
 <section id="game" class="hide"><div class="top"><button id="back">←</button><small class="n" id="meta"></small><button id="fin">Terminer</button></div>
 <div class="ban" id="ban"></div><div class="star" id="star"></div><div class="leg"><span><b style="background:var(--y)"></b>riche</span><span><b style="background:var(--p)"></b>suffisante</span><span><b style="background:var(--m)"></b>assonance</span></div>
 <div class="bar4" id="bar4"></div><div class="dots" id="dots"><span></span><span></span><span></span><span></span></div>
+<div class="rec-panel"><div class="rec-actions"><button id="recStart" class="rec-main">🎙️ Enregistrer</button><button id="recStop" disabled>■ Arrêter</button></div><p id="recStatus" class="rec-status">L’enregistrement de la voix est facultatif. Autorise le micro quand Safari le demande.</p></div>
 <div class="foot"><button id="pause">Ⅱ Pause</button><button id="next">Suivant ›</button></div></section>
-<section id="sum" class="hide"><h1>Bilan.<br><span>On remet ça ?</span></h1><p>Touche les mots qui t'ont résisté : ils reviendront plus souvent.</p><div class="box" id="sumWords"></div><button class="go" id="again">REJOUER</button><button style="width:100%;margin-top:10px" id="home">Réglages</button></section>
+<section id="sum" class="hide"><h1>Bilan.<br><span>On remet ça ?</span></h1><p>Touche les mots qui t'ont résisté : ils reviendront plus souvent.</p><div class="box rec-result" id="recResult"><b>🎧 Ton enregistrement</b><p id="recResultText">Aucun enregistrement pour cette session.</p><div id="recPlayback"></div></div><div class="box" id="sumWords"></div><button class="go" id="again">REJOUER</button><button style="width:100%;margin-top:10px" id="home">Réglages</button></section>
 <script>
 const DATA=`nous	nu
 dans	d@
@@ -15105,9 +15108,43 @@ if(st.m=="dix"&&custom.length<3){alert("Colle au moins 3 mots.");return}if(st.be
 used=[];cIdx=0;recent=[];root=57+[0,2,3,5,7,8,10][Math.floor(Math.random()*7)]-12+12;endBar=+st.dur?1+Math.floor(+st.dur/(4*60/bpm)):1e9;if(st.m=="dix")endBar=1e9;
 $("setup").classList.add("hide");$("sum").classList.add("hide");$("game").classList.remove("hide");paused=false;$("pause").textContent="Ⅱ Pause";
 evq=[];si=0;nx=ac.currentTime+.2;t0=nx;run=true;clearInterval(tm);tm=setInterval(sched,25);sched();tick();try{navigator.wakeLock&&navigator.wakeLock.request("screen")}catch(e){}}
-function finish(){if(!run)return;run=false;clearInterval(tm);if(aud)aud.pause();if(ac)ac.suspend();D.n++;D.w+=used.length;save();$("game").classList.add("hide");$("sum").classList.remove("hide");
+function finish(){if(!run)return;run=false;clearInterval(tm);if(recording)stopRecording();if(aud)aud.pause();if(ac)ac.suspend();D.n++;D.w+=used.length;save();$("game").classList.add("hide");$("sum").classList.remove("hide");
 $("sumWords").innerHTML=used.map(w=>'<button class="w" aria-pressed="'+D.miss.includes(w)+'">'+w+"</button>").join("")}
 $("sumWords").onclick=e=>{const b=e.target.closest(".w");if(!b)return;const w=b.textContent,on=b.getAttribute("aria-pressed")!="true";b.setAttribute("aria-pressed",on);D.miss=D.miss.filter(x=>x!=w);if(on)D.miss.push(w);save()};
+
+let mediaStream=null,mediaRecorder=null,recChunks=[],recBlob=null,recUrl=null,recording=false;
+function recStatus(message,live=false){const el=$("recStatus");if(el){el.textContent=message;el.classList.toggle("live",live)}}
+function recResult(message,blob){
+ const txt=$("recResultText"),out=$("recPlayback");if(txt)txt.textContent=message;if(!out)return;out.innerHTML="";
+ if(recUrl){URL.revokeObjectURL(recUrl);recUrl=null}
+ if(blob&&blob.size){recUrl=URL.createObjectURL(blob);const audio=document.createElement("audio");audio.controls=true;audio.src=recUrl;audio.setAttribute("aria-label","Écouter l'enregistrement de la session");const link=document.createElement("a");link.href=recUrl;link.download="impro-de-rap-"+new Date().toISOString().slice(0,10)+".webm";link.textContent="⬇️ Télécharger mon impro";out.append(audio,link);txt.textContent="Enregistrement prêt : écoute-le ou télécharge-le sur ton iPhone."}
+}
+async function startRecording(){
+ if(recording)return;
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){recStatus("L’enregistrement n’est pas pris en charge ici. Ouvre l’appli dans Safari à son adresse HTTPS.");return}
+ try{
+  mediaStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+  const mime=["audio/mp4;codecs=mp4a.40.2","audio/mp4","audio/webm;codecs=opus","audio/webm"].find(t=>MediaRecorder.isTypeSupported(t));
+  mediaRecorder=mime?new MediaRecorder(mediaStream,{mimeType:mime}):new MediaRecorder(mediaStream);
+  recChunks=[];recBlob=null;
+  mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)recChunks.push(e.data)};
+  mediaRecorder.onerror=()=>{recStatus("Erreur pendant l’enregistrement. Vérifie l’autorisation du micro.");recording=false};
+  mediaRecorder.onstop=()=>{
+   recBlob=new Blob(recChunks,{type:mediaRecorder.mimeType||"audio/webm"});recording=false;
+   if(mediaStream){mediaStream.getTracks().forEach(t=>t.stop());mediaStream=null}
+   $("recStart").disabled=false;$("recStop").disabled=true;
+   if(recBlob.size){recStatus("Enregistrement terminé : "+Math.round(recBlob.size/1024)+" Ko.");recResult("Enregistrement prêt.",recBlob)}
+   else recStatus("Aucun son enregistré. Réessaie en autorisant le micro.");
+  };
+  mediaRecorder.start(1000);recording=true;$("recStart").disabled=true;$("recStop").disabled=false;
+  recStatus("🔴 Enregistrement en cours… rappe normalement. Appuie sur Arrêter ou termine la session.",true);
+ }catch(err){
+  if(mediaStream){mediaStream.getTracks().forEach(t=>t.stop());mediaStream=null}
+  recStatus(err&&err.name==="NotAllowedError"?"Micro refusé : autorise le micro pour ce site dans les réglages de Safari.":"Impossible d’accéder au micro. Vérifie que la page est en HTTPS et réessaie.");
+ }
+}
+function stopRecording(){if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop();else{recording=false;$("recStart").disabled=false;$("recStop").disabled=true}}
+$("recStart").onclick=startRecording;$("recStop").onclick=stopRecording;
 $("pause").onclick=()=>{paused=!paused;paused?ac.suspend():ac.resume();if(aud)paused?aud.pause():aud.play();$("pause").textContent=paused?"▶ Reprendre":"Ⅱ Pause"};
 $("next").onclick=()=>{if(!run||paused)return;newCycle();if(run)barUI(0)};$("fin").onclick=finish;$("back").onclick=()=>{finish();$("sum").classList.add("hide");$("setup").classList.remove("hide")};
 $("again").onclick=launch;$("home").onclick=()=>{$("sum").classList.add("hide");$("setup").classList.remove("hide")};$("go").onclick=launch;
