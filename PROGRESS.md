@@ -8,7 +8,10 @@
 - Contrôles automatiques `tests/smoke.py` et vérification de la syntaxe JavaScript : OK.
 - Parcours : accueil, entrée dans Impro, session « Échauffement » (mot affiché, étoile de rimes), bilan, retour accueil, Freestyle (enregistrement d’un texte, défilement, mode plein écran, arrêt, retour), conservation de la bibliothèque après rechargement, panneau 10 mots, lien de défi du jour : OK, aucune erreur JavaScript.
 
+- Mot central et bulles de rimes : 11 mots testés (courts, longs, à deux mots, « Anticonstitutionnellement ») sur 4 tailles d’écran (320, 375, 430 et 1280 px) : plus aucun chevauchement ni mot coupé.
+
 ## À tester par Alexis sur iPhone (Safari)
+- Pendant une session : le mot central reste entier et lisible, les bulles ne le recouvrent pas.
 - Son de VirtualBeat et du métronome au lancement d’une session.
 - Freestyle : défilement fluide, instru intégrée, import d’un fichier audio, mode plein écran.
 - Enregistrement de la voix (autorisation du micro).
