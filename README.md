@@ -42,7 +42,7 @@ Application web de freestyle rap, pensée d’abord pour le téléphone. Elle pr
 
 ## Instrumentales et droits
 
-Les liens externes sont fournis pour explorer des pistes, pas pour affirmer que tous les morceaux sont libres de droits. Vérifie la licence en vigueur de chaque piste et ses conditions d’utilisation, de redistribution, d’attribution et de publication avant de l’utiliser. La prochaine étape pour une vraie synchronisation sera d’ajouter des fichiers audio pour lesquels les droits d’intégration et de redistribution sont clairement autorisés.
+Les instrus de l’appli sont générées en direct par VirtualBeat (aucun fichier audio hébergé). Si un jour on ajoute des morceaux externes, vérifier la licence en vigueur de chaque piste et ses conditions d’utilisation, de redistribution, d’attribution et de publication avant de l’utiliser. La prochaine étape pour une vraie synchronisation sera d’ajouter des fichiers audio pour lesquels les droits d’intégration et de redistribution sont clairement autorisés.
 
 ## Développement
 

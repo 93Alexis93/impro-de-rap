@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-28 — Intro de 4 mesures, liens externes retirés
+- Avant le premier mot : intro de 4 mesures avec l’instru déjà lancée (plus de bips de métronome). Le grand chiffre décompte les mesures (4, 3, 2, 1) et le chrono affiche « Intro 0:10 » jusqu’au premier mot.
+- La durée choisie (3, 5 ou 10 min) démarre au premier mot : l’intro ne mange pas le temps d’impro, et le bilan ne la compte pas.
+- Retrait du panneau « Instrus à explorer » et des trois « liens externes » des listes d’instrus : ils ne faisaient qu’ouvrir un site extérieur (ou jouer un métronome). Un réglage qui les visait repasse sur Boom-bap.
+- Cache hors ligne passé en `v21`.
+
 ## 2026-10-28 — Instrus VirtualBeat refaites
 - Retour d’Alexis : les instrus de la fusion se ressemblaient toutes (batterie seule, motifs presque identiques) et aucune instru n’était choisie par défaut (le métronome l’était).
 - VirtualBeat utilise maintenant le moteur d’instrus de la version du 25/10 : batterie + basse + accords, swing et couleur propres à chaque style. Cinq styles : Boom-bap (90), Lo-fi jazzy (82), Oriental (96), Afro / Makossa (104), Trap sombre (140).
