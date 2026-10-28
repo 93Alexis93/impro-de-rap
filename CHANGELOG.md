@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-29 — Instru et tempo dans « 10 mots pour une impro »
+- Le panneau du mode 10 mots propose les mêmes instrus VirtualBeat que les autres modes (Boom-bap, Lo-fi, Oriental, Afro / Makossa, Trap, Métronome) et un champ Tempo (BPM).
+- Le tempo conseillé se règle quand on change d’instru et reste modifiable (60 à 160 BPM). Le choix est synchronisé avec les réglages et mémorisé sur l’appareil.
+- La session 10 mots joue l’instru choisie, avec l’intro de 4 mesures avant le premier mot.
+- Cache hors ligne passé en `v22`.
+
 ## 2026-10-28 — Intro de 4 mesures, liens externes retirés
 - Avant le premier mot : intro de 4 mesures avec l’instru déjà lancée (plus de bips de métronome). Le grand chiffre décompte les mesures (4, 3, 2, 1) et le chrono affiche « Intro 0:10 » jusqu’au premier mot.
 - La durée choisie (3, 5 ou 10 min) démarre au premier mot : l’intro ne mange pas le temps d’impro, et le bilan ne la compte pas.
