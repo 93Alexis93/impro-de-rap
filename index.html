@@ -41,6 +41,43 @@
 .toggle{display:flex;align-items:center;gap:10px;margin:10px 0;line-height:1.35}
 .toggle input{flex-shrink:0;width:20px;height:20px}
 .battle-options{margin:12px 0 4px;padding:12px;border-radius:14px;border:1px solid rgba(255,100,136,.45);background:rgba(255,100,136,.06)}
+
+/* ---- Impro en plein écran, lecture facilitée (29/10/2026) ---- */
+body.impro-live{overflow:hidden}
+body.impro-live #gameView{position:fixed;inset:0;z-index:9999;display:flex!important;flex-direction:column;background:#07070a;padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom);overflow:hidden}
+body.impro-live #gameView[hidden]{display:none!important}
+body.impro-live .session-top{padding:6px 0;flex-shrink:0}
+body.impro-live .session-top button{min-height:40px;font-size:14px}
+body.impro-live #sessionMeta,body.impro-live .next-hint,body.impro-live #rhymeHelper,body.impro-live #recordStatus,body.impro-live #recordPlayback{display:none!important}
+body.impro-live .stage{flex:1;min-height:0;padding:0;display:flex;flex-direction:column}
+body.impro-live .stage-info{font-size:15px;font-weight:800;color:#c9c9d4}
+body.impro-live #timeLeft{font-size:20px;color:#fff;font-variant-numeric:tabular-nums}
+body.impro-live .focus-banner{font-size:15px;line-height:1.35;padding:8px 12px 0;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-height:calc(2.7em + 16px);flex-shrink:0;border:0;border-left:3px solid var(--yellow);border-bottom:8px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
+body.impro-live .word-area{flex:1;min-height:0;padding:4px 0;align-content:center;overflow:hidden}
+body.impro-live .word-orbit{min-height:clamp(190px,48dvh,520px)}
+body.impro-live .word-orbit .word{font-size:clamp(3.4rem,27vw,11rem);text-shadow:0 2px 0 #000,0 0 28px rgba(255,210,31,.25)}
+body.impro-live .word.empty-word{font-size:clamp(3rem,16vw,7rem);color:#9a9aa6}
+body.impro-live #rhymeOrbit .rhyme-star{font-size:clamp(15px,4.4vw,22px);min-height:46px;padding:9px 12px;white-space:nowrap;overflow-wrap:normal;word-break:normal;max-width:none}
+body.impro-live .word-meta{font-size:clamp(15px,4.2vw,19px);line-height:1.35;color:#e6e6ee;margin-top:10px;font-weight:600}
+body.impro-live .preview{font-size:16px;color:#a0a0ad}
+body.impro-live .beatline{gap:8px;margin:6px 0 4px;flex-shrink:0}
+body.impro-live .beatline span{height:10px}
+body.impro-live .stage-bottom{flex-shrink:0;padding-top:6px!important}
+body.impro-live .recorder-tools{flex-shrink:0;margin:4px 0 0;padding:6px 0 0;border:0}
+body.impro-live .recorder-actions button{min-height:40px;font-size:13px}
+body.impro-live .round-progress{margin-top:6px;height:4px}
+@media (orientation:portrait) and (max-height:700px){
+ body.impro-live .preview,body.impro-live .focus-banner{display:none!important}
+ body.impro-live .word-meta{font-size:14px;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+ body.impro-live .recorder-tools{padding-top:2px}
+}
+@media (orientation:landscape) and (max-height:520px){
+ body.impro-live .focus-banner,body.impro-live .recorder-tools,body.impro-live .preview{display:none!important}
+ body.impro-live .word-area{overflow:hidden}
+ body.impro-live .word-orbit{min-height:0}
+ body.impro-live .word-orbit .word{font-size:clamp(2.6rem,17dvh,7rem)}
+ body.impro-live .word-meta{font-size:14px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
 </style>
 </head>
 <body>
@@ -1096,5 +1133,8 @@ $("freeReplayClose").addEventListener("click",closeFreeReplay);
  try{if(freePaused&&!rec.pausedAt){rec.recorder.pause();rec.pausedAt=performance.now()}else if(!freePaused&&rec.pausedAt){rec.recorder.resume();rec.pausedTotal+=performance.now()-rec.pausedAt;rec.pausedAt=0}}catch{}}}
 ["freeStop","freeHome"].forEach(id=>$(id).addEventListener("click",()=>{freeRecStop()}));
 $("enterFreestyle").addEventListener("click",listFreeTakes);
+
+/* ---- Impro en plein écran, lecture facilitée (29/10/2026) ---- */
+{const _showView=showView;showView=function(which){_showView(which);document.body.classList.toggle("impro-live",which==="game");if(which==="game")requestAnimationFrame(()=>{try{fitOrbitWord()}catch{}})}}
 </script>
 </body></html>

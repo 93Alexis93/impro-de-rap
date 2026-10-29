@@ -11,6 +11,7 @@ EXPECTED_PAIRS = [
     ("bateau", "gâteau"),
     ("musique", "physique"),
     ("liberté", "vérité"),
+    ("gentrification", "nation"),  # finale nasale corrigée (Lexique notait « sjO »)
 ]
 
 def fail(message):

@@ -965,3 +965,6 @@ $("freeReplayClose").addEventListener("click",closeFreeReplay);
  try{if(freePaused&&!rec.pausedAt){rec.recorder.pause();rec.pausedAt=performance.now()}else if(!freePaused&&rec.pausedAt){rec.recorder.resume();rec.pausedTotal+=performance.now()-rec.pausedAt;rec.pausedAt=0}}catch{}}}
 ["freeStop","freeHome"].forEach(id=>$(id).addEventListener("click",()=>{freeRecStop()}));
 $("enterFreestyle").addEventListener("click",listFreeTakes);
+
+/* ---- Impro en plein écran, lecture facilitée (29/10/2026) ---- */
+{const _showView=showView;showView=function(which){_showView(which);document.body.classList.toggle("impro-live",which==="game");if(which==="game")requestAnimationFrame(()=>{try{fitOrbitWord()}catch{}})}}

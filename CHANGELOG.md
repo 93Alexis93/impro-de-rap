@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-29 — Rimes de « gentrification » corrigées, Impro en plein écran
+- **Rimes fausses (ex. « gentrification » → sociaux, radio)** : la cause est dans Lexique 4.00 lui-même. Pour certains mots rares (transcrits automatiquement), la finale nasale est notée comme une voyelle orale : « gentrification » Z@tRifikasjO au lieu de …sj§ (« on »), « maintenant » m5tna au lieu de m5tn@, « tremplins » tR@plE au lieu de tR@pl5. L’appli cherchait donc des rimes en « -sio ».
+- Correction : `scripts/phon_fixes.py` rétablit la finale nasale quand l’orthographe française l’impose (-ion, -on, -ant, -ment, -ain, -ins, -ance) et que la prononciation finit sur la voyelle orale correspondante. 191 mots corrigés dans `data/lexique-rimes.json` (`scripts/fix_lexique_rimes.py`, idempotent) ; la correction est aussi branchée dans `scripts/build_lexique_rimes.py` pour les prochaines reconstructions. Les mots anglais (fan, bacon, cartoon) ne sont pas touchés. « gentrification » rime maintenant avec situation, relation, opération.
+- **Impro en plein écran** : pendant la session, l’écran de jeu couvre tout le téléphone. Mot central jusqu’à 27 % de la largeur de l’écran (les mots longs rétrécissent pour tenir), bulles de rimes plus grosses et sans coupure de mot, consigne en 15-19 px, chrono en 20 px, barre des temps plus épaisse. Masqués pendant le jeu : la ligne technique (BPM, instru), la légende « Étoiles de rimes » et le rappel des gestes. Sur petit écran, le bandeau d’objectif est masqué (la consigne du mot reste) ; en paysage, mise en page dédiée.
+- Cache hors ligne passé en `v28` (nouveau dictionnaire de rimes chargé).
+
 ## 2026-10-29 — Battle à deux facile à trouver
 - Retour d’Alexis : impossible de trouver où choisir la battle. Cause : la case était perdue dans une liste de cases sans mise en forme, affichées collées comme un paragraphe.
 - La battle devient une carte de « Mode d’impro » (à côté d’« Impro libre » et « 10 mots ») ; la choisir affiche les noms des MC et le passage de micro.

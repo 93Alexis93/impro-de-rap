@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Build a phonological rhyme index from the official Lexique 4.00 TSV."""
 import csv, io, json, os, re, urllib.request, zipfile
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from phon_fixes import fix_phon  # finales nasales fautives de Lexique (29/10/2026)
 
 URL = "https://www.lexique.org/databases/Lexique400/Lexique400.zip"
 OUT = "data/lexique-rimes.json"
@@ -55,6 +58,7 @@ def main():
                     syllables = [phon]
                 if not syllables or not syllables[-1]:
                     continue
+                phon, syllables, _ = fix_phon(word, phon, syllables)
                 ident = (word, phon)
                 if ident in seen:
                     continue
