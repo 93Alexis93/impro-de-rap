@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-10-29 — Générateur : univers et ambiances pensés pour le rap
+- **Univers** (10) : Ego trip, Street / quartier, Amour, Conscient / engagé, Introspection, Famille & racines, Charbon / réussite, Hommage / mémoire, Battle / clash, Storytelling. Retirés : Espace, Conte, Mer, Foot, École, Futur, Nature (thèmes trop éloignés du rap).
+- **Ambiances** (9) : Fierté, Rage, La dalle, Revanche, Froid / posé, Mélancolie, Nostalgie, Espoir, Second degré (l’ancien « Humour »).
+- Chaque univers et chaque ambiance a ses images, ses mots-pivots et une consigne d’angle, reprise dans le prompt IA (ex. « rap conscient — dénonce une injustice précise, avec des faits et des images, pas des slogans »).
+
+## 2026-10-29 — Nouvelles idées : instrus Freestyle, prises synchronisées, battle, rimes en direct
+- **Freestyle = mêmes instrus que l’Impro** : Boom-bap 90, Lo-fi 82, Oriental 96, Afro / Makossa 104, Trap 140 (batterie, basse, accords). Le tempo conseillé se règle quand on change d’instru. Un seul moteur VirtualBeat partagé ; l’ancien moteur du Freestyle (surtout de la batterie) est retiré. « Sans instru » et « Importer mon instru » inchangés.
+- **Enregistrer ma voix** (Freestyle, case à cocher) : la prise démarre avec le défilement, se met en pause avec lui et s’arrête avec « Arrêter tout » (15 min max). Voix mixée avec l’instru VirtualBeat ; avec une instru importée, voix seule. Badge « ● REC » en plein écran. Micro refusé = le défilement part quand même.
+- **Mes prises** : liste sur l’appareil (IndexedDB), réécoute avec le texte qui défile ou la ligne surlignée exactement comme pendant la prise, suppression avec confirmation. Les prises Freestyle n’apparaissent pas dans la liste de l’Impro.
+- **Mode battle à deux** (Impro, réglages) : noms des deux MC, passage de micro toutes les 4 ou 8 mesures, un nouveau mot à chaque passage, bandeau coloré (rose / bleu) avec alerte à la dernière mesure, nombre de passages dans le bilan. Le réglage « Un mot toutes les… » enregistré n’est pas modifié. Pas de battle en mode 10 mots.
+- **Rimes en direct** (Freestyle) : toucher une ligne affiche 4 rimes au son pour son dernier mot ; en écrivant une nouvelle ligne, les rimes de la ligne d’avant. Toucher une rime l’insère au curseur. Désactivable.
+- Cache hors ligne passé en `v26`.
+
+## 2026-10-29 — Freestyle : générateur, tempo, mémoire, relais
+- **Générer un texte** : mots imposés (jusqu’à 10), univers (10), ambiance (6), structure (8 ou 16 mesures, avec ou sans refrain de 4), schéma AABB / ABAB / AAAA, rimes (meilleures, riches, multisyllabiques), résultat « Trame à trous » ou « Texte complet ». Gratuit et hors ligne : les fins de vers viennent du moteur de rimes au son ; le texte complet est un brouillon à retravailler. « Remettre mon texte d’avant » annule.
+- **Copier le prompt IA** : prompt prêt à coller dans Claude ou ChatGPT (structure, BPM, univers, mots, schéma, pistes de rimes vérifiées au son, contraintes anti-clichés), aussi affiché pour une copie manuelle.
+- **Défilement au tempo** : 1 ligne par mesure ou toutes les 2 mesures, calé sur le BPM, ligne en cours surlignée, intro de 4 mesures facultative. Les lignes `[Couplet]` / `[Refrain]` et les lignes vides ne prennent pas de mesure. La pause fige le chrono.
+- **Mode mémoire** : 0 → 25 → 50 → 75 → 100 % des mots cachés (1re lettre gardée, mots de fin de ligne cachés en dernier) ; passe tout seul au niveau suivant à la fin du texte.
+- **Mode relais** : 1 ligne sur 4 (ou sur 2) s’arrête au milieu avec « … 🎤 à toi ».
+- La vitesse libre (px/s) reste disponible et inchangée. Cache hors ligne passé en `v25`.
+
+## 2026-10-29 — 4 bulles de rimes au lieu de 6
+- Retour d’Alexis : trop de propositions autour du mot. L’orbite affiche au maximum 4 rimes (les 4 meilleures : mots courants et rimes les plus riches d’abord).
+- Cache hors ligne passé en `v24`.
+
 ## 2026-10-29 — Rimes calculées au son
 - Retour d’Alexis : beaucoup de bulles ne rimaient pas. Cause : quand un mot n’avait pas de famille prête, l’appli tombait sur des listes de secours choisies par l’orthographe, voire sur une liste générique (« écho, voix, espoir… ») qui ne rimait pas du tout.
 - Nouveau moteur : les rimes se calculent sur la prononciation de Lexique (171 000 formes). Une bulle n’est affichée que si elle partage au moins la dernière voyelle prononcée et les consonnes qui suivent ; les listes de secours non vérifiées sont supprimées.
