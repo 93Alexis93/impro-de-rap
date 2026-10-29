@@ -19,3 +19,8 @@
 
 ## Pistes suivantes
 Voir les propositions dans DECISIONS.md.
+
+## 29/10/2026 — branche `nouvelles-idees` (contient aussi #3 et #4)
+- Fait : instrus VirtualBeat dans le Freestyle, enregistrement + réécoute synchronisée, mode battle à deux, rimes en direct.
+- Tests Chromium (375×812, micro simulé) : 35 vérifications réussies, aucune erreur JavaScript ; `tests/smoke.py` OK.
+- À tester par Alexis sur iPhone : autorisation du micro, volume de l’instru pendant l’enregistrement (iOS peut baisser le son quand le micro est actif), qualité de la prise réécoutée, rimes en direct avec le clavier ouvert, bandeau battle lisible à distance.

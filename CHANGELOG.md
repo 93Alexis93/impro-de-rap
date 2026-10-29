@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-29 — Nouvelles idées : instrus Freestyle, prises synchronisées, battle, rimes en direct
+- **Freestyle = mêmes instrus que l’Impro** : Boom-bap 90, Lo-fi 82, Oriental 96, Afro / Makossa 104, Trap 140 (batterie, basse, accords). Le tempo conseillé se règle quand on change d’instru. Un seul moteur VirtualBeat partagé ; l’ancien moteur du Freestyle (surtout de la batterie) est retiré. « Sans instru » et « Importer mon instru » inchangés.
+- **Enregistrer ma voix** (Freestyle, case à cocher) : la prise démarre avec le défilement, se met en pause avec lui et s’arrête avec « Arrêter tout » (15 min max). Voix mixée avec l’instru VirtualBeat ; avec une instru importée, voix seule. Badge « ● REC » en plein écran. Micro refusé = le défilement part quand même.
+- **Mes prises** : liste sur l’appareil (IndexedDB), réécoute avec le texte qui défile ou la ligne surlignée exactement comme pendant la prise, suppression avec confirmation. Les prises Freestyle n’apparaissent pas dans la liste de l’Impro.
+- **Mode battle à deux** (Impro, réglages) : noms des deux MC, passage de micro toutes les 4 ou 8 mesures, un nouveau mot à chaque passage, bandeau coloré (rose / bleu) avec alerte à la dernière mesure, nombre de passages dans le bilan. Le réglage « Un mot toutes les… » enregistré n’est pas modifié. Pas de battle en mode 10 mots.
+- **Rimes en direct** (Freestyle) : toucher une ligne affiche 4 rimes au son pour son dernier mot ; en écrivant une nouvelle ligne, les rimes de la ligne d’avant. Toucher une rime l’insère au curseur. Désactivable.
+- Cache hors ligne passé en `v26`.
+
 ## 2026-10-29 — Freestyle : générateur, tempo, mémoire, relais
 - **Générer un texte** : mots imposés (jusqu’à 10), univers (10), ambiance (6), structure (8 ou 16 mesures, avec ou sans refrain de 4), schéma AABB / ABAB / AAAA, rimes (meilleures, riches, multisyllabiques), résultat « Trame à trous » ou « Texte complet ». Gratuit et hors ligne : les fins de vers viennent du moteur de rimes au son ; le texte complet est un brouillon à retravailler. « Remettre mon texte d’avant » annule.
 - **Copier le prompt IA** : prompt prêt à coller dans Claude ou ChatGPT (structure, BPM, univers, mots, schéma, pistes de rimes vérifiées au son, contraintes anti-clichés), aussi affiché pour une copie manuelle.
