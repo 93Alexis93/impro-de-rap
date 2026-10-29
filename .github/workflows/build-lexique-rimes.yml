@@ -3,6 +3,7 @@ name: Build Lexique rhyme database
 on:
   workflow_dispatch:
   push:
+    branches: [main]  # le commit automatique des données ne fonctionne que sur main
     paths:
       - "scripts/build_lexique_rimes.py"
       - "scripts/test_lexique_rimes.py"

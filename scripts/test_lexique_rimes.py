@@ -13,6 +13,9 @@ EXPECTED_PAIRS = [
     ("liberté", "vérité"),
 ]
 
+# Finales nasales que Lexique notait comme des voyelles orales (corrigées par scripts/phon_fixes.py).
+EXPECTED_FINALS = [("gentrification", "sj§"), ("maintenant", "n@"), ("tremplins", "pl5"), ("quantification", "sj§")]
+
 def fail(message):
     print(f"ÉCHEC : {message}", file=sys.stderr)
     raise SystemExit(1)
@@ -57,6 +60,15 @@ def main():
         group = families.get(family_key, [])
         if first not in group or second not in group:
             fail(f"paire absente de la famille {family_key} : {first} / {second}")
+        checked += 1
+
+    for word, final in EXPECTED_FINALS:
+        entries = words.get(word, [])
+        if not entries:
+            fail(f"mot absent : {word}")
+        best = max(entries, key=lambda e: e.get("frequency", 0))
+        if best["syllables"][-1] != final or not best["phon"].endswith(final[-1]):
+            fail(f"finale nasale non corrigée : {word} ({best['phon']}) au lieu de …{final}")
         checked += 1
 
     print(

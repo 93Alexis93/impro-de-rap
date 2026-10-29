@@ -38,6 +38,46 @@
 .battle-banner.p2{background:rgba(80,200,255,.16);color:#50c8ff;box-shadow:inset 0 0 0 2px #50c8ff}
 .battle-banner small{display:block;font-size:13px;font-weight:600;letter-spacing:0;opacity:.85}
 .battle-banner.warn small{animation:recblink .5s steps(2) infinite}
+.toggle{display:flex;align-items:center;gap:10px;margin:10px 0;line-height:1.35}
+.toggle input{flex-shrink:0;width:20px;height:20px}
+.battle-options{margin:12px 0 4px;padding:12px;border-radius:14px;border:1px solid rgba(255,100,136,.45);background:rgba(255,100,136,.06)}
+
+/* ---- Impro en plein écran, lecture facilitée (29/10/2026) ---- */
+body.impro-live{overflow:hidden}
+body.impro-live #gameView{position:fixed;inset:0;z-index:9999;display:flex!important;flex-direction:column;background:#07070a;padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom);overflow:hidden}
+body.impro-live #gameView[hidden]{display:none!important}
+body.impro-live .session-top{padding:6px 0;flex-shrink:0}
+body.impro-live .session-top button{min-height:40px;font-size:14px}
+body.impro-live #sessionMeta,body.impro-live .next-hint,body.impro-live #rhymeHelper,body.impro-live #recordStatus,body.impro-live #recordPlayback{display:none!important}
+body.impro-live .stage{flex:1;min-height:0;padding:0;display:flex;flex-direction:column}
+body.impro-live .stage-info{font-size:15px;font-weight:800;color:#c9c9d4}
+body.impro-live #timeLeft{font-size:20px;color:#fff;font-variant-numeric:tabular-nums}
+body.impro-live .focus-banner{font-size:15px;line-height:1.35;padding:8px 12px 0;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-height:calc(2.7em + 16px);flex-shrink:0;border:0;border-left:3px solid var(--yellow);border-bottom:8px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
+body.impro-live .word-area{flex:1;min-height:0;padding:4px 0;align-content:center;overflow:hidden}
+body.impro-live .word-orbit{min-height:clamp(190px,48dvh,520px)}
+body.impro-live .word-orbit .word{font-size:clamp(3.4rem,27vw,11rem);text-shadow:0 2px 0 #000,0 0 28px rgba(255,210,31,.25)}
+body.impro-live .word.empty-word{font-size:clamp(3rem,16vw,7rem);color:#9a9aa6}
+body.impro-live #rhymeOrbit .rhyme-star{font-size:clamp(15px,4.4vw,22px);min-height:46px;padding:9px 12px;white-space:nowrap;overflow-wrap:normal;word-break:normal;max-width:none}
+body.impro-live .word-meta{font-size:clamp(15px,4.2vw,19px);line-height:1.35;color:#e6e6ee;margin-top:10px;font-weight:600}
+body.impro-live .preview{font-size:16px;color:#a0a0ad}
+body.impro-live .beatline{gap:8px;margin:6px 0 4px;flex-shrink:0}
+body.impro-live .beatline span{height:10px}
+body.impro-live .stage-bottom{flex-shrink:0;padding-top:6px!important}
+body.impro-live .recorder-tools{flex-shrink:0;margin:4px 0 0;padding:6px 0 0;border:0}
+body.impro-live .recorder-actions button{min-height:40px;font-size:13px}
+body.impro-live .round-progress{margin-top:6px;height:4px}
+@media (orientation:portrait) and (max-height:700px){
+ body.impro-live .preview,body.impro-live .focus-banner{display:none!important}
+ body.impro-live .word-meta{font-size:14px;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+ body.impro-live .recorder-tools{padding-top:2px}
+}
+@media (orientation:landscape) and (max-height:520px){
+ body.impro-live .focus-banner,body.impro-live .recorder-tools,body.impro-live .preview{display:none!important}
+ body.impro-live .word-area{overflow:hidden}
+ body.impro-live .word-orbit{min-height:0}
+ body.impro-live .word-orbit .word{font-size:clamp(2.6rem,17dvh,7rem)}
+ body.impro-live .word-meta{font-size:14px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
 </style>
 </head>
 <body>
@@ -77,7 +117,7 @@
 <section id="homeView" class="view">
 <div class="hero"><div class="eyebrow">Terrain d'entraînement freestyle</div><h1>Le beat tourne.<br>Les mots tombent.</h1><p>Lance une session en un geste. Pose le téléphone, attrape les mots et garde le flow : le but n’est pas d’être parfait.</p></div>
 
-<div class="quick"><button id="quickWarm"><b>Échauffement</b><small>3 min · simple et fluide</small></button><button id="quickSession" class="primary"><b>Session</b><small>10 min · polyvalente</small></button><button id="quickChallenge"><b>Défi du jour</b><small>3 min · tirage du jour</small></button><button id="quickReview"><b>Réviser mes mots ratés</b><small>3 min · focus sur tes difficultés</small></button></div>
+<div class="quick"><button id="quickWarm"><b>Échauffement</b><small>3 min · simple et fluide</small></button><button id="quickSession" class="primary"><b>Session</b><small>10 min · polyvalente</small></button><button id="quickChallenge"><b>Défi du jour</b><small>3 min · tirage du jour</small></button><button id="quickReview"><b>Réviser mes mots ratés</b><small>3 min · focus sur tes difficultés</small></button><button id="quickBattle"><b>⚔️ Battle à deux</b><small>2 MC · micro toutes les 4 mesures</small></button></div>
 <section class="panel" id="quickBeatPanel" style="margin-top:14px"><div class="panel-head"><h2>🎧 Choisir mon rythme</h2><span class="eyebrow">Accès rapide</span></div><div class="field"><label for="quickBeatChoice">Rythme de l’impro</label><select id="quickBeatChoice"><option value="virtual-boom">VirtualBeat · Boom-bap (90 BPM)</option><option value="virtual-lofi">VirtualBeat · Lo-fi jazzy (82 BPM)</option><option value="virtual-oriental">VirtualBeat · Oriental (96 BPM)</option><option value="virtual-makossa">VirtualBeat · Afro / Makossa (104 BPM)</option><option value="virtual-trap">VirtualBeat · Trap sombre (140 BPM)</option><option value="metro">Métronome simple</option></select><p class="hint">Choisis ici sans ouvrir les réglages. Le son démarre quand tu lances une session. Vérifie que « Activer le son » est coché dans les réglages si tu n’entends rien.</p></div></section>
 <button id="customizeBtn" class="quiet main-cta" aria-expanded="true" aria-controls="setupGrid" style="margin-bottom:14px">✕ Masquer les réglages</button>
 <div class="setup-grid" id="setupGrid">
@@ -85,7 +125,8 @@
 <div class="field"><label>Mode d'impro</label><div class="modes" id="modeList">
 <button class="mode" data-session-mode="free" aria-pressed="true"><b>Impro libre</b><small>Les mots défilent, tu gardes ton flow.</small></button>
 <button class="mode" data-session-mode="custom" aria-pressed="false"><b>10 mots pour une impro</b><small>Les mots de ton public, à placer un par un.</small></button>
-</div></div>
+<button class="mode" data-session-mode="battle" aria-pressed="false"><b>⚔️ Battle à deux</b><small>Deux MC, le micro passe toutes les 4 mesures, un mot par tour.</small></button>
+</div></div><input id="battleMode" type="checkbox" hidden><div id="battleOptions" class="battle-options" hidden><div class="grid2"><div class="field"><label for="battleP1">MC 1</label><input id="battleP1" type="text" maxlength="16" placeholder="MC 1"></div><div class="field"><label for="battleP2">MC 2</label><input id="battleP2" type="text" maxlength="16" placeholder="MC 2"></div></div><div class="field"><label for="battleTurn">Passage de micro</label><select id="battleTurn"><option value="4" selected>Toutes les 4 mesures</option><option value="8">Toutes les 8 mesures</option></select><div class="hint">Un nouveau mot à chaque passage. Choisis ensuite le thème, l’instru et le tempo plus bas, puis lance.</div></div></div>
 <section class="panel" id="customModePanel" hidden><div class="panel-head"><h2>10 mots pour une impro</h2><span class="eyebrow">À toi de jouer</span></div><p class="hint" style="margin:0 0 12px">Fais proposer 10 mots par ton public, colle-les ici. Un mot apparaît à la fois : appuie quand tu l'as placé pour passer au suivant.</p><label for="customWordsInput" class="field"><span style="display:block;font-size:12px;font-weight:800;margin-bottom:7px">Tes 10 mots (un par ligne, ou séparés par des virgules)</span><textarea id="customWordsInput" class="custom-words" placeholder="Ex. :&#10;Mirage&#10;Béton&#10;Amour&#10;Tempête&#10;Métro&#10;Dragon&#10;Liberté&#10;Miroir&#10;Secret&#10;Victoire"></textarea></label><div class="hint" id="customWordsCount" aria-live="polite">0 / 10 mots</div><div class="field" style="margin-top:14px"><label for="customBeat">Instru</label><select id="customBeat"><option value="virtual-boom">VirtualBeat · Boom-bap (90 BPM)</option><option value="virtual-lofi">VirtualBeat · Lo-fi jazzy (82 BPM)</option><option value="virtual-oriental">VirtualBeat · Oriental (96 BPM)</option><option value="virtual-makossa">VirtualBeat · Afro / Makossa (104 BPM)</option><option value="virtual-trap">VirtualBeat · Trap sombre (140 BPM)</option><option value="metro">Métronome simple</option></select></div><div class="field"><label for="customBpm">Tempo (BPM)</label><input id="customBpm" type="number" min="60" max="160" step="1" value="90"><p class="hint">Le tempo conseillé se met tout seul quand tu changes d’instru ; tu peux l’ajuster.</p></div><div class="field"><label>Mode de jeu</label><div class="custom-options"><label><input type="radio" name="customHelp" value="easy" checked> Facile · propositions de rimes</label><label><input type="radio" name="customHelp" value="none"> Sans aide · juste les mots</label></div></div><button id="startCustom" class="primary main-cta">LANCER MON IMPRO À 10 MOTS →</button></section>
 <div id="freeOptions">
 <div class="field"><label for="focusMode">Objectif de l’impro</label><select id="focusMode"><option value="mot">Flow libre — place les mots naturellement</option><option value="chaine">Chaîne d’idées — relie chaque mot au précédent</option><option value="rime">Rimes ciblées — construis une famille de sons</option><option value="punchline">Punchline — prépare une montée et une chute</option><option value="histoire">Histoire — construis un récit avec rebondissement</option><option value="chaos">Adaptation — relève des contraintes surprises</option></select><p class="hint" id="focusHint">Le choix change les consignes et les défis pendant la session.</p></div>
@@ -98,7 +139,7 @@
 <label class="toggle"><input id="rhymeAssist" type="checkbox" checked> Afficher les suggestions de rimes pendant l’impro</label>
 <label class="toggle"><input id="previewNext" type="checkbox"> Aperçu d'un mot à l'avance (mode Chauffe)</label>
 <label class="toggle"><input id="clickEnabled" type="checkbox" checked> Activer le son du rythme / de l’instrumentale</label>
-<label class="toggle"><input id="zeroMode" type="checkbox"> Mode zéro distraction</label><label class="toggle"><input id="battleMode" type="checkbox"> ⚔️ Mode battle à deux : on se passe le micro</label><div id="battleOptions" hidden><div class="grid2"><div class="field"><label for="battleP1">MC 1</label><input id="battleP1" type="text" maxlength="16" placeholder="MC 1"></div><div class="field"><label for="battleP2">MC 2</label><input id="battleP2" type="text" maxlength="16" placeholder="MC 2"></div></div><div class="field"><label for="battleTurn">Passage de micro</label><select id="battleTurn"><option value="4" selected>Toutes les 4 mesures</option><option value="8">Toutes les 8 mesures</option></select><div class="hint">Un nouveau mot à chaque passage de micro. Ne s’applique pas au mode 10 mots.</div></div></div>
+<label class="toggle"><input id="zeroMode" type="checkbox"> Mode zéro distraction</label>
 <label class="toggle"><input id="favoritePriority" type="checkbox"> Utiliser mes mots favoris en priorité dans l’impro libre</label>
 <div style="margin-top:18px"><button class="primary main-cta" id="launch">LANCER LA SESSION →</button></div>
 </div>
@@ -927,7 +968,13 @@ function battleTurnBars(){return $("battleTurn").value==="8"?8:4}
 function battleSave(){try{localStorage.setItem(BATTLE_KEY,JSON.stringify({on:$("battleMode").checked,p1:$("battleP1").value.trim(),p2:$("battleP2").value.trim(),turn:battleTurnBars()}))}catch{}}
 function battleLoad(){try{const b=JSON.parse(localStorage.getItem(BATTLE_KEY)||"{}");$("battleMode").checked=!!b.on;$("battleP1").value=b.p1||"";$("battleP2").value=b.p2||"";if(b.turn)$("battleTurn").value=String(b.turn)}catch{}$("battleOptions").hidden=!$("battleMode").checked}
 ["battleMode","battleP1","battleP2","battleTurn"].forEach(id=>$(id).addEventListener("change",()=>{$("battleOptions").hidden=!$("battleMode").checked;battleSave()}));
+/* La battle est une carte de « Mode d'impro » (29/10/2026) : la carte coche la case cachée battleMode. */
+function setBattleCard(on){$("battleMode").checked=on;$("battleOptions").hidden=!on;battleSave()}
+document.querySelectorAll("[data-session-mode]").forEach(b=>b.addEventListener("click",()=>setBattleCard(b.dataset.sessionMode==="battle")));
+function selectBattleCard(){document.querySelector('[data-session-mode="battle"]').click()}
 battleLoad();
+if($("battleMode").checked){const c=document.querySelector('[data-session-mode="battle"]');document.querySelectorAll("[data-session-mode]").forEach(x=>x.setAttribute("aria-pressed",String(x===c)));$("customModePanel").hidden=true;$("freeOptions").hidden=false}
+$("quickBattle").addEventListener("click",()=>{selectBattleCard();if($("setupGrid").hidden||getComputedStyle($("setupGrid")).display==="none")$("customizeBtn").click();$("battleOptions").scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>{try{$("battleP1").focus({preventScroll:true})}catch{}},400)});
 function renderBattle(){
  const bn=$("battleBanner");if(!battleActive){bn.hidden=true;return}
  const names=battleNames(),tb=battleTurnBars(),played=barIndex-INTRO_BARS-1;bn.hidden=false;
@@ -1086,5 +1133,8 @@ $("freeReplayClose").addEventListener("click",closeFreeReplay);
  try{if(freePaused&&!rec.pausedAt){rec.recorder.pause();rec.pausedAt=performance.now()}else if(!freePaused&&rec.pausedAt){rec.recorder.resume();rec.pausedTotal+=performance.now()-rec.pausedAt;rec.pausedAt=0}}catch{}}}
 ["freeStop","freeHome"].forEach(id=>$(id).addEventListener("click",()=>{freeRecStop()}));
 $("enterFreestyle").addEventListener("click",listFreeTakes);
+
+/* ---- Impro en plein écran, lecture facilitée (29/10/2026) ---- */
+{const _showView=showView;showView=function(which){_showView(which);document.body.classList.toggle("impro-live",which==="game");if(which==="game")requestAnimationFrame(()=>{try{fitOrbitWord()}catch{}})}}
 </script>
 </body></html>
