@@ -399,7 +399,7 @@ function renderRhymeHelper(word){
  box.hidden=!active;
  orbit.querySelectorAll(".rhyme-star").forEach(el=>el.remove());
  if(!active)return;
- const orbitSuggestions=suggestions.slice(0,6);orbitSuggestions.forEach((candidate,index)=>{
+ const orbitSuggestions=suggestions.slice(0,4);orbitSuggestions.forEach((candidate,index)=>{
   const analysis=rhymeAnalysis(word,candidate);
   const b=document.createElement("button");
   b.type="button";b.className="rhyme-star rhyme-"+analysis.quality;
