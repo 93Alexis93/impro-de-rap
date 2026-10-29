@@ -6,6 +6,10 @@ Le moteur combine les familles éditoriales de `index.html` avec un index dériv
 
 **Limite importante :** cette première intégration regroupe les mots par finale syllabique exacte, mais ne calcule pas encore de manière fiable les catégories « riche / suffisante / pauvre » à partir du nombre de phonèmes communs. Certaines suggestions doivent donc être considérées comme des pistes sonores, pas comme une validation linguistique garantie. L’index est une base de travail, pas un arbitre de rimes.
 
+## Moteur au son (29/10/2026)
+
+Dans `index.html`, `rhymeSuggestions` ne se fie plus à l’orthographe. Au chargement, l’appli construit un index « rime → mots » à partir des transcriptions de `word_index` (rime = dernière voyelle prononcée + consonnes suivantes ; é/è, o/ɔ, eu et in/un sont regroupés comme en rap). Les candidats sont classés par fréquence (paliers) puis par nombre de phonèmes communs en fin de mot. `rhymeAnalysis` étiquette pauvre (1 phonème), suffisante (2), riche (3+) et multisyllabique (2 voyelles communes ou plus). Pour un mot absent de Lexique, la fin est déduite des mots de même terminaison écrite (vote pondéré par la fréquence, contrôle de cohérence de la voyelle), puis de règles orthographiques ; un sigle se prononce lettre par lettre. Si la rime exacte ne donne rien (mot anglais), une rime proche est proposée et étiquetée « pauvre ».
+
 ## Sources étudiées et réutilisation
 
 ### Lexique 4.10

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-29 — Rimes calculées au son
+- Retour d’Alexis : beaucoup de bulles ne rimaient pas. Cause : quand un mot n’avait pas de famille prête, l’appli tombait sur des listes de secours choisies par l’orthographe, voire sur une liste générique (« écho, voix, espoir… ») qui ne rimait pas du tout.
+- Nouveau moteur : les rimes se calculent sur la prononciation de Lexique (171 000 formes). Une bulle n’est affichée que si elle partage au moins la dernière voyelle prononcée et les consonnes qui suivent ; les listes de secours non vérifiées sont supprimées.
+- Mots absents du dictionnaire (prénoms, argot, mots du public : Mbappé, wesh, TikTok, PSG…) : la fin du mot est prononcée d’après les mots qui s’écrivent pareil, puis par des règles simples ; les sigles se prononcent lettre par lettre.
+- Classement : mots courants d’abord, rimes les plus riches ensuite ; plus de rime pauvre imposée. Filtres : pas de sigles, pas d’insultes ni de mots grossiers, pas de dérivé du même mot (terminé / déterminé).
+- Le dictionnaire de rimes se charge dès l’ouverture du mode Impro (et pendant l’intro de 4 mesures).
+- Cache hors ligne passé en `v23`.
+
 ## 2026-10-29 — Instru et tempo dans « 10 mots pour une impro »
 - Le panneau du mode 10 mots propose les mêmes instrus VirtualBeat que les autres modes (Boom-bap, Lo-fi, Oriental, Afro / Makossa, Trap, Métronome) et un champ Tempo (BPM).
 - Le tempo conseillé se règle quand on change d’instru et reste modifiable (60 à 160 BPM). Le choix est synchronisé avec les réglages et mémorisé sur l’appareil.

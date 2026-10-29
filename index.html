@@ -264,101 +264,138 @@ let lexiqueRimesPromise=null;
 function loadLexiqueRimes(){
  if(lexiqueRimes)return Promise.resolve(lexiqueRimes);
  if(!lexiqueRimesPromise){
-  lexiqueRimesPromise=fetch("data/lexique-rimes.json").then(r=>{if(!r.ok)throw new Error("Index de rimes indisponible");return r.json()}).then(data=>{if(!data||!data.families||!data.word_index)throw new Error("Index de rimes invalide");lexiqueRimes=data;return data}).catch(()=>{lexiqueRimesPromise=null;return null});
+  lexiqueRimesPromise=fetch("data/lexique-rimes.json").then(r=>{if(!r.ok)throw new Error("Index de rimes indisponible");return r.json()}).then(data=>{if(!data||!data.families||!data.word_index)throw new Error("Index de rimes invalide");lexiqueRimes=data;return buildRimeIndex().then(()=>data)}).catch(()=>{lexiqueRimesPromise=null;return null});
  }
  return lexiqueRimesPromise;
 }
 function lexiqueWordKey(value){return String(value||"").toLocaleLowerCase("fr").normalize("NFC").replace(/œ/g,"oe").replace(/æ/g,"ae").replace(/[^a-zàâäéèêëîïôöùûüÿç'-]/g,"")}
-function rhymeSuggestions(word){
- const key=rhymeKey(word);if(!key)return [];
- // Quelques mots rares exigent une piste éditoriale explicite : rime approchée à valider à voix haute.
- const curated={yaourt:["yourte","courte","fourbe","lourde","autour","détour","retour","amour"]};
- if(curated[key])return finalizeRhymeCandidates(curated[key],word,12);
- const exact=RHYME_FAMILIES[key]||Object.entries(RHYME_FAMILIES).find(([family])=>rhymeKey(family)===key)?.[1];
- if(exact)return finalizeRhymeCandidates(exact,word,12);
- // Corpus Lexique : recherche par finale phonologique, sans remplacer les pistes éditoriales.
- if(lexiqueRimes){
-  const entries=lexiqueRimes.word_index[lexiqueWordKey(word)]||[];
-  const syllables=[...entries].sort((a,b)=>(b.frequency||0)-(a.frequency||0))[0]?.syllables||[];
-  const ending=syllables[syllables.length-1];
-  if(ending){
-   const group=lexiqueRimes.families[ending]||[];
-   const corpus=finalizeRhymeCandidates(group.map(e=>Array.isArray(e)?e[0]:e),word,40);
-   if(corpus.length>=3)return corpus.slice(0,12);
-  }
+/* ---- Moteur de rimes au son (29/10/2026) ----
+   Les rimes se calculent sur la prononciation (Lexique), pas sur l'orthographe.
+   Une proposition n'est gardée que si elle partage au moins la dernière voyelle prononcée
+   et les consonnes qui la suivent. Pour un mot absent de Lexique (prénom, argot, mot du public),
+   la prononciation de la fin est déduite des mots qui s'écrivent pareil, puis de règles simples. */
+const RIME_VOWELS=/[aie@o§yu52]/;
+function stripAcc(s){return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/œ/g,"oe").replace(/æ/g,"ae")}
+function rNorm(p){return String(p||"").replace(/[^A-Za-z@°§0-9]/g,"").replace(/°+$/,"").replace(/E/g,"e").replace(/O/g,"o").replace(/[9°]/g,"2").replace(/1/g,"5").replace(/A/g,"a")}
+function rimeOf(p){for(let i=p.length-1;i>=0;i--)if(RIME_VOWELS.test(p[i]))return p.slice(i);return ""}
+function lastRhymeToken(word){return lexiqueWordKey(String(word||"").toLocaleLowerCase("fr").replace(/[’']/g," ").trim().split(/\s+/).pop()||"")}
+let rimeIndex=null,lexWords=null,rimeIndexPromise=null;const inferCache=new Map();
+function buildRimeIndex(){
+ if(rimeIndex)return Promise.resolve(rimeIndex);
+ if(!lexiqueRimes)return Promise.resolve(null);
+ if(rimeIndexPromise)return rimeIndexPromise;
+ const all=Object.entries(lexiqueRimes.word_index),idx=new Map(),words=[];let pos=0;
+ rimeIndexPromise=new Promise(resolve=>{
+  const step=()=>{const end=Math.min(all.length,pos+15000);
+   for(;pos<end;pos++){const [w,es]=all[pos];let best=null;const seen=new Set();
+    for(const e of es||[]){const p=rNorm(e.phon);if(!p)continue;const f=e.frequency||0;if(!best||f>best.f)best={p,f};const r=rimeOf(p);if(!r||seen.has(r))continue;seen.add(r);let b=idx.get(r);if(!b)idx.set(r,b=[]);b.push([w,p,f])}
+    if(best)words.push([w,stripAcc(w),best.p,best.f,w])}
+   if(pos<all.length){setTimeout(step,0);return}
+   idx.forEach(b=>b.sort((x,y)=>y[2]-x[2]));rimeIndex=idx;lexWords=words;resolve(idx)};
+  setTimeout(step,0)});
+ return rimeIndexPromise;
+}
+function vowelCompat(w){
+ const x=stripAcc(w).replace(/([^aeiouy])(e|es|ent)$/,"$1").replace(/[^aeiouy]+$/,"");
+ const g=(x.match(/[aeiouy]+$/)||[""])[0],c=g[0]||"";
+ return ({a:"a@eo5",e:"e2@5oa",i:"i5",y:"i5",o:"o§ua2",u:"y52"})[c]||"aie@o§yu52";
+}
+function spellCons(c){return c.replace(/sch|sh|ch/g,"S").replace(/gn/g,"N").replace(/ph/g,"f").replace(/th/g,"t").replace(/qu|ck|cq|q/g,"k").replace(/x/g,"ks").replace(/j/g,"Z").replace(/r/g,"R").replace(/(.)\1/g,"$1").replace(/c/g,"k").replace(/h/g,"")}
+const LETTER_SOUNDS={a:"a",b:"be",c:"se",d:"de",e:"2",f:"ef",g:"Ze",h:"aS",i:"i",j:"Zi",k:"ka",l:"el",m:"em",n:"en",o:"o",p:"pe",q:"ky",r:"eR",s:"es",t:"te",u:"y",v:"ve",w:"ve",x:"iks",y:"igRek",z:"zed"};
+const RHYME_BLOCKLIST=new Set("chinetoque chinetoc chintok bougnoule bougnoul negro negre youpin bicot raton toubab bamboula boche rital gogol pede tapette tarlouze gouine encule enculer salope pute putain bite couille penis vagin nichon branleur connard connasse niquer nique zizi coke cocaine shit beuh salopard laplupart".split(" "));
+function spellRime(w){
+ const x=String(w||"").toLocaleLowerCase("fr");
+ const T=[[/(oires?|oirs?)$/,"waR"],[/(ois|oit|oies?|oix|oi)$/,"wa"],[/(eurs?|eures?|œurs?)$/,"2R"],[/(eux|eus?|eues?)$/,"2"],
+  [/(iens?|ient)$/,"j5"],[/(aints?|ains?|eins?|ints?|ins?|ims?|uns?|ym)$/,"5"],[/(ants?|ents?|ans?|ens|ands?|ang|amps?)$/,"@"],[/(ons?|onts?|onds?|om)$/,"§"],
+  [/ouilles?$/,"uj"],[/(ailles?|ails?)$/,"aj"],[/(eilles?|eils?)$/,"ej"],[/illes?$/,"ij"],
+  [/(oux|ous|outs?|oups?|oûts?|oues?|ou)$/,"u"],[/(eaux?|aux?|auds?|auts?|ots?|ôts?|os|o)$/,"o"],
+  [/(ées?|és?|ers|er|ez|ais|ait|aient|ai|ets?|ês|êts?|ès)$/,"e"],[/(ies?|is|its?|ix|ids?|i|y)$/,"i"],[/(ues?|us|uts?|ûts?|u)$/,"y"],[/(as|ats?|ah|âts?|à|a)$/,"a"]];
+ for(const [re,r] of T){const m=x.match(re);if(!m)continue;const before=x.slice(0,m.index);
+  if(/ill$/.test(before))return "j"+r;
+  const cg=(before.match(/[^aeiouyéèêëàâîïôöûüù]+$/)||[""])[0];
+  if(cg){const c=spellCons(cg.slice(-2)).slice(-1);return (c&&!/[jw]/.test(r[0])?c:"")+r}
+  const vg=(before.match(/[éèêe]$/)||[""])[0];return (vg?"e":"")+r}
+ const m=x.match(/(eau|au|ou|oi|ai|ei|eu|œu|[aeiouyéèêëàâîïôöûüù])([^aeiouyéèêëàâîïôöûüù]+)(e|es)?$/);
+ if(!m)return "";
+ const V={a:"a",à:"a",â:"a",e:"e",é:"e",è:"e",ê:"e",ë:"e",i:"i",î:"i",ï:"i",y:"i",o:"o",ô:"o",ö:"o",u:"y",û:"y",ü:"y",ù:"y",eau:"o",au:"o",ou:"u",oi:"wa",ai:"e",ei:"e",eu:"2",œu:"2"};
+ let c=m[2];const hasE=!!m[3];if(!hasE){const k=c.replace(/[tdsxp]+$/,"");c=k}
+ c=c.replace(/sch|sh|ch/g,"S").replace(/gn/g,"N").replace(/ph/g,"f").replace(/th/g,"t").replace(/qu|ck|cq|q/g,"k").replace(/x/g,"ks").replace(/j/g,"Z").replace(/r/g,"R").replace(/(.)\1/g,"$1");
+ if(hasE){if(/g$/.test(c))c=c.replace(/g$/,"Z");if(/c$/.test(c))c=c.replace(/c$/,"s");if(m[2]==="s")c="z"}
+ c=c.replace(/c/g,"k").replace(/h/g,"");
+ return (V[m[1]]||"")+c;
+}
+function inferPhon(w){
+ if(inferCache.has(w))return inferCache.get(w);
+ const accented=stripAcc(w)!==w,s=accented?w:stripAcc(w),ok=vowelCompat(w),spelled=spellRime(w);let out="";
+ if(lexWords)for(let L=Math.min(6,s.length-1);L>=3&&!out;L--){
+  const suf=s.slice(-L),votes=new Map();let total=0;
+  for(const [,plain,p,f,orig] of lexWords){const ls=accented?orig:plain;if(ls.length>L&&ls!==s&&ls.endsWith(suf)){const r=rimeOf(p);if(!r)continue;const wt=1+Math.log10(1+f);let v=votes.get(r);if(!v)votes.set(r,v={w:0,pre:new Map()});v.w+=wt;total+=wt;const pc=p[p.length-r.length-1]||"";v.pre.set(pc,(v.pre.get(pc)||0)+wt)}}
+  if(!total)continue;
+  const [r,v]=[...votes].sort((a,b)=>b[1].w-a[1].w)[0];
+  if(v.w/total>=.6&&ok.includes(r[0])){const [pc,pw]=[...v.pre].sort((a,b)=>b[1]-a[1])[0];out=(pc&&pw/v.w>=.7?pc:"")+r}
  }
- // Cherche d'abord des finales orthographiques proches.
- const clean=key.replace(/[^a-z]/g,"");
- const endings=[clean.slice(-5),clean.slice(-4),clean.slice(-3)];
- for(const ending of endings){if(ending.length<3)continue;const candidates=Object.keys(RHYME_FAMILIES).filter(k=>rhymeKey(k)!==key&&rhymeKey(k).endsWith(ending));if(candidates.length>=2){const found=[...new Set(candidates.concat(...candidates.slice(0,4).map(k=>RHYME_FAMILIES[k]||[])))].filter(w=>rhymeKey(w)!==key);if(found.length>=4)return found.slice(0,12)}}
- // Secours par son final : on privilégie une famille sonore plausible plutôt qu'une zone vide.
- const fallback=[
-  [/eur$|œur$|oeur$/,["cœur","peur","fleur","sœur","douceur","chaleur","douleur","bonheur","honneur","valeur"]],
-  [/oir$|oire$/,["soir","noir","voir","espoir","miroir","histoire","mémoire","victoire","territoire","gloire"]],
-  [/tion$|sion$|ssion$/,["action","passion","mission","vision","pression","fiction","réaction","création","vibration","nation"]],
-  [/ance$|ence$/,["chance","danse","silence","absence","présence","essence","cadence","sentence","différence","confiance"]],
-  [/ette$|ete$/,["tête","fête","quête","conquête","tempête","planète","comète","inquiète"]],
-  [/age$/,["orage","mirage","courage","voyage","visage","partage","message","rivage","carnage","ancrage"]],
-  [/ique$/,["musique","logique","magique","tragique","classique","unique","critique","électrique","poétique"]],
-  [/able$|ible$/,["capable","stable","table","fable","sable","implacable","respectable","invincible","sensible"]],
-  [/ment$/,["temps","vent","enfant","présent","absent","vivant","maintenant","longtemps","gagnant"]],
-  [/an$|ant$|en$|ent$/,["temps","vent","sang","blanc","grand","enfant","présent","absent","vivant","gagnant"]],
-  [/on$|ont$/,["son","nom","ton","fond","rond","long","maison","raison","chanson","horizon"]],
-  [/ou$|out$|oux$/,["fou","tout","bout","goût","genou","bijou","caillou","debout","partout","atout"]],
-  [/i$|ie$|is$|it$/,["vie","envie","avis","souris","défi","oubli","infini","joli","pari","survie"]],
-  [/e$|er$|ez$|et$/,["été","beauté","vérité","liberté","fierté","santé","projet","secret","parfait","effet","idée","armée","fumée","journée","année","allée","arrivée"]],
-  [/a$|as$|at$/,["éclat","combat","ébat","appât","éclatant","épatant","écrasera","bras"]],
-  [/o$|eau$|ot$|os$/,["mot","trop","dos","chaud","faux","défaut","niveau","zéro","héros","écho"]],
-  [/ar$|ard$|art$/,["regard","retard","hasard","bavard","départ","espoir","bizarre","tard"]],
-  [/in$|ain$|ein$|im$/,["demain","chemin","destin","malin","soudain","humain","terrain","lointain","main"]],
-  [/ui$|uit$|uie$/,["nuit","bruit","fruit","fuite","ennui","appui","conduit","aujourd'hui"]],
-  [/el$|elle$|eil$|eille$/,["soleil","réveil","pareil","conseil","sommeil","merveille","oreille","belle","rebelle"]]
- ];
- const match=fallback.find(([re])=>re.test(clean));
- if(match){const found=finalizeRhymeCandidates(match[1],word,12);if(found.length)return found}
- // Ultime secours : au moins des pistes rythmiques courantes à tester à voix haute.
- return finalizeRhymeCandidates(["écho","mots","voix","choix","espoir","histoire","victoire","énergie","sourire","avenir","courage","partage"],word,12);
+ if(out&&spelled.length>out.length&&spelled.endsWith(out))out=spelled;
+ if(!out&&spelled&&RIME_VOWELS.test(spelled))out=spelled;
+ inferCache.set(w,out);return out;
+}
+const targetCache=new Map();
+function targetPhon(word){const k=String(word||"");if(targetCache.has(k))return targetCache.get(k);const r=targetPhonRaw(word);if(r||lexWords)targetCache.set(k,r);return r}
+function targetPhonRaw(word){
+ const w=lastRhymeToken(word);if(!w||!lexiqueRimes)return null;
+ const raw=String(word||"").trim().split(/\s+/).pop()||"";
+ if((/^[A-Z]{2,5}$/.test(raw)||!/[aeiouyéèêëàâîïôöûüù]/.test(w))&&LETTER_SOUNDS[stripAcc(w).slice(-1)]){const ls=LETTER_SOUNDS[stripAcc(w).slice(-1)];return {w,p:ls,known:false}}
+ const es=lexiqueRimes.word_index[w];
+ if(es&&es.length){const e=[...es].sort((a,b)=>(b.frequency||0)-(a.frequency||0))[0];const p=rNorm(e.phon);if(p&&rimeOf(p))return {w,p,known:true}}
+ if(!lexWords)return null;
+ const p=inferPhon(w);return p?{w,p,known:false}:null;
+}
+/* Clé de rime exacte d'abord ; si elle ne donne presque rien (mot anglais, nom propre),
+   on essaie une rime proche : sans semi-voyelle, puis en raccourcissant la fin. */
+function rimeKeysFor(p){const r=rimeOf(p),keys=[r];let k=r.replace(/[jw8](?=.)/g,"");if(k&&k!==r)keys.push(k);while(k.length>1&&!RIME_VOWELS.test(k[k.length-1])){k=k.slice(0,-1);if(!keys.includes(k))keys.push(k)}return keys}
+function sharedTail(a,b){let n=0;while(n<a.length&&n<b.length&&a[a.length-1-n]===b[b.length-1-n])n++;return n}
+const rhymeCache=new Map();
+function rhymeSuggestions(word){
+ if(!lexiqueRimes||!rimeIndex)return [];
+ const t=targetPhon(word);if(!t)return [];
+ if(rhymeCache.has(t.w))return rhymeCache.get(t.w);
+ const tw=stripAcc(t.w),scored=[];
+ for(const key of rimeKeysFor(t.p)){if(scored.length>=8)break;
+  for(const [w,p,f] of rimeIndex.get(key)||[]){
+   if(p===t.p)continue;
+   const n=sharedTail(p,t.p),tier=f>=2?2:f>=.5?1:0;
+   scored.push({w,p,s:(tier*2+(n>=2?Math.min(n,4)*1.5:0))*1e6+Math.min(f,99999)});
+  }}
+ scored.sort((a,b)=>b.s-a.s);
+ /* Filtres plus coûteux seulement sur les meilleurs : pas de sigles, pas d'insultes, pas le même mot. */
+ const seenP=new Set([t.p]),out=[];
+ for(const {w,p} of scored){if(out.length>=60)break;
+  if(seenP.has(p)||/['-]/.test(w))continue;
+  const sw=stripAcc(w);
+  if(sw===tw||!/[aeiouy]/.test(sw)||RHYME_BLOCKLIST.has(sw)||RHYME_BLOCKLIST.has(rhymeIdentityKey(sw)))continue;
+  if(sw.length>=3&&tw.length>=3&&(sw.endsWith(tw)||tw.endsWith(sw)))continue;
+  seenP.add(p);out.push(w)}
+ const res=finalizeRhymeCandidates(out,word,40);rhymeCache.set(t.w,res);return res;
 }
 function rhymeAnalysis(target,candidate){
  const empty={quality:"unknown",multi:false,sharedPhonemes:0,sharedSyllables:0};
- if(!lexiqueRimes||!lexiqueRimes.word_index)return empty;
- const targetEntries=lexiqueRimes.word_index[lexiqueWordKey(target)]||[];
- const candidateEntries=lexiqueRimes.word_index[lexiqueWordKey(candidate)]||[];
- if(!targetEntries.length||!candidateEntries.length)return empty;
- const cleanPhonemeString=value=>String(value||"").replace(/[.·\s\-‐‑‒–—\/]/g,"");
- let best={score:-1,sharedPhonemes:0,sharedSyllables:0};
- for(const a of targetEntries){
-  for(const b of candidateEntries){
-   const as=a.syllables||[],bs=b.syllables||[];
-   let sharedSyllables=0;
-   while(sharedSyllables<as.length&&sharedSyllables<bs.length&&as[as.length-1-sharedSyllables]===bs[bs.length-1-sharedSyllables])sharedSyllables++;
-   const ap=Array.from(cleanPhonemeString(as[as.length-1]||a.phon||""));
-   const bp=Array.from(cleanPhonemeString(bs[bs.length-1]||b.phon||""));
-   let sharedPhonemes=0;
-   while(sharedPhonemes<ap.length&&sharedPhonemes<bp.length&&ap[ap.length-1-sharedPhonemes]===bp[bp.length-1-sharedPhonemes])sharedPhonemes++;
-   const score=sharedSyllables*100+sharedPhonemes;
-   if(score>best.score)best={score,sharedPhonemes,sharedSyllables};
-  }
- }
- if(best.score<0)return empty;
- return {...best,quality:best.sharedPhonemes<=1?"poor":best.sharedPhonemes===2?"sufficient":"rich",multi:best.sharedSyllables>=2};
+ if(!lexiqueRimes)return empty;
+ const t=targetPhon(target),es=lexiqueRimes.word_index[lexiqueWordKey(candidate)]||[];
+ if(!t||!es.length)return empty;
+ let best=0;for(const e of es){const n=sharedTail(rNorm(e.phon),t.p);if(n>best)best=n}
+ const shared=t.p.slice(t.p.length-best),vowels=(shared.match(/[aie@o§yu52]/g)||[]).length;
+ if(!vowels||best<rimeOf(t.p).length){const near=rimeKeysFor(t.p).slice(1);if(es.some(e=>near.includes(rimeOf(rNorm(e.phon)))))return {quality:"poor",multi:false,sharedPhonemes:1,sharedSyllables:1};return {...empty,quality:"none"}}
+ return {quality:best<=1?"poor":best===2?"sufficient":"rich",multi:vowels>=2,sharedPhonemes:best,sharedSyllables:vowels};
 }
 function selectRhymeStars(target,candidates,limit=6){
- const unique=finalizeRhymeCandidates(candidates,target,60);
- const scored=unique.map((word,index)=>{const a=rhymeAnalysis(target,word);return {word,index,...a,rank:(a.multi?1000:0)+(a.quality==="rich"?300:a.quality==="sufficient"?200:a.quality==="poor"?100:0)+Math.min(a.sharedPhonemes||0,8)*4+Math.min(a.sharedSyllables||0,4)*25};});
- scored.sort((a,b)=>b.rank-a.rank||a.index-b.index);
- const chosen=[];const take=fn=>{const item=scored.find(x=>!chosen.includes(x)&&fn(x));if(item)chosen.push(item)};
- take(x=>x.multi);take(x=>x.multi);
- take(x=>x.quality==="rich"&&!x.multi);take(x=>x.quality==="rich"&&!x.multi);take(x=>x.quality==="rich"&&!x.multi);
- take(x=>x.quality==="poor"&&!x.multi);
- for(const item of scored){if(chosen.length>=limit)break;if(!chosen.includes(item))chosen.push(item)}
- return chosen.slice(0,limit).map(x=>x.word);
+ /* L'ordre vient de rhymeSuggestions : mots courants d'abord, puis les rimes les plus riches.
+    On ne garde que les vraies rimes (au son). */
+ return finalizeRhymeCandidates(candidates,target,60).filter(w=>{const q=rhymeAnalysis(target,w).quality;return q!=="none"&&q!=="unknown"}).slice(0,limit);
 }
 function renderRhymeHelper(word){
  const box=$("rhymeHelper"),orbit=$("rhymeOrbit");if(!box||!orbit)return;
  const active=settings.rhymeAssist!==false&&!!word;
  const suggestions=active?selectRhymeStars(word,rhymeSuggestions(word),12):[];
- if(active&&!lexiqueRimes&&!lexiqueRimesPromise){loadLexiqueRimes().then(data=>{if(data&&settings.rhymeAssist!==false&&current)renderRhymeHelper(current)});}
+ if(active&&!rimeIndex){loadLexiqueRimes().then(data=>{if(data&&settings.rhymeAssist!==false&&current)renderRhymeHelper(current)});}
  box.hidden=!active;
  orbit.querySelectorAll(".rhyme-star").forEach(el=>el.remove());
  if(!active)return;
@@ -430,7 +467,7 @@ function tick(){if(!running||!audioCtx)return;const now=audioCtx.currentTime,bea
 const INTRO_BARS=4,INTRO_BEATS=INTRO_BARS*4;let introSeconds=0;
 function fmt(s){s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
 function updateClock(){if(!running)return;const total=(Date.now()-sessionStart-totalPaused)/1000;if(total<introSeconds){$("timeLeft").textContent="Intro "+fmt(introSeconds-total);$("roundProgress").style.width=(total/introSeconds*100)+"%";roundTimer=setTimeout(updateClock,200);return}const elapsed=total-introSeconds;const rem=sessionDuration?Math.max(0,sessionDuration-elapsed):0;$("timeLeft").textContent=sessionDuration?fmt(rem):fmt(elapsed);$("roundProgress").style.width=sessionDuration?Math.min(100,elapsed/sessionDuration*100)+"%":"0%";if(sessionDuration&&rem<=0)finishSession();else roundTimer=setTimeout(updateClock,200)}
-async function launch(){persistSettings();if(!challengeActive)challengeSeed=null;current="";previousWord="";promptStep=0;historySeeds=[];rimeHoldUntilBar=0;lastPunchlineBar=0;sessionWords=[];wordTimes=[];recent=[];makeDeck();ended=false;sessionStart=Date.now();totalPaused=0;sessionDuration=settings.duration;beatIndex=0;barIndex=0;nextWordBar=0;gameStarted=true;running=true;$("stage").classList.toggle("zero-distraction",settings.zero);$("sessionMeta").textContent=(challengeActive?"DÉFI DU JOUR · ":"")+settings.bpm+" BPM · "+(BEAT_LABELS[settings.beat]||"Métronome")+" · mot toutes les "+settings.bars+" mesure(s) · "+MODES[settings.mode];$("gameTheme").textContent=BANK[settings.theme]?.label||"Mélange surprise";const focusBanner=$("focusBanner");if(focusBanner)focusBanner.textContent=customSession?"10 mots pour une impro · place chaque mot dans ton flow.":(MODES[settings.mode]||MODES.mot)+" "+(FOCUS_HINTS[settings.mode]||FOCUS_HINTS.mot);$("bigWord").classList.add("empty-word");$("bigWord").textContent=String(INTRO_BARS);$("wordMeta").textContent="INTRO · "+INTRO_BARS+" mesures";renderRhymeHelper("");$("timeLeft").textContent=sessionDuration?fmt(sessionDuration):"∞";$("pauseBtn").textContent="Ⅱ Pause";showView("game");requestWakeLock();toggleFullscreen();audioStart();if(audioCtx){try{await audioCtx.resume()}catch(e){}}introSeconds=0;if(!audioCtx||audioCtx.state!=="running"){$("wordMeta").textContent="Mode sans métronome : la session est lancée. Utilise « Mot suivant » pour avancer.";draw()}else{nextBeatTime=audioCtx.currentTime+.15;introSeconds=(Date.now()-sessionStart)/1000+.15+INTRO_BEATS*60/settings.bpm;raf=requestAnimationFrame(tick)}updateClock()}
+async function launch(){persistSettings();if(settings.rhymeAssist!==false)loadLexiqueRimes();if(!challengeActive)challengeSeed=null;current="";previousWord="";promptStep=0;historySeeds=[];rimeHoldUntilBar=0;lastPunchlineBar=0;sessionWords=[];wordTimes=[];recent=[];makeDeck();ended=false;sessionStart=Date.now();totalPaused=0;sessionDuration=settings.duration;beatIndex=0;barIndex=0;nextWordBar=0;gameStarted=true;running=true;$("stage").classList.toggle("zero-distraction",settings.zero);$("sessionMeta").textContent=(challengeActive?"DÉFI DU JOUR · ":"")+settings.bpm+" BPM · "+(BEAT_LABELS[settings.beat]||"Métronome")+" · mot toutes les "+settings.bars+" mesure(s) · "+MODES[settings.mode];$("gameTheme").textContent=BANK[settings.theme]?.label||"Mélange surprise";const focusBanner=$("focusBanner");if(focusBanner)focusBanner.textContent=customSession?"10 mots pour une impro · place chaque mot dans ton flow.":(MODES[settings.mode]||MODES.mot)+" "+(FOCUS_HINTS[settings.mode]||FOCUS_HINTS.mot);$("bigWord").classList.add("empty-word");$("bigWord").textContent=String(INTRO_BARS);$("wordMeta").textContent="INTRO · "+INTRO_BARS+" mesures";renderRhymeHelper("");$("timeLeft").textContent=sessionDuration?fmt(sessionDuration):"∞";$("pauseBtn").textContent="Ⅱ Pause";showView("game");requestWakeLock();toggleFullscreen();audioStart();if(audioCtx){try{await audioCtx.resume()}catch(e){}}introSeconds=0;if(!audioCtx||audioCtx.state!=="running"){$("wordMeta").textContent="Mode sans métronome : la session est lancée. Utilise « Mot suivant » pour avancer.";draw()}else{nextBeatTime=audioCtx.currentTime+.15;introSeconds=(Date.now()-sessionStart)/1000+.15+INTRO_BEATS*60/settings.bpm;raf=requestAnimationFrame(tick)}updateClock()}
 function pauseGame(){if(!running)return;running=false;pausedAt=Date.now();if(roundTimer)clearTimeout(roundTimer);if(raf)cancelAnimationFrame(raf);$("pauseBtn").textContent="▶ Reprendre";$("wordMeta").textContent="En pause · reprends quand tu veux";releaseWakeLock();if(audioCtx&&audioCtx.state==="running")audioCtx.suspend().catch(()=>{})}
 function resumeGame(){if(running)return;running=true;totalPaused+=Date.now()-pausedAt;$("pauseBtn").textContent="Ⅱ Pause";requestWakeLock();if(audioCtx){audioCtx.resume().catch(()=>{});nextBeatTime=audioCtx.currentTime+.08;raf=requestAnimationFrame(tick)}updateClock()}
 function nextManual(){if(!running)return;if(customSession){customNext();return}draw()}function customNext(){if(!running||!current)return;data.placed=(data.placed||0)+1;data.placedWords=data.placedWords||{};data.placedWords[current]=(data.placedWords[current]||0)+1;save();if(sessionWords.length>=10){finishSession();return}draw()}
@@ -461,7 +498,7 @@ const challengeParam=new URLSearchParams(location.search).get("defi");loadSettin
 /* ---- Accueil et Freestyle (repris de la version du 25/10, fusion du 28/10/2026) ---- */
 
 const showPage=id=>{["homeStart","freestyle","improApp"].forEach(k=>$(k).classList.toggle("hide",k!==id));window.scrollTo(0,0)};
-$("enterImpro").onclick=()=>showPage("improApp");
+$("enterImpro").onclick=()=>{showPage("improApp");loadLexiqueRimes()};
 $("enterFreestyle").onclick=()=>showPage("freestyle");
 $("improHome").onclick=()=>{goHome();showPage("homeStart")};
 $("freeHome").onclick=()=>{stopFreeScroll();stopFreeBeat();document.body.classList.remove("freestyle-live");$("freeLiveTop").classList.add("hide");showPage("homeStart")};
