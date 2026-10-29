@@ -62,9 +62,9 @@ with sync_playwright() as p:
     pg.click("#freeHome")
     # ---- 4. battle
     pg.click("#enterImpro");pg.wait_for_timeout(300)
-    if not pg.is_visible("#battleMode"):
-        pg.click("#customizeBtn")
-    pg.check("#battleMode");ok(pg.is_visible("#battleP1"),"Options battle visibles")
+    ok(pg.is_visible("#quickBattle") and pg.is_visible('[data-session-mode="battle"]'),"Battle visible : bouton rapide + carte « Mode d'impro »")
+    pg.click("#quickBattle");pg.wait_for_timeout(600)
+    ok(pg.is_visible("#battleP1") and pg.get_attribute('[data-session-mode="battle"]',"aria-pressed")=="true" and pg.is_checked("#battleMode"),"Bouton rapide : carte Battle sélectionnée, noms des MC affichés")
     pg.fill("#battleP1","Alexis");pg.fill("#battleP2","Léon");pg.dispatch_event("#battleP2","change")
     pg.select_option("#beatChoice","virtual-boom");pg.fill("#bpm","160");pg.select_option("#bars","2")
     pg.click("#launch");pg.wait_for_timeout(1200)
@@ -83,8 +83,8 @@ with sync_playwright() as p:
     pg.click("#againBtn");pg.wait_for_timeout(800)
     ok("Alexis ouvre la battle" in pg.inner_text("#battleBanner"),"« Rejouer » relance bien une battle")
     pg.click("#finishBtn");pg.wait_for_timeout(300)
-    pg.click("#improHome");pg.click("#enterImpro");pg.uncheck("#battleMode");pg.click("#launch");pg.wait_for_timeout(800)
-    ok(pg.is_hidden("#battleBanner") and pg.evaluate("()=>settings.bars")==2,"Battle désactivée : session normale, sans bandeau")
+    pg.click("#improHome");pg.click("#enterImpro");pg.click('[data-session-mode="free"]');pg.click("#launch");pg.wait_for_timeout(800)
+    ok(pg.is_hidden("#battleBanner") and pg.evaluate("()=>settings.bars")==2 and not pg.is_checked("#battleMode"),"Retour sur « Impro libre » : session normale, sans bandeau")
     pg.click("#finishBtn");pg.wait_for_timeout(300)
     # battle désactivée => pas de bandeau
     pg.click("#improHome") if pg.is_visible("#improHome") else None

@@ -800,7 +800,13 @@ function battleTurnBars(){return $("battleTurn").value==="8"?8:4}
 function battleSave(){try{localStorage.setItem(BATTLE_KEY,JSON.stringify({on:$("battleMode").checked,p1:$("battleP1").value.trim(),p2:$("battleP2").value.trim(),turn:battleTurnBars()}))}catch{}}
 function battleLoad(){try{const b=JSON.parse(localStorage.getItem(BATTLE_KEY)||"{}");$("battleMode").checked=!!b.on;$("battleP1").value=b.p1||"";$("battleP2").value=b.p2||"";if(b.turn)$("battleTurn").value=String(b.turn)}catch{}$("battleOptions").hidden=!$("battleMode").checked}
 ["battleMode","battleP1","battleP2","battleTurn"].forEach(id=>$(id).addEventListener("change",()=>{$("battleOptions").hidden=!$("battleMode").checked;battleSave()}));
+/* La battle est une carte de « Mode d'impro » (29/10/2026) : la carte coche la case cachée battleMode. */
+function setBattleCard(on){$("battleMode").checked=on;$("battleOptions").hidden=!on;battleSave()}
+document.querySelectorAll("[data-session-mode]").forEach(b=>b.addEventListener("click",()=>setBattleCard(b.dataset.sessionMode==="battle")));
+function selectBattleCard(){document.querySelector('[data-session-mode="battle"]').click()}
 battleLoad();
+if($("battleMode").checked){const c=document.querySelector('[data-session-mode="battle"]');document.querySelectorAll("[data-session-mode]").forEach(x=>x.setAttribute("aria-pressed",String(x===c)));$("customModePanel").hidden=true;$("freeOptions").hidden=false}
+$("quickBattle").addEventListener("click",()=>{selectBattleCard();if($("setupGrid").hidden||getComputedStyle($("setupGrid")).display==="none")$("customizeBtn").click();$("battleOptions").scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>{try{$("battleP1").focus({preventScroll:true})}catch{}},400)});
 function renderBattle(){
  const bn=$("battleBanner");if(!battleActive){bn.hidden=true;return}
  const names=battleNames(),tb=battleTurnBars(),played=barIndex-INTRO_BARS-1;bn.hidden=false;

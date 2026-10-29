@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-29 — Battle à deux facile à trouver
+- Retour d’Alexis : impossible de trouver où choisir la battle. Cause : la case était perdue dans une liste de cases sans mise en forme, affichées collées comme un paragraphe.
+- La battle devient une carte de « Mode d’impro » (à côté d’« Impro libre » et « 10 mots ») ; la choisir affiche les noms des MC et le passage de micro.
+- Nouveau bouton rapide « ⚔️ Battle à deux » en haut de l’Impro : il sélectionne la carte, ouvre les réglages et place le curseur sur le nom du MC 1.
+- Les cases à cocher des réglages s’affichent une par ligne.
+- Cache hors ligne passé en `v27`.
+
 ## 2026-10-29 — Générateur : univers et ambiances pensés pour le rap
 - **Univers** (10) : Ego trip, Street / quartier, Amour, Conscient / engagé, Introspection, Famille & racines, Charbon / réussite, Hommage / mémoire, Battle / clash, Storytelling. Retirés : Espace, Conte, Mer, Foot, École, Futur, Nature (thèmes trop éloignés du rap).
 - **Ambiances** (9) : Fierté, Rage, La dalle, Revanche, Froid / posé, Mélancolie, Nostalgie, Espoir, Second degré (l’ancien « Humour »).
