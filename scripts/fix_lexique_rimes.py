@@ -16,7 +16,7 @@ def keys(syllables):
 def main():
     with open(PATH, encoding="utf-8") as f:
         data = json.load(f)
-    fam, changed = data["families"], []
+    fam, changed, changed_words = data["families"], [], []
     for word, entries in data["word_index"].items():
         for e in entries:
             phon, syll, ok = fix_phon(word, e["phon"], e.get("syllables"))
@@ -27,12 +27,15 @@ def main():
                     fam[k].remove(word)
                     if not fam[k]:
                         del fam[k]
-            for k in keys(syll):
-                fam.setdefault(k, [])
-                if word not in fam[k]:
-                    fam[k].append(word)
+            changed_words.append((word, syll))
             changed.append(f"{word}: {e['phon']} → {phon}")
             e["phon"], e["syllables"] = phon, syll
+    # Comme le script de construction : une famille garde ses 100 mots les plus fréquents.
+    freq = lambda w: max((e.get("frequency", 0) for e in data["word_index"].get(w, [])), default=0)
+    for word, syll in changed_words:
+        for k in keys(syll):
+            if k in fam and word not in fam[k]:
+                fam[k] = sorted(fam[k] + [word], key=lambda w: (-freq(w), len(w), w))[:100]
     with open(PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
     print(len(changed), "prononciations corrigées")
