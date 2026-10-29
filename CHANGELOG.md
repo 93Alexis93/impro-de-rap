@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-29 — Générateur : univers et ambiances pensés pour le rap
+- **Univers** (10) : Ego trip, Street / quartier, Amour, Conscient / engagé, Introspection, Famille & racines, Charbon / réussite, Hommage / mémoire, Battle / clash, Storytelling. Retirés : Espace, Conte, Mer, Foot, École, Futur, Nature (thèmes trop éloignés du rap).
+- **Ambiances** (9) : Fierté, Rage, La dalle, Revanche, Froid / posé, Mélancolie, Nostalgie, Espoir, Second degré (l’ancien « Humour »).
+- Chaque univers et chaque ambiance a ses images, ses mots-pivots et une consigne d’angle, reprise dans le prompt IA (ex. « rap conscient — dénonce une injustice précise, avec des faits et des images, pas des slogans »).
+
 ## 2026-10-29 — Nouvelles idées : instrus Freestyle, prises synchronisées, battle, rimes en direct
 - **Freestyle = mêmes instrus que l’Impro** : Boom-bap 90, Lo-fi 82, Oriental 96, Afro / Makossa 104, Trap 140 (batterie, basse, accords). Le tempo conseillé se règle quand on change d’instru. Un seul moteur VirtualBeat partagé ; l’ancien moteur du Freestyle (surtout de la batterie) est retiré. « Sans instru » et « Importer mon instru » inchangés.
 - **Enregistrer ma voix** (Freestyle, case à cocher) : la prise démarre avec le défilement, se met en pause avec lui et s’arrête avec « Arrêter tout » (15 min max). Voix mixée avec l’instru VirtualBeat ; avec une instru importée, voix seule. Badge « ● REC » en plein écran. Micro refusé = le défilement part quand même.
