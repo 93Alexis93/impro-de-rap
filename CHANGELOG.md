@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-29 — Freestyle : générateur, tempo, mémoire, relais
+- **Générer un texte** : mots imposés (jusqu’à 10), univers (10), ambiance (6), structure (8 ou 16 mesures, avec ou sans refrain de 4), schéma AABB / ABAB / AAAA, rimes (meilleures, riches, multisyllabiques), résultat « Trame à trous » ou « Texte complet ». Gratuit et hors ligne : les fins de vers viennent du moteur de rimes au son ; le texte complet est un brouillon à retravailler. « Remettre mon texte d’avant » annule.
+- **Copier le prompt IA** : prompt prêt à coller dans Claude ou ChatGPT (structure, BPM, univers, mots, schéma, pistes de rimes vérifiées au son, contraintes anti-clichés), aussi affiché pour une copie manuelle.
+- **Défilement au tempo** : 1 ligne par mesure ou toutes les 2 mesures, calé sur le BPM, ligne en cours surlignée, intro de 4 mesures facultative. Les lignes `[Couplet]` / `[Refrain]` et les lignes vides ne prennent pas de mesure. La pause fige le chrono.
+- **Mode mémoire** : 0 → 25 → 50 → 75 → 100 % des mots cachés (1re lettre gardée, mots de fin de ligne cachés en dernier) ; passe tout seul au niveau suivant à la fin du texte.
+- **Mode relais** : 1 ligne sur 4 (ou sur 2) s’arrête au milieu avec « … 🎤 à toi ».
+- La vitesse libre (px/s) reste disponible et inchangée. Cache hors ligne passé en `v25`.
+
 ## 2026-10-29 — 4 bulles de rimes au lieu de 6
 - Retour d’Alexis : trop de propositions autour du mot. L’orbite affiche au maximum 4 rimes (les 4 meilleures : mots courants et rimes les plus riches d’abord).
 - Cache hors ligne passé en `v24`.
