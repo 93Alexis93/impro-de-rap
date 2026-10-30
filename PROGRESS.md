@@ -1,5 +1,11 @@
 # Suivi du projet
 
+## 30/10/2026 (suite) — retours d’Alexis après test iPhone du nouveau design
+- Plaît : le nouveau design, les boutons, les volets repliables.
+- Corrigé (même branche, non fusionné) : instru plus forte, mot qui restait bloqué, enregistrement Freestyle de la voix. Détails dans le CHANGELOG.
+- Tests Chromium : `e2e_son.py` 19/19, `e2e_design.py` 45/45, `e2e_nouvelles_idees.py` 29/29, `e2e_cas_limites.py` 7/7, `e2e_plein_ecran.py` OK sur 4 formats, `smoke.py` OK.
+- À vérifier par Alexis sur iPhone : volume de l’instru avec et sans enregistrement, plus de mot bloqué (y compris après une notification ou un verrouillage), qualité de la prise Freestyle avec haut-parleur ET avec écouteurs, voix bien calée sur l’instru à la réécoute (le délai de recalage est une estimation).
+
 ## 30/10/2026 — branche `claude/tender-lovelace-plb9qb` : design épuré + accessibilité (non fusionné)
 - Fait : voir CHANGELOG du 30/10. Toutes les fonctions sont conservées ; réglages Impro et options Freestyle repliés par défaut.
 - Tests Chromium : `tests/smoke.py` OK, syntaxe JavaScript OK ; `e2e_design.py` 45/45 (320, 375 et 1280 px : pas de débordement, cibles ≥ 44 px, interrupteurs au clavier, focus visible, raccourci 10 mots, onglets) ; `e2e_nouvelles_idees.py` 29/29 ; `e2e_cas_limites.py` 7/7 ; `e2e_plein_ecran.py` : mot entier et sans chevauchement sur 4 formats.
