@@ -1,6 +1,8 @@
 # Tests Playwright (29/10/2026). Lancer depuis la racine : python3 -m http.server 8765 & puis python3 tests/e2e_cas_limites.py
 import sys
 from playwright.sync_api import sync_playwright
+# Depuis le design du 30/10/2026, réglages Impro et volets Freestyle sont repliés : on les ouvre avant d'agir dessus.
+OUVRIR="()=>{document.querySelectorAll('#freestyle details').forEach(d=>d.open=true);const g=document.getElementById('setupGrid');if(g&&g.hidden&&!document.getElementById('improApp').classList.contains('hide'))document.getElementById('customizeBtn').click()}"
 import tempfile;SP=tempfile.gettempdir()+"/"
 res=[]
 def ok(c,m):res.append(bool(c));print(("PASS " if c else "FAIL ")+m)
@@ -9,7 +11,7 @@ with sync_playwright() as p:
     b=p.chromium.launch(args=["--use-fake-ui-for-media-stream","--use-fake-device-for-media-stream","--autoplay-policy=no-user-gesture-required"])
     # A. sans instru, vitesse libre
     ctx=b.new_context(viewport={"width":375,"height":812},permissions=["microphone"]);pg=ctx.new_page();errs=[];pg.on("pageerror",lambda e:errs.append(str(e)))
-    pg.goto("http://localhost:8765/index.html");pg.click("#enterFreestyle")
+    pg.goto("http://localhost:8765/index.html");pg.click("#enterFreestyle");pg.evaluate(OUVRIR)
     pg.fill("#freeText",text);pg.select_option("#freeBeat","none");pg.fill("#freeSpeed","120");pg.dispatch_event("#freeSpeed","input");pg.check("#freeRecOn")
     pg.click("#freeStart");pg.wait_for_timeout(3500);pg.click("#freeStop");pg.wait_for_timeout(1200)
     t=pg.evaluate("async()=>{const t=(await getFreeTakes())[0];return t&&{n:t.timeline.length,size:t.blob.size,tempo:t.tempo,rmax:Math.max(...t.timeline.map(e=>e.r))}}")
@@ -35,12 +37,12 @@ with sync_playwright() as p:
     # B. micro refusé
     ctx=b.new_context(viewport={"width":375,"height":812});pg=ctx.new_page();errs=[];pg.on("pageerror",lambda e:errs.append(str(e)))
     pg.goto("http://localhost:8765/index.html");pg.evaluate("()=>{navigator.mediaDevices.getUserMedia=()=>Promise.reject(new DOMException('no','NotAllowedError'))}")
-    pg.click("#enterFreestyle");pg.fill("#freeText",text);pg.select_option("#freeBeat","virtual-boom");pg.check("#freeRecOn")
+    pg.click("#enterFreestyle");pg.evaluate(OUVRIR);pg.fill("#freeText",text);pg.select_option("#freeBeat","virtual-boom");pg.check("#freeRecOn")
     pg.click("#freeStart");pg.wait_for_timeout(1200)
     ok(pg.evaluate("()=>freeScrolling&&freeRec===null"),"Micro refusé : le défilement part quand même, sans enregistrement")
     pg.click("#freeStop");ok(not errs,"Aucune erreur JS (B) "+str(errs))
     # C. réglages Impro avec battle (capture)
-    pg.click("#freeHome");pg.click("#enterImpro");pg.click("#quickBattle");pg.wait_for_timeout(600)
+    pg.click("#freeHome");pg.click("#enterImpro");pg.evaluate(OUVRIR);pg.click("#quickBattle");pg.wait_for_timeout(600)
     pg.screenshot(path=SP+"battle-reglages.png")
     pg.fill("#bpm","160");pg.click("#launch");pg.wait_for_timeout(8000);pg.screenshot(path=SP+"battle-scene.png")
     b.close()

@@ -78,20 +78,156 @@ body.impro-live .round-progress{margin-top:6px;height:4px}
  body.impro-live .word-orbit .word{font-size:clamp(2.6rem,17dvh,7rem)}
  body.impro-live .word-meta{font-size:14px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 }
+
+/* ---- Design épuré et accessibilité (30/10/2026) ---- */
+:root{--bg:#09090C;--surface:#131318;--surface2:#1C1C24;--line:#2C2C37;--ink:#F6F6F8;--muted:#A9A9B6;--pink:#FF4D7A;--s:#131318;--s2:#1C1C24;--l:#2C2C37;--m:#A9A9B6;--field:#0E0E13;--display:"Avenir Next Condensed","Arial Narrow","Roboto Condensed",Impact,"Helvetica Neue",sans-serif}
+body{background:radial-gradient(110% 55% at 100% 0%,rgba(255,210,31,.08),transparent 60%),radial-gradient(90% 45% at 0% 100%,rgba(255,77,122,.07),transparent 60%),var(--bg);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::selection{background:var(--yellow);color:#111}
+/* Focus clavier visible partout */
+:where(button,select,input,textarea,a,summary,[tabindex]):focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+/* Boutons */
+button{transition:background-color .15s,border-color .15s,color .15s,transform .08s;-webkit-tap-highlight-color:transparent}
+button:not(.rhyme-star):active:not(:disabled){transform:scale(.97)}
+.primary{box-shadow:0 10px 26px -12px rgba(255,210,31,.75)}
+.quiet{border-color:var(--line)}
+/* Champs */
+.field select,.field input[type=number],.field input[type=text],#freestyle select,#freestyle input[type=number],#freestyle input[type=text],#freestyle textarea,.custom-words{background-color:var(--field);border:1px solid var(--line);border-radius:12px;min-height:50px;font-size:16px}
+select,.field select,#freestyle select{-webkit-appearance:none;appearance:none;padding-right:42px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%23A9A9B6' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center;text-overflow:ellipsis}
+::placeholder{color:#8C8C9A;opacity:1}
+.field label,#freestyle label{color:#C4C4CF}
+/* Textes secondaires lisibles (taille et contraste) */
+.hint,.note,.empty-note,.n{font-size:13px;line-height:1.5;color:var(--muted)}
+small.n{display:block;margin-top:8px}
+.eyebrow{font-size:12px}
+.mode small,.quick small,.stat small,.beat small,.recording-item small{font-size:12px}
+.rhyme-legend{font-size:12px}.rhyme-note{font-size:12px;color:var(--muted)}
+.preview{color:#9A9AA6}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:18px 4px}
+/* Cibles tactiles d'au moins 44 px */
+.small,.back-home,.theme,.favorite-chip,.rhyme-chip,.rhyme-group .rhyme-star,.rating-row button,.recording-item button,.recorder-actions button{min-height:44px}
+/* Titres en police condensée, esprit pochette */
+.hero h1,#freestyle h1,#summaryView h1{font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:-.01em;line-height:.92}
+.hero h1{font-size:clamp(34px,9.5vw,58px)}
+.hero p{font-size:15px}
+.brand strong{font-family:var(--display);font-size:16px;letter-spacing:.06em}
+.logo{font-family:var(--display);border-radius:12px;box-shadow:0 8px 22px -10px rgba(255,210,31,.8)}
+
+/* Accueil */
+#homeStart{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding-top:calc(env(safe-area-inset-top) + 28px)}
+.home-kicker{font-size:12px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--yellow)!important;margin:0 0 10px!important}
+#homeStart h1{font-family:var(--display);font-weight:900;font-size:clamp(68px,23vw,132px);line-height:.84;letter-spacing:-.02em;margin:0}
+.home-eq{display:flex;align-items:flex-end;gap:6px;height:34px;margin-top:20px}
+.home-eq i{width:7px;height:30%;border-radius:4px;background:var(--yellow);animation:eq 1s ease-in-out infinite alternate}
+.home-eq i:nth-child(even){background:var(--pink)}
+.home-eq i:nth-child(2){animation-delay:-.3s}.home-eq i:nth-child(3){animation-delay:-.7s}.home-eq i:nth-child(4){animation-delay:-.15s}.home-eq i:nth-child(5){animation-delay:-.55s}.home-eq i:nth-child(6){animation-delay:-.85s}.home-eq i:nth-child(7){animation-delay:-.4s}.home-eq i:nth-child(8){animation-delay:-.65s}.home-eq i:nth-child(9){animation-delay:-.2s}
+@keyframes eq{from{height:20%}to{height:100%}}
+@media(prefers-reduced-motion:reduce){.home-eq i:nth-child(odd){height:85%}.home-eq i:nth-child(even){height:45%}}
+.home-choices{margin:30px 0 18px;gap:12px}
+#homeStart .home-choice{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:16px;row-gap:4px;align-items:center;min-height:116px;padding:18px;border-radius:22px;background:linear-gradient(135deg,#17171E,#101015);border:1px solid var(--line);text-align:left}
+#homeStart .home-choice.impro{border-color:rgba(255,210,31,.4)}
+#homeStart .home-choice.free{border-color:rgba(255,77,122,.4)}
+.home-choice .hc-icon{grid-row:1/3;width:58px;height:58px;border-radius:16px;display:grid;place-items:center;font-size:30px;background:rgba(255,210,31,.12)}
+.home-choice.free .hc-icon{background:rgba(255,77,122,.13)}
+#homeStart .home-choice strong{grid-column:2;font-family:var(--display);font-weight:900;font-size:clamp(24px,8.5vw,32px);line-height:1;text-transform:uppercase;margin:0}
+.home-choice.free strong{color:var(--pink)!important}
+.home-choice .hc-text{grid-column:2;font-size:15px;line-height:1.4;color:#BDBDC9}
+.home-choice .hc-go{grid-column:3;grid-row:1/3;font-size:24px;font-weight:900;color:var(--yellow)}
+.home-choice.free .hc-go{color:var(--pink)}
+.home-sub{text-align:center;font-size:13px!important;letter-spacing:.04em;color:var(--muted)!important;margin:6px 0 0!important}
+@media(min-width:720px){.home-choices{grid-template-columns:1fr 1fr}}
+
+/* Impro : écran d'accueil */
+.top{padding:16px 0}
+.hero{padding:8px 0 18px}
+.quick{grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 14px}
+.quick button{min-height:86px;border-radius:18px;background:var(--surface);padding:14px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start}
+.quick b{font-size:15px}
+.quick .quick-main{grid-column:1/-1;min-height:112px;background:var(--yellow);color:#111;border-color:var(--yellow)}
+.quick .quick-main b{font-family:var(--display);font-size:34px;font-weight:900;text-transform:uppercase;line-height:1}
+.quick .quick-main small{color:#3D3500;font-size:13px;font-weight:700}
+.quick .quick-wide{grid-column:1/-1;min-height:60px;flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+.quick .quick-wide small{margin-top:0;text-align:right}
+.beat-quick{padding:14px 16px}
+.beat-quick .field label{font-size:14px}
+.main-cta{border-radius:16px}
+#customizeBtn{border-style:dashed;color:#D6D6DF}
+.setup-grid[hidden]{display:none!important}
+.panel{background:linear-gradient(180deg,#15151B,#111116);border-radius:20px}
+.panel h2{font-size:16px}
+.panel-head .eyebrow{color:var(--muted);font-weight:800}
+.mode{border-radius:16px;background:var(--surface2)}
+.mode b{font-size:14px}
+.mode[aria-pressed=true]{background:rgba(255,210,31,.1);box-shadow:inset 0 0 0 1px var(--yellow)}
+.mode[aria-pressed=true] small{color:#E2D9A8}
+.theme{border-radius:999px;padding:8px 14px;font-size:13px}
+.theme[aria-pressed=true]{background:var(--yellow);border-color:var(--yellow);color:#111}
+/* Interrupteurs à la place des cases à cocher */
+.toggle{flex-direction:row-reverse;justify-content:space-between;gap:14px;min-height:54px;margin:0;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.toggle input[type=checkbox],#freestyle label.free-check input[type=checkbox],#freestyle .free-rhymes-toggle input[type=checkbox]{-webkit-appearance:none;appearance:none;flex:0 0 48px;width:48px;height:28px;margin:0;border-radius:999px;background:#2E2E3A;border:1px solid #50505E;position:relative;cursor:pointer;transition:background-color .15s,border-color .15s}
+.toggle input[type=checkbox]::before,#freestyle label.free-check input[type=checkbox]::before,#freestyle .free-rhymes-toggle input[type=checkbox]::before{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#D0D0DA;transition:transform .15s}
+.toggle input[type=checkbox]:checked{background:var(--yellow);border-color:var(--yellow)}
+#freestyle label.free-check input[type=checkbox]:checked,#freestyle .free-rhymes-toggle input[type=checkbox]:checked{background:var(--pink);border-color:var(--pink)}
+.toggle input[type=checkbox]:checked::before,#freestyle label.free-check input[type=checkbox]:checked::before,#freestyle .free-rhymes-toggle input[type=checkbox]:checked::before{transform:translateX(20px);background:#111}
+.custom-options label{min-height:52px;font-size:14px}
+.custom-options input{width:20px;height:20px}
+/* Barre d'onglets flottante */
+.bottom-nav{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom));z-index:30;margin:18px 0 0;padding:6px;gap:6px;border:1px solid var(--line);border-radius:20px;background:rgba(19,19,24,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 12px 30px -12px #000}
+.bottom-nav button{min-height:50px;border:0;border-radius:14px;background:transparent;font-size:14px;color:#C9C9D4}
+.bottom-nav button[aria-current=true]{background:rgba(255,210,31,.14);color:var(--yellow)}
+.stat{border-radius:16px;background:var(--field)}
+.stat b{font-family:var(--display);font-size:32px;font-weight:900}
+
+/* Session */
+.session-top button{border-radius:12px}
+.stage-bottom button{border-radius:16px}
+.finish-now{font-size:13px}
+.beatline span{background:#2A2A33}
+
+/* Bilan */
+.rating-row{font-size:15px;border-bottom-color:var(--line)}
+.actions button{min-height:54px;border-radius:16px}
+
+/* Freestyle */
+#freestyle h1{font-size:40px}
+#freestyle .box{border-radius:20px;background:linear-gradient(180deg,#15151B,#111116);padding:16px}
+#freestyle label{font-size:12px;letter-spacing:.08em}
+#freestyle details.box{padding:0 16px}
+#freestyle details.box[open]{padding-bottom:16px}
+#freestyle details.box>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px;margin:0 -16px;padding:14px 16px;font-size:16px;font-weight:800;cursor:pointer;border-radius:20px}
+#freestyle details.box>summary::-webkit-details-marker{display:none}
+#freestyle details.box>summary::after{content:"";flex:0 0 10px;width:10px;height:10px;margin-right:4px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translate(-3px,-3px);transition:transform .15s}
+#freestyle details.box[open]>summary::after{transform:rotate(-135deg)}
+#freestyle details.box[open]>summary{margin-bottom:4px}
+.free-read-title{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#C4C4CF!important;margin:6px 0 8px!important}
+body.freestyle-live .free-read-title{display:none!important}
+.scroll-window{background:#0C0C10;border-color:var(--line);border-radius:20px}
+#freestyle label.free-check{justify-content:space-between;flex-direction:row-reverse;font-size:15px;min-height:48px}
+.free-rhymes{border-color:#3A3A47;border-radius:14px}
+.free-rhymes-head{font-size:14px}
+.free-controls,body.freestyle-live .free-controls{grid-template-columns:repeat(3,1fr)}
+#freeStart{grid-column:1/-1;min-height:60px;font-size:17px}
+#freestyle #freeStart.rec-main,#freestyle #genBtn.rec-main{background:var(--pink);border-color:var(--pink)!important;color:#111!important;font-weight:850;box-shadow:0 10px 26px -12px rgba(255,77,122,.8)}
+.free-status{font-size:14px}
+#freestyle h1{font-size:clamp(26px,9vw,34px);white-space:nowrap}
+@media(max-width:360px){#homeStart .home-choice{column-gap:12px;padding:16px}.home-choice .hc-icon{width:48px;height:48px;font-size:25px}}
+.back-home,#freeHome,#freeExitLive,#backSetup{white-space:nowrap}
+#freestyle .free-rhymes-toggle{text-transform:none;letter-spacing:0;font-size:14px;color:#D8D8E2;gap:10px;min-height:44px}
+.recordings-list>p{margin:0;font-size:14px;color:var(--muted)}
+#summaryView .actions{margin-top:20px}
 </style>
 </head>
 <body>
-<section id="homeStart">
-<h1>IMPRO<br><span>DE RAP</span></h1><p>Choisis ton terrain. Le reste est à toi.</p>
+<section id="homeStart" aria-labelledby="homeTitle">
+<div class="home-hero"><p class="home-kicker">Un mot. Une mesure. À toi.</p><h1 id="homeTitle">IMPRO<br><span>DE RAP</span></h1><div class="home-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
 <div class="home-choices">
-<button class="home-choice impro" id="enterImpro"><strong>🎤 Impro</strong><span>Les défis, les mots, les rimes et les instrumentales qu’on a déjà construits.</span></button>
-<button class="home-choice free" id="enterFreestyle"><strong>📜 Freestyle</strong><span>Écris ton texte, choisis une instru si tu veux, puis laisse-le défiler pendant que tu rappes.</span></button>
-</div><p class="home-sub">Deux espaces séparés, un même objectif : rapper librement.</p>
+<button class="home-choice impro" id="enterImpro"><span class="hc-icon" aria-hidden="true">🎤</span><strong>Impro</strong><span class="hc-text">Les mots tombent sur l’instru : rimes, défis, battle.</span><span class="hc-go" aria-hidden="true">→</span></button>
+<button class="home-choice free" id="enterFreestyle"><span class="hc-icon" aria-hidden="true">📜</span><strong>Freestyle</strong><span class="hc-text">Ton texte défile au tempo pendant que tu rappes.</span><span class="hc-go" aria-hidden="true">→</span></button>
+</div><p class="home-sub">Gratuit · sans compte · marche hors ligne</p>
 </section>
-<section id="freestyle" class="hide">
-<div class="page-title"><button id="freeHome">← Accueil</button><h1 style="margin:0">FREE<span style="color:#ff6488">STYLE</span></h1></div>
+<section id="freestyle" class="hide" aria-labelledby="freeTitle">
+<div class="page-title"><button id="freeHome">← Accueil</button><h1 id="freeTitle" style="margin:0">FREE<span style="color:#ff6488">STYLE</span></h1></div>
 <div class="box"><label for="freeText">Ton texte</label><textarea id="freeText" placeholder="Colle ou écris tes paroles ici…"></textarea><div id="freeRhymeBar" class="free-rhymes" aria-live="polite"><div class="free-rhymes-head"><span id="freeRhymeLabel">🎯 Touche une ligne : 4 rimes pour son dernier mot.</span><label class="free-rhymes-toggle"><input id="freeRhymeOn" type="checkbox" checked> Rimes en direct</label></div><div id="freeRhymeChips" class="free-rhyme-chips"></div></div><p style="margin-top:8px"><small class="n">Tu peux coller ton texte ou en choisir un dans ta bibliothèque.</small></p></div>
-<div class="box" id="freeGenBox"><label>✨ Générer un texte</label><p style="margin:0 0 4px"><small class="n">Donne quelques mots et un univers : l’appli écrit une trame ou un brouillon avec de vraies rimes, gratuitement et hors ligne. Pour un texte plus abouti, copie le prompt et colle-le dans Claude ou ChatGPT.</small></p>
+<details class="box fold" id="freeGenBox"><summary>✨ Générer un texte</summary><p style="margin:0 0 4px"><small class="n">Donne quelques mots et un univers : l’appli écrit une trame ou un brouillon avec de vraies rimes, gratuitement et hors ligne. Pour un texte plus abouti, copie le prompt et colle-le dans Claude ou ChatGPT.</small></p>
 <label for="genWords">Mots imposés (facultatif, jusqu’à 10)</label><input id="genWords" type="text" placeholder="Ex. : béton, lune, liberté">
 <div class="g2"><div><label for="genUniverse">Univers</label><select id="genUniverse"><option value="ego">Ego trip</option><option value="rue">Street / quartier</option><option value="amour">Amour</option><option value="conscient">Conscient / engagé</option><option value="introspection">Introspection</option><option value="racines">Famille & racines</option><option value="charbon">Charbon / réussite</option><option value="hommage">Hommage / mémoire</option><option value="clash">Battle / clash</option><option value="story">Storytelling</option></select></div><div><label for="genMood">Ambiance</label><select id="genMood"><option value="fierte">Fierté</option><option value="rage">Rage</option><option value="dalle">La dalle</option><option value="revanche">Revanche</option><option value="froid">Froid / posé</option><option value="melancolie">Mélancolie</option><option value="nostalgie">Nostalgie</option><option value="espoir">Espoir</option><option value="humour">Second degré</option></select></div></div>
 <div class="g2"><div><label for="genLength">Structure</label><select id="genLength"><option value="8">8 mesures</option><option value="16">16 mesures</option><option value="8+4" selected>8 + refrain</option><option value="16+4">16 + refrain</option></select></div><div><label for="genScheme">Schéma</label><select id="genScheme"><option value="AABB">AABB suivies</option><option value="ABAB">ABAB croisées</option><option value="AAAA">AAAA</option></select></div></div>
@@ -99,28 +235,28 @@ body.impro-live .round-progress{margin-top:6px;height:4px}
 <div class="g2" style="margin-top:12px"><button id="genBtn" class="rec-main">✨ Générer</button><button id="genPrompt">📋 Copier le prompt IA</button></div>
 <button id="genUndo" class="hide" style="width:100%;margin-top:8px">↶ Remettre mon texte d’avant</button>
 <textarea id="genPromptText" class="hide" readonly aria-label="Prompt à copier" style="margin-top:8px;min-height:160px;font-size:14px"></textarea>
-<small class="n" id="genStatus" aria-live="polite"></small></div>
-<div class="box" id="freeLibraryBox"><label>📚 Ma bibliothèque de textes</label><div class="g2"><div><label for="freeTextTitle">Nom du texte</label><input id="freeTextTitle" type="text" placeholder="Ex. : Violence d'État"></div><div style="display:flex;align-items:end"><button id="freeSaveText" style="width:100%">＋ Enregistrer ce texte</button></div></div><label for="freeSavedTexts">Choisir un texte enregistré</label><select id="freeSavedTexts"><option value="">Aucun texte enregistré</option></select><div class="g2" style="margin-top:8px"><button id="freeLoadText">Charger le texte choisi</button><button id="freeDeleteText">Supprimer de la bibliothèque</button></div><small class="n">Les textes sont conservés sur cet appareil. Tu peux toujours coller ou modifier librement le texte ci-dessus.</small></div>
-<div class="box"><label>Instrumentale (facultative)</label><div class="free-audio"><select id="freeBeat"><option value="none">Sans instru</option><option value="virtual-boom">VirtualBeat · Boom-bap (90 BPM)</option><option value="virtual-lofi">VirtualBeat · Lo-fi jazzy (82 BPM)</option><option value="virtual-oriental">VirtualBeat · Oriental (96 BPM)</option><option value="virtual-makossa">VirtualBeat · Afro / Makossa (104 BPM)</option><option value="virtual-trap">VirtualBeat · Trap (140 BPM)</option><option value="file">Importer mon instru</option></select><div id="freeFileBox" class="hide"><input id="freeFile" type="file" accept="audio/*"><small class="n">Choisis un fichier audio depuis ton iPhone.</small></div><div id="freeBpmBox" class="g2"><div><label for="freeBpm">Tempo</label><input id="freeBpm" type="number" min="60" max="170" value="90"></div><div><label for="freeVol">Volume instru</label><input id="freeVol" type="range" min="0" max="100" value="65"></div></div><div id="freeAudioPreview"></div></div></div>
+<small class="n" id="genStatus" aria-live="polite"></small></details>
+<details class="box fold" id="freeLibraryBox"><summary>📚 Ma bibliothèque de textes</summary><div class="g2"><div><label for="freeTextTitle">Nom du texte</label><input id="freeTextTitle" type="text" placeholder="Ex. : Violence d'État"></div><div style="display:flex;align-items:end"><button id="freeSaveText" style="width:100%">＋ Enregistrer ce texte</button></div></div><label for="freeSavedTexts">Choisir un texte enregistré</label><select id="freeSavedTexts"><option value="">Aucun texte enregistré</option></select><div class="g2" style="margin-top:8px"><button id="freeLoadText">Charger le texte choisi</button><button id="freeDeleteText">Supprimer de la bibliothèque</button></div><small class="n">Les textes sont conservés sur cet appareil. Tu peux toujours coller ou modifier librement le texte ci-dessus.</small></details>
+<div class="box"><label for="freeBeat">🎧 Instrumentale (facultative)</label><div class="free-audio"><select id="freeBeat"><option value="none">Sans instru</option><option value="virtual-boom">VirtualBeat · Boom-bap (90 BPM)</option><option value="virtual-lofi">VirtualBeat · Lo-fi jazzy (82 BPM)</option><option value="virtual-oriental">VirtualBeat · Oriental (96 BPM)</option><option value="virtual-makossa">VirtualBeat · Afro / Makossa (104 BPM)</option><option value="virtual-trap">VirtualBeat · Trap (140 BPM)</option><option value="file">Importer mon instru</option></select><div id="freeFileBox" class="hide"><input id="freeFile" type="file" accept="audio/*"><small class="n">Choisis un fichier audio depuis ton iPhone.</small></div><div id="freeBpmBox" class="g2"><div><label for="freeBpm">Tempo</label><input id="freeBpm" type="number" min="60" max="170" value="90"></div><div><label for="freeVol">Volume instru</label><input id="freeVol" type="range" min="0" max="100" value="65"></div></div><div id="freeAudioPreview"></div></div></div>
 <div class="box"><label for="freeSpeed">Vitesse de défilement</label><div class="free-speed"><span>Lent</span><input id="freeSpeed" type="range" min="10" max="120" step="5" value="35"><output id="freeSpeedValue">35 px/s</output><span>Rapide</span></div></div>
-<div class="box" id="freeTrainBox"><label for="freeMode">Défilement</label><select id="freeMode"><option value="px">Vitesse libre</option><option value="1">Au tempo · 1 ligne par mesure</option><option value="2">Au tempo · 1 ligne toutes les 2 mesures</option></select><label class="free-check"><input id="freeIntro" type="checkbox" checked> Intro de 4 mesures avant la 1re ligne (au tempo)</label>
+<details class="box fold" id="freeTrainBox"><summary>🧠 Entraînement : tempo, mémoire, relais</summary><label for="freeMode">Défilement</label><select id="freeMode"><option value="px">Vitesse libre</option><option value="1">Au tempo · 1 ligne par mesure</option><option value="2">Au tempo · 1 ligne toutes les 2 mesures</option></select><label class="free-check"><input id="freeIntro" type="checkbox" checked> Intro de 4 mesures avant la 1re ligne (au tempo)</label>
 <div class="g2"><div><label for="freeMemory">Mode mémoire</label><select id="freeMemory"><option value="off">Désactivé</option><option value="0">Tout visible</option><option value="25">25 % cachés</option><option value="50">50 % cachés</option><option value="75">75 % cachés</option><option value="100">Tout caché</option></select></div><div><label for="freeRelay">Mode relais</label><select id="freeRelay"><option value="off">Désactivé</option><option value="4">1 ligne sur 4</option><option value="2">1 ligne sur 2</option></select></div></div>
-<small class="n">Mémoire : des mots disparaissent un peu plus à chaque passage (seule leur 1re lettre reste) ; le passage suivant se règle tout seul à la fin du texte. Relais : la ligne s’arrête au milieu, à toi d’improviser la fin.</small></div>
-<div class="box" id="freeRecBox"><label>🎙 Enregistrer ma voix</label><label class="free-check"><input id="freeRecOn" type="checkbox"> Enregistrer pendant le défilement</label><small class="n">Ta voix est enregistrée avec l’instru VirtualBeat, sur cet appareil uniquement. Avec une instru importée, seule ta voix est enregistrée. Ensuite, réécoute ta prise : le texte défile comme pendant que tu rappais.</small><label for="freeTakes" style="margin-top:12px">Mes prises</label><div id="freeTakes" class="recordings-list"><p class="n">Aucune prise pour le moment.</p></div></div>
+<small class="n">Mémoire : des mots disparaissent un peu plus à chaque passage (seule leur 1re lettre reste) ; le passage suivant se règle tout seul à la fin du texte. Relais : la ligne s’arrête au milieu, à toi d’improviser la fin.</small></details>
+<details class="box fold" id="freeRecBox"><summary>🎙 Enregistrer ma voix · mes prises</summary><label class="free-check"><input id="freeRecOn" type="checkbox"> Enregistrer pendant le défilement</label><small class="n">Ta voix est enregistrée avec l’instru VirtualBeat, sur cet appareil uniquement. Avec une instru importée, seule ta voix est enregistrée. Ensuite, réécoute ta prise : le texte défile comme pendant que tu rappais.</small><label for="freeTakes" style="margin-top:12px">Mes prises</label><div id="freeTakes" class="recordings-list"><p class="n">Aucune prise pour le moment.</p></div></details>
 <div class="box hide" id="freeReplay"><div class="free-replay-head"><b id="freeReplayTitle">Réécoute</b><button id="freeReplayClose">✕ Fermer</button></div><audio id="freeReplayAudio" controls preload="metadata" style="width:100%;margin:8px 0"></audio><div id="freeReplayText" class="scroll-window" tabindex="0" aria-label="Texte synchronisé avec la prise"></div></div>
-<div id="freeLiveTop" class="hide"><button id="freeExitLive">← Réglages</button><b>📜 FREESTYLE</b><span id="freeRecBadge" class="rec-badge hide">● REC</span></div><label>Lecture du texte</label><div id="freeScroll" class="scroll-window" tabindex="0" aria-label="Texte qui défile automatiquement">Ton texte apparaîtra ici…</div>
+<div id="freeLiveTop" class="hide"><button id="freeExitLive">← Réglages</button><b>📜 FREESTYLE</b><span id="freeRecBadge" class="rec-badge hide">● REC</span></div><p class="free-read-title">Lecture du texte</p><div id="freeScroll" class="scroll-window" tabindex="0" aria-label="Texte qui défile automatiquement">Ton texte apparaîtra ici…</div>
 <div class="free-controls" style="margin-top:10px"><button id="freeStart" class="rec-main">▶ Lancer le défilement</button><button id="freePause">Ⅱ Pause</button><button id="freeReset">↺ Revenir au début</button><button id="freeStop">■ Arrêter tout</button></div><p id="freeStatus" class="free-status">Colle ton texte, règle la vitesse, puis lance le défilement.</p>
 </section>
 <div class="shell hide" id="improApp">
 <header class="top"><div class="brand"><div class="logo" aria-hidden="true">IR</div><div><strong>IMPRO DE RAP</strong><small>Un mot. Une mesure. À toi.</small></div></div><button id="improHome" class="quiet back-home">← Accueil</button></header>
 <main>
 <section id="homeView" class="view">
-<div class="hero"><div class="eyebrow">Terrain d'entraînement freestyle</div><h1>Le beat tourne.<br>Les mots tombent.</h1><p>Lance une session en un geste. Pose le téléphone, attrape les mots et garde le flow : le but n’est pas d’être parfait.</p></div>
+<div class="hero"><div class="eyebrow">Terrain d'entraînement freestyle</div><h1>Le beat tourne.<br>Les mots tombent.</h1><p>Pose le téléphone, lance l’instru, attrape les mots. Le but n’est pas d’être parfait.</p></div>
 
-<div class="quick"><button id="quickWarm"><b>Échauffement</b><small>3 min · simple et fluide</small></button><button id="quickSession" class="primary"><b>Session</b><small>10 min · polyvalente</small></button><button id="quickChallenge"><b>Défi du jour</b><small>3 min · tirage du jour</small></button><button id="quickReview"><b>Réviser mes mots ratés</b><small>3 min · focus sur tes difficultés</small></button><button id="quickBattle"><b>⚔️ Battle à deux</b><small>2 MC · micro toutes les 4 mesures</small></button></div>
-<section class="panel" id="quickBeatPanel" style="margin-top:14px"><div class="panel-head"><h2>🎧 Choisir mon rythme</h2><span class="eyebrow">Accès rapide</span></div><div class="field"><label for="quickBeatChoice">Rythme de l’impro</label><select id="quickBeatChoice"><option value="virtual-boom">VirtualBeat · Boom-bap (90 BPM)</option><option value="virtual-lofi">VirtualBeat · Lo-fi jazzy (82 BPM)</option><option value="virtual-oriental">VirtualBeat · Oriental (96 BPM)</option><option value="virtual-makossa">VirtualBeat · Afro / Makossa (104 BPM)</option><option value="virtual-trap">VirtualBeat · Trap sombre (140 BPM)</option><option value="metro">Métronome simple</option></select><p class="hint">Choisis ici sans ouvrir les réglages. Le son démarre quand tu lances une session. Vérifie que « Activer le son » est coché dans les réglages si tu n’entends rien.</p></div></section>
-<button id="customizeBtn" class="quiet main-cta" aria-expanded="true" aria-controls="setupGrid" style="margin-bottom:14px">✕ Masquer les réglages</button>
-<div class="setup-grid" id="setupGrid">
+<div class="quick"><button id="quickSession" class="primary quick-main"><b>▶ Session</b><small>10 min · polyvalente</small></button><button id="quickWarm"><b>🔥 Échauffement</b><small>3 min · simple et fluide</small></button><button id="quickChallenge"><b>📅 Défi du jour</b><small>3 min · tirage du jour</small></button><button id="quickBattle"><b>⚔️ Battle à deux</b><small>2 MC · micro toutes les 4 mesures</small></button><button id="quickTen"><b>🎯 10 mots</b><small>Les mots de ton public</small></button><button id="quickReview" class="quick-wide"><b>↻ Réviser mes mots ratés</b><small>3 min · focus sur tes difficultés</small></button></div>
+<section class="panel beat-quick" id="quickBeatPanel"><div class="field"><label for="quickBeatChoice">🎧 Instru de l’impro</label><select id="quickBeatChoice"><option value="virtual-boom">VirtualBeat · Boom-bap (90 BPM)</option><option value="virtual-lofi">VirtualBeat · Lo-fi jazzy (82 BPM)</option><option value="virtual-oriental">VirtualBeat · Oriental (96 BPM)</option><option value="virtual-makossa">VirtualBeat · Afro / Makossa (104 BPM)</option><option value="virtual-trap">VirtualBeat · Trap sombre (140 BPM)</option><option value="metro">Métronome simple</option></select><p class="hint">Le son démarre au lancement. Rien ne sort ? Vérifie « Activer le son » dans les réglages.</p></div></section>
+<button id="customizeBtn" class="quiet main-cta" aria-expanded="false" aria-controls="setupGrid" style="margin-bottom:14px">⚙ Personnaliser ma session</button>
+<div class="setup-grid" id="setupGrid" hidden>
 <section class="panel"><div class="panel-head"><h2>Personnalisation</h2><span class="eyebrow">01 / Réglages</span></div>
 <div class="field"><label>Mode d'impro</label><div class="modes" id="modeList">
 <button class="mode" data-session-mode="free" aria-pressed="true"><b>Impro libre</b><small>Les mots défilent, tu gardes ton flow.</small></button>
@@ -146,7 +282,7 @@ body.impro-live .round-progress{margin-top:6px;height:4px}
 </section>
 <section class="panel"><div><div class="panel-head"><h2>Ta mémoire locale</h2><span class="eyebrow">02 / Sur cet appareil</span></div><div class="stats"><div class="stat"><b id="statSessions">0</b><small>Sessions terminées</small></div><div class="stat"><b id="statWords">0</b><small>Mots tirés</small></div><div class="stat"><b id="statDays">0</b><small>Jours de suite</small></div></div><h3 style="margin-top:18px">Mots favoris</h3><div id="favorites" class="favorite-list"><span class="empty-note">Tes favoris apparaîtront ici.</span></div><p class="note">Les favoris, réglages et bilans restent dans le stockage local de ce navigateur. Pas de compte, pas de synchronisation entre appareils.</p><button id="clearData" class="quiet small" style="margin-top:12px">Effacer mes données locales</button></div>
 </section></div>
-<nav class="bottom-nav" aria-label="Navigation"><button aria-current="true" data-nav="home">Jouer</button><button data-nav="beats">Instrus</button><button data-nav="me">Moi</button></nav>
+<nav class="bottom-nav" aria-label="Navigation"><button aria-current="true" data-nav="home"><span aria-hidden="true">🎤</span> Jouer</button><button aria-current="false" data-nav="beats"><span aria-hidden="true">🎧</span> Instrus</button><button aria-current="false" data-nav="me"><span aria-hidden="true">👤</span> Moi</button></nav>
 </section>
 <section id="gameView" class="view" hidden>
 <div class="session-top"><button class="quiet small" id="backSetup">← Réglages</button><div class="session-meta" id="sessionMeta">90 BPM · 2 mesures</div><button class="quiet small" id="finishBtn">Terminer</button></div>
@@ -154,7 +290,7 @@ body.impro-live .round-progress{margin-top:6px;height:4px}
 <div class="stage-info"><span class="stage-theme" id="gameTheme">Mélange surprise</span><span id="timeLeft">10:00</span></div><div class="focus-banner" id="focusBanner" aria-live="polite">Flow libre : garde le fil, les mots sont des tremplins et non des obligations de rimes.</div>
 <div id="battleBanner" class="battle-banner" hidden aria-live="polite"></div><div class="word-area"><div><div class="word-orbit" id="rhymeOrbit" aria-label="Mot cible entouré de propositions de rimes"><div id="bigWord" class="word empty-word" aria-live="polite" aria-atomic="true">Prêt ?</div></div><div id="wordMeta" class="word-meta" aria-live="polite" aria-atomic="true">Le premier mot arrive après le compte à rebours.</div><div id="previewWord" class="preview"></div><div id="rhymeHelper" class="rhyme-helper" hidden><div class="rhyme-title">Étoiles de rimes · touche un mot pour le garder en tête</div><div class="rhyme-legend" aria-label="Légende des types de rimes"><span class="legend-poor">● Pauvre</span><span class="legend-sufficient">● Suffisante</span><span class="legend-rich">● Riche</span><span class="legend-multi">✦ Multisyllabique</span></div><div class="rhyme-note">Classement phonétique estimé à partir des prononciations Lexique ; ✦ = au moins deux syllabes finales communes. Vérifie toujours la rime à voix haute.</div><div id="rhymeGroups" class="rhyme-groups" aria-label="Rimes classées par qualité"></div></div></div></div>
 <div id="beatline" class="beatline" aria-label="Temps de la mesure"><span></span><span></span><span></span><span></span></div>
-<div class="stage-bottom" style="position:sticky;bottom:0;z-index:20;padding:10px 0 calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent 0%,var(--panel) 18%);backdrop-filter:blur(10px)"><div class="left"><button id="pauseBtn">Ⅱ Pause</button><button id="favoriteWord" class="small" aria-label="Ajouter le mot aux favoris">☆</button></div><div class="right"><button id="nextGameWord" class="primary">Mot suivant ↗</button><button id="finishNowBtn" class="finish-now">Finir l’impro</button></div></div>
+<div class="stage-bottom" style="position:sticky;bottom:0;z-index:20;padding:10px 0 calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent 0%,var(--bg) 18%);backdrop-filter:blur(10px)"><div class="left"><button id="pauseBtn">Ⅱ Pause</button><button id="favoriteWord" class="small" aria-label="Ajouter le mot aux favoris">☆</button></div><div class="right"><button id="nextGameWord" class="primary">Mot suivant ↗</button><button id="finishNowBtn" class="finish-now">Finir l’impro</button></div></div>
 <div class="recorder-tools"><div class="recorder-actions"><button id="recordBtn" type="button">● Enregistrer ma voix</button><button id="stopRecordBtn" type="button" disabled>■ Arrêter</button></div><div id="recordStatus" class="hint" aria-live="polite">Enregistrement local facultatif · autorisation du micro nécessaire.</div><audio id="recordPlayback" controls hidden></audio></div>
 <div class="next-hint" id="gameHint">Mobile : appui long = pause · double tap = suivant. Clavier : Espace = pause, → = suivant, Échap = terminer.</div><div class="round-progress"><span id="roundProgress"></span></div>
 </div>
@@ -162,9 +298,9 @@ body.impro-live .round-progress{margin-top:6px;height:4px}
 <section id="summaryView" class="view" hidden>
 <div class="hero"><div class="eyebrow">Session terminée</div><h1>Le bilan.<br>Puis on remet ça.</h1><p id="summaryLine">Tu as fait tourner le cerveau.</p></div>
 <div class="panel"><div class="stats"><div class="stat"><b id="sumWords">0</b><small>Mots proposés</small></div><div class="stat"><b id="sumTime">0:00</b><small>Temps de session</small></div><div class="stat"><b id="sumStreak">0</b><small>Jours de suite</small></div></div>
-<h3 style="margin-top:20px">Les mots à retravailler</h3><p class="hint">Marque rapidement ceux que tu as réussi à placer ou qui t'ont résisté. Cela aide à les faire revenir dans les prochaines sessions.</p><h3 style="margin-top:18px">Mes enregistrements</h3><div id="recordingsList" class="recordings-list"><p class="hint">Tes impros enregistrées sur cet appareil apparaîtront ici.</p></div><div id="wordRatings" class="word-ratings"></div><div class="actions"><button id="againBtn" class="primary">Rejouer</button><button id="shareBtn">Partager le défi</button><button id="homeBtn">Retour à l'accueil</button></div></div>
+<h3 style="margin-top:20px">Les mots à retravailler</h3><p class="hint">Marque rapidement ceux que tu as réussi à placer ou qui t'ont résisté. Cela aide à les faire revenir dans les prochaines sessions.</p><div id="wordRatings" class="word-ratings"></div><h3 style="margin-top:18px">Mes enregistrements</h3><div id="recordingsList" class="recordings-list"><p class="hint">Tes impros enregistrées sur cet appareil apparaîtront ici.</p></div><div class="actions"><button id="againBtn" class="primary">Rejouer</button><button id="shareBtn">Partager le défi</button><button id="homeBtn">Retour à l'accueil</button></div></div>
 </section>
-<footer>Prototype en évolution · Les données restent sur cet appareil. L'audio externe n'est pas synchronisé. Sur iPhone, le plein écran et le maintien de l'écran allumé dépendent des capacités du navigateur.</footer>
+<footer>Tes données restent sur cet appareil. Sur iPhone, le plein écran et l’écran toujours allumé dépendent de Safari.</footer>
 </main></div>
 <script>
 const BANK={
@@ -571,7 +707,7 @@ function startCustomSession(){$("beatChoice").value=$("customBeat").value;$("qui
 $("customWordsInput").addEventListener("input",()=>{const n=parseCustomWords().length;$("customWordsCount").textContent=Math.min(n,10)+" / 10 mots"+(n>10?" · trop de mots":"")});$("startCustom").addEventListener("click",startCustomSession);
 $("recordBtn").addEventListener("click",startVoiceRecording);$("stopRecordBtn").addEventListener("click",stopVoiceRecording);$("pauseBtn").addEventListener("click",()=>running?pauseGame():resumeGame());$("nextGameWord").addEventListener("click",nextManual);$("favoriteWord").addEventListener("click",addFavorite);$("shareBtn").addEventListener("click",shareChallenge);$("finishBtn").addEventListener("click",finishSession);$("finishNowBtn").addEventListener("click",finishSession);$("backSetup").addEventListener("click",goHome);$("againBtn").addEventListener("click",launch);$("homeBtn").addEventListener("click",goHome);
 $("stage").addEventListener("pointerdown",e=>{if(e.target.closest("button"))return;onStagePointerDown()});["pointerup","pointercancel"].forEach(e=>$("stage").addEventListener(e,eve=>{if(eve.target.closest("button")){clearTimeout(longPressTimer);return}onStagePointerUp()}));$("stage").addEventListener("pointerleave",()=>clearTimeout(longPressTimer));$("clearData").addEventListener("click",()=>{if(confirm("Effacer les favoris, bilans et réglages enregistrés sur cet appareil ?")){try{localStorage.removeItem("improRapData");localStorage.removeItem("improRapSettings")}catch{}data={};renderStats()}});
-document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.nav==="beats"||b.dataset.nav==="me"){if($("setupGrid").hidden)$("customizeBtn").click();const target=b.dataset.nav==="beats"?$("beatChoice"):$("clearData");setTimeout(()=>target.scrollIntoView({behavior:"smooth",block:"center"}),80)}else window.scrollTo({top:0,behavior:"smooth"})}));
+document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-nav]").forEach(x=>x.setAttribute("aria-current",String(x===b)));if(b.dataset.nav==="beats"||b.dataset.nav==="me"){if($("setupGrid").hidden)$("customizeBtn").click();const target=b.dataset.nav==="beats"?$("beatChoice"):$("clearData");setTimeout(()=>target.scrollIntoView({behavior:"smooth",block:"center"}),80)}else window.scrollTo({top:0,behavior:"smooth"})}));
 document.addEventListener("keydown",e=>{if($("gameView")?.hidden||["INPUT","TEXTAREA","SELECT","BUTTON"].includes(document.activeElement?.tagName)||document.activeElement?.isContentEditable||e.altKey||e.ctrlKey||e.metaKey)return;if(e.code==="Space"){e.preventDefault();running?pauseGame():resumeGame()}else if(e.key==="ArrowRight"){e.preventDefault();nextManual()}else if(e.key==="Escape"){e.preventDefault();finishSession()}});document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&running)pauseGame();else if(document.visibilityState==="visible"&&running)requestWakeLock()});window.addEventListener("pagehide",()=>{releaseWakeLock();if(raf)cancelAnimationFrame(raf);if(roundTimer)clearTimeout(roundTimer)});
 
 if("serviceWorker" in navigator && location.protocol!=="file:"){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(reg=>reg.update()).catch(()=>{}))}
@@ -972,6 +1108,7 @@ function battleLoad(){try{const b=JSON.parse(localStorage.getItem(BATTLE_KEY)||"
 function setBattleCard(on){$("battleMode").checked=on;$("battleOptions").hidden=!on;battleSave()}
 document.querySelectorAll("[data-session-mode]").forEach(b=>b.addEventListener("click",()=>setBattleCard(b.dataset.sessionMode==="battle")));
 function selectBattleCard(){document.querySelector('[data-session-mode="battle"]').click()}
+$("quickTen").addEventListener("click",()=>{document.querySelector('[data-session-mode="custom"]').click();if($("setupGrid").hidden||getComputedStyle($("setupGrid")).display==="none")$("customizeBtn").click();$("customModePanel").scrollIntoView({behavior:"smooth",block:"start"});setTimeout(()=>{try{$("customWordsInput").focus({preventScroll:true})}catch{}},400)});
 battleLoad();
 if($("battleMode").checked){const c=document.querySelector('[data-session-mode="battle"]');document.querySelectorAll("[data-session-mode]").forEach(x=>x.setAttribute("aria-pressed",String(x===c)));$("customModePanel").hidden=true;$("freeOptions").hidden=false}
 $("quickBattle").addEventListener("click",()=>{selectBattleCard();if($("setupGrid").hidden||getComputedStyle($("setupGrid")).display==="none")$("customizeBtn").click();$("battleOptions").scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>{try{$("battleP1").focus({preventScroll:true})}catch{}},400)});

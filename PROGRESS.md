@@ -1,5 +1,10 @@
 # Suivi du projet
 
+## 30/10/2026 — branche `claude/tender-lovelace-plb9qb` : design épuré + accessibilité (non fusionné)
+- Fait : voir CHANGELOG du 30/10. Toutes les fonctions sont conservées ; réglages Impro et options Freestyle repliés par défaut.
+- Tests Chromium : `tests/smoke.py` OK, syntaxe JavaScript OK ; `e2e_design.py` 45/45 (320, 375 et 1280 px : pas de débordement, cibles ≥ 44 px, interrupteurs au clavier, focus visible, raccourci 10 mots, onglets) ; `e2e_nouvelles_idees.py` 29/29 ; `e2e_cas_limites.py` 7/7 ; `e2e_plein_ecran.py` : mot entier et sans chevauchement sur 4 formats.
+- À vérifier par Alexis sur iPhone : rendu de la police condensée (Avenir Next Condensed sur iPhone, différente du test), interrupteurs, ouverture des volets Freestyle, barre d’onglets flottante qui ne gêne pas.
+
 ## État au 29/10/2026 (à jour)
 - `main` (en ligne sur GitHub Pages) contient tout le travail validé : Impro + Freestyle (PR #2), nouvelles idées — instrus Freestyle, prises synchronisées, battle, rimes en direct (PR #5, avec #3 et #4), battle facile à trouver (#6), rimes nasales corrigées et Impro en plein écran (PR #7), puis l’index de rimes Lexique reconstruit automatiquement (`f78f143`).
 - Les anciennes branches de travail (`fusion-impro-freestyle`, `nouvelles-idees`, `freestyle-generateur`) sont fusionnées : les sections ci-dessous sont l’historique.
