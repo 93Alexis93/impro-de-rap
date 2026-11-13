@@ -35,6 +35,8 @@ Ordre conseillé : 1 → 2 → 3 (de la plus simple à la plus ambitieuse).
 
 ## 2. « Télécommande dans les écouteurs » : piloter sans toucher le téléphone
 
+> **Codée le 13/11/2026** (interrupteur « 🎧 Télécommande des écouteurs », test `tests/e2e_telecommande.py`), avec un son silencieux en boucle plutôt qu’en faisant passer l’instru par `<audio>`. Reste à valider sur iPhone.
+
 **Le problème** : le téléphone est loin. Pour mettre en pause ou passer au mot suivant, il faut aller le toucher.
 
 **L'idée** : avec des écouteurs (AirPods ou filaires), on utilise leurs boutons :

@@ -264,6 +264,7 @@ body.freestyle-live .free-read-title{display:none!important}
 <button class="mode" data-session-mode="battle" aria-pressed="false"><b>⚔️ Battle à deux</b><small>Deux MC, le micro passe toutes les 4 mesures, un mot par tour.</small></button>
 </div></div><input id="battleMode" type="checkbox" hidden><div id="battleOptions" class="battle-options" hidden><div class="grid2"><div class="field"><label for="battleP1">MC 1</label><input id="battleP1" type="text" maxlength="16" placeholder="MC 1"></div><div class="field"><label for="battleP2">MC 2</label><input id="battleP2" type="text" maxlength="16" placeholder="MC 2"></div></div><div class="field"><label for="battleTurn">Passage de micro</label><select id="battleTurn"><option value="4" selected>Toutes les 4 mesures</option><option value="8">Toutes les 8 mesures</option></select><div class="hint">Un nouveau mot à chaque passage. Choisis ensuite le thème, l’instru et le tempo plus bas, puis lance.</div></div></div>
 <div class="field" id="announceField"><label for="announceMode">📣 Annonce du mot (rapper sans regarder)</label><select id="announceMode"><option value="none">Aucune</option><option value="scratch">Scratch avant chaque mot</option><option value="voice">Scratch + voix qui dit le mot</option></select><p class="hint">Un scratch prévient 2 temps avant le mot, puis la voix du téléphone le prononce. Pratique avec des écouteurs ou le téléphone posé loin.</p></div>
+<label class="toggle"><input id="remoteOn" type="checkbox"> 🎧 Télécommande des écouteurs : pause et mot suivant sans toucher le téléphone</label><p class="hint" id="remoteHint">1 appui = pause / reprise · 2 appuis = mot suivant · 3 appuis = garder le mot 4 mesures de plus. Le mot s’affiche aussi sur l’écran verrouillé.</p>
 <section class="panel" id="customModePanel" hidden><div class="panel-head"><h2>10 mots pour une impro</h2><span class="eyebrow">À toi de jouer</span></div><p class="hint" style="margin:0 0 12px">Fais proposer 10 mots par ton public, colle-les ici. Un mot apparaît à la fois : appuie quand tu l'as placé pour passer au suivant.</p><label for="customWordsInput" class="field"><span style="display:block;font-size:12px;font-weight:800;margin-bottom:7px">Tes 10 mots (un par ligne, ou séparés par des virgules)</span><textarea id="customWordsInput" class="custom-words" placeholder="Ex. :&#10;Mirage&#10;Béton&#10;Amour&#10;Tempête&#10;Métro&#10;Dragon&#10;Liberté&#10;Miroir&#10;Secret&#10;Victoire"></textarea></label><div class="hint" id="customWordsCount" aria-live="polite">0 / 10 mots</div><div class="field" style="margin-top:14px"><label for="customBeat">Instru</label><select id="customBeat"><option value="virtual-boom">VirtualBeat · Boom-bap (90 BPM)</option><option value="virtual-lofi">VirtualBeat · Lo-fi jazzy (82 BPM)</option><option value="virtual-oriental">VirtualBeat · Oriental (96 BPM)</option><option value="virtual-makossa">VirtualBeat · Afro / Makossa (104 BPM)</option><option value="virtual-trap">VirtualBeat · Trap sombre (140 BPM)</option><option value="metro">Métronome simple</option></select></div><div class="field"><label for="customBpm">Tempo (BPM)</label><input id="customBpm" type="number" min="60" max="160" step="1" value="90"><p class="hint">Le tempo conseillé se met tout seul quand tu changes d’instru ; tu peux l’ajuster.</p></div><div class="field"><label>Mode de jeu</label><div class="custom-options"><label><input type="radio" name="customHelp" value="easy" checked> Facile · propositions de rimes</label><label><input type="radio" name="customHelp" value="none"> Sans aide · juste les mots</label></div></div><button id="startCustom" class="primary main-cta">LANCER MON IMPRO À 10 MOTS →</button></section>
 <div id="freeOptions">
 <div class="field"><label for="focusMode">Objectif de l’impro</label><select id="focusMode"><option value="mot">Flow libre — place les mots naturellement</option><option value="chaine">Chaîne d’idées — relie chaque mot au précédent</option><option value="rime">Rimes ciblées — construis une famille de sons</option><option value="punchline">Punchline — prépare une montée et une chute</option><option value="histoire">Histoire — construis un récit avec rebondissement</option><option value="chaos">Adaptation — relève des contraintes surprises</option></select><p class="hint" id="focusHint">Le choix change les consignes et les défis pendant la session.</p></div>
@@ -1318,7 +1319,7 @@ function announceMode(){return $("announceMode").value}
 try{const v=localStorage.getItem(ANNOUNCE_KEY);if(["none","scratch","voice"].includes(v))$("announceMode").value=v}catch{}
 $("announceMode").addEventListener("change",()=>{try{localStorage.setItem(ANNOUNCE_KEY,announceMode())}catch{}});
 /* Un mot arrivera-t-il à la mesure suivante ? (mêmes règles que tick) */
-function wordComingNextBar(){if(customSession)return false;const nb=barIndex+1,bars=Math.max(1,Number(settings.bars)||1);if(nb<INTRO_BARS+1||(nb-INTRO_BARS-1)%bars!==0)return false;if(settings.mode==="rime"&&current&&nb<rimeHoldUntilBar)return false;return true}
+function wordComingNextBar(){if(customSession)return false;const nb=barIndex+1,bars=Math.max(1,Number(settings.bars)||1);if(nb<INTRO_BARS+1||(nb-INTRO_BARS-1)%bars!==0)return false;if(settings.mode==="rime"&&current&&nb<rimeHoldUntilBar)return false;if(nb<remoteHoldUntilBar)return false;return true}
 /* Scratch synthétique : un bruit filtré qui monte puis redescend (« wika »), 2 temps avant le mot. */
 let announceNoise=null;
 function announceScratch(time){if(!audioCtx)return;try{const C=audioCtx;if(!announceNoise){announceNoise=C.createBuffer(1,C.sampleRate*.4,C.sampleRate);const d=announceNoise.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
@@ -1341,5 +1342,34 @@ function announceSay(text){if(!window.speechSynthesis||!window.SpeechSynthesisUt
 {const _pause=pauseGame;pauseGame=function(){try{window.speechSynthesis?.cancel()}catch{}return _pause.apply(this,arguments)}}
 {const _finish=finishSession;finishSession=function(){try{window.speechSynthesis?.cancel()}catch{}return _finish.apply(this,arguments)}}
 ["finishBtn","finishNowBtn","backSetup","improHome"].forEach(id=>$(id)?.addEventListener("click",()=>{try{window.speechSynthesis?.cancel()}catch{}}));
+
+/* ---- Télécommande des écouteurs + mot sur l'écran verrouillé (piste 2 de PISTES.md, 13/11/2026) ----
+   iPhone n'envoie les boutons des écouteurs (Media Session) qu'à une page qui joue un vrai élément <audio>.
+   On joue donc en boucle un son totalement silencieux, sans toucher au chemin du son de l'instru (aucune latence ajoutée). */
+const REMOTE_KEY="improRapRemote";let remoteHoldUntilBar=0,remoteAudio=null,remoteInTick=false;
+function remoteOn(){return $("remoteOn").checked}
+try{$("remoteOn").checked=localStorage.getItem(REMOTE_KEY)==="on"}catch{}
+$("remoteOn").addEventListener("change",()=>{try{localStorage.setItem(REMOTE_KEY,remoteOn()?"on":"off")}catch{}});
+function remoteSilence(){const rate=8000,n=rate/2,b=new ArrayBuffer(44+n*2),v=new DataView(b),w=(o,t)=>[...t].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));
+ w(0,"RIFF");v.setUint32(4,36+n*2,true);w(8,"WAVEfmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,rate,true);v.setUint32(28,rate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,n*2,true);
+ return URL.createObjectURL(new Blob([b],{type:"audio/wav"}))}
+function remoteAudioEl(){if(!remoteAudio){remoteAudio=document.createElement("audio");remoteAudio.id="remoteAudio";remoteAudio.loop=true;remoteAudio.setAttribute("playsinline","");remoteAudio.hidden=true;remoteAudio.src=remoteSilence();document.body.append(remoteAudio)}return remoteAudio}
+function remoteMeta(){if(!("mediaSession" in navigator)||!window.MediaMetadata)return;try{navigator.mediaSession.metadata=new MediaMetadata({title:current||"Prêt ?",artist:"IMPRO DE RAP",album:customSession?"10 mots pour une impro":(BANK[settings.theme]?.label||"Impro"),artwork:[{src:"./icon.svg",sizes:"any",type:"image/svg+xml"}]})}catch{}}
+function remoteState(){try{if("mediaSession" in navigator)navigator.mediaSession.playbackState=running?"playing":"paused"}catch{}}
+const REMOTE_ACTIONS={play:()=>{if(!running&&gameStarted&&!ended)resumeGame()},pause:()=>{if(running)pauseGame()},
+ nexttrack:()=>nextManual(),
+ previoustrack:()=>{if(!running||customSession||!current)return;remoteHoldUntilBar=barIndex+5;$("wordMeta").textContent="🎧 Mot gardé 4 mesures de plus : "+current}};
+function remoteStart(){if(!remoteOn())return;const a=remoteAudioEl();a.play().catch(()=>{});
+ if("mediaSession" in navigator){for(const [k,f] of Object.entries(REMOTE_ACTIONS)){try{navigator.mediaSession.setActionHandler(k,f)}catch{}}}remoteMeta();remoteState()}
+function remoteStop(){if(remoteAudio)remoteAudio.pause();if("mediaSession" in navigator){for(const k of Object.keys(REMOTE_ACTIONS)){try{navigator.mediaSession.setActionHandler(k,null)}catch{}}try{navigator.mediaSession.metadata=null;navigator.mediaSession.playbackState="none"}catch{}}}
+/* Un mot « gardé » n'est pas remplacé par le tempo ; « mot suivant » (écran ou écouteurs) passe toujours. */
+{const _tick=tick;tick=function(){remoteInTick=true;try{return _tick.apply(this,arguments)}finally{remoteInTick=false}}}
+{const _draw=draw;draw=function(){if(remoteInTick&&running&&barIndex<remoteHoldUntilBar)return;remoteHoldUntilBar=0;_draw.apply(this,arguments);if(remoteOn())remoteMeta()}}
+{const _launch=launch;launch=async function(...args){remoteHoldUntilBar=0;remoteStart();const r=await _launch.apply(this,args);if(remoteOn())remoteState();return r}}
+{const _pause=pauseGame;pauseGame=function(){const r=_pause.apply(this,arguments);if(remoteOn()){if(remoteAudio)remoteAudio.pause();remoteState()}return r}}
+{const _resume=resumeGame;resumeGame=function(){const r=_resume.apply(this,arguments);if(remoteOn()){remoteAudioEl().play().catch(()=>{});remoteState()}return r}}
+{const _finish=finishSession;finishSession=function(){const r=_finish.apply(this,arguments);remoteStop();return r}}
+["finishBtn","finishNowBtn","improHome","backSetup","homeBtn"].forEach(id=>$(id)?.addEventListener("click",()=>{if(!running)remoteStop()}));
+{const _home=goHome;goHome=function(){const r=_home.apply(this,arguments);remoteStop();return r}}
 </script>
 </body></html>

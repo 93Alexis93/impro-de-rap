@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-13 — Télécommande des écouteurs (piste 2 de PISTES.md)
+- Nouvel interrupteur « 🎧 Télécommande des écouteurs » dans Personnaliser ma session (désactivé par défaut, mémorisé). Avec AirPods ou écouteurs à boutons : 1 appui = pause / reprise, 2 appuis = mot suivant (en mode 10 mots : mot placé), 3 appuis = garder le mot 4 mesures de plus. « Mot suivant » à l’écran passe toujours.
+- Le mot en cours s’affiche sur l’écran verrouillé comme titre du morceau (« IMPRO DE RAP »).
+- Technique : Media Session API. iPhone n’envoie ces boutons qu’à une page qui joue un vrai `<audio>` : on joue en boucle un son totalement silencieux (généré dans la page), sans changer le chemin du son de l’instru, donc sans latence ajoutée. Écart assumé avec PISTES.md, qui proposait de faire passer l’instru par `<audio>` : plus risqué pour le calage des mots.
+- Cache hors ligne `v32`. Nouveau test `tests/e2e_telecommande.py` (14 vérifications).
+
 ## 2026-11-13 — Annonce du mot (piste 1 de PISTES.md)
 - Nouveau réglage « 📣 Annonce du mot » dans Personnaliser ma session : Aucune (par défaut, comme avant), Scratch avant chaque mot, Scratch + voix qui dit le mot. Mémorisé sur l’appareil.
 - Scratch synthétique (bruit filtré qui monte puis redescend) joué 2 temps avant chaque nouveau mot, dans la chaîne de son de l’instru ; pas pendant l’intro, pas en mode 10 mots (le mot y vient au toucher).
