@@ -10,6 +10,7 @@ Application web de freestyle rap, pensée d’abord pour le téléphone. Elle pr
 
 ## Ce qui est disponible dans la version actuelle
 
+- **Design épuré** : écran d’accueil en grandes cartes, réglages repliés derrière « ⚙ Personnaliser ma session », options avancées du Freestyle en volets ; textes lisibles, cibles tactiles larges, navigation au clavier.
 - **Accueil à deux espaces** : 🎤 **Impro** (mots, rimes, défis, VirtualBeat) et 📜 **Freestyle** (ton texte défile pendant que tu rappes, avec une bibliothèque de textes enregistrés sur l’appareil, une instru intégrée facultative ou ton propre fichier audio, et un mode lecture plein écran).
 - **VirtualBeat** : rythmes générés dans le navigateur (boom-bap, oriental, makossa) synchronisés avec les mots, ou métronome simple.
 - **10 mots pour une impro** : les mots de ton public, placés un par un, avec ou sans propositions de rimes.

@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-10-30 — Instru plus forte, mot qui ne reste plus bloqué, prise de voix Freestyle
+- **Instru trop faible pendant qu’on rappe** : le niveau moyen des instrus était bas (≈ -17 à -21 dB) et les basses, très graves, passaient mal sur un haut-parleur de téléphone. Nouvelle chaîne de sortie commune Impro + Freestyle (`vbBuildMaster`) : légère saturation qui rend kick et basse audibles sur un petit haut-parleur, compression, limiteur. Mesure hors ligne : ≈ +5,5 à +6,5 dB en moyenne (≈ -11 à -14 dB), crêtes sous -0,9 dB, donc sans saturer.
+- Sur iPhone, le micro était ouvert en mode « appel téléphonique » (annulation d’écho, gain automatique) : iOS baisse alors fortement le son de l’instru. Le micro est maintenant ouvert en mode musique (`MIC_MUSIC`), dans l’Impro comme dans le Freestyle.
+- **Mot qui reste affiché** : reproduit. Quand le téléphone coupe le son (appel, notification, ouverture du micro, verrouillage), l’horloge audio se fige et le mot ne changeait plus jamais. Désormais les mots continuent au rythme sur une horloge de secours (sans son), le son se relance tout seul ou au premier toucher de l’écran, et l’instru repart au tempo sans rafale de sons en retard. Si le son ne démarre pas du tout au lancement, la session tourne quand même (avant : un seul mot, figé).
+- **Enregistrement Freestyle sur la voix** : micro en mode musique (la voix rappée n’est plus hachée ni pompée), voix renforcée et compressée dans la prise, instru mise plus bas que la voix et recalée du délai haut-parleur → micro (estimé, ≈ 60 ms par défaut) pour que la voix ne paraisse plus en retard, limiteur final contre la saturation.
+- Cache hors ligne passé en `v30`. Nouveau test `tests/e2e_son.py` (19 vérifications).
+
+## 2026-10-30 — Design épuré et accessibilité
+- **Accueil** : grand titre IMPRO / DE RAP en police condensée, petit égaliseur animé (jaune et rose), deux grandes cartes Impro / Freestyle avec icône et phrase courte.
+- **Impro** : grosse carte « ▶ Session » en tête, puis Échauffement, Défi du jour, Battle à deux, **nouveau raccourci « 🎯 10 mots »** (choisit le mode, ouvre ses réglages et place le curseur dans la liste), Réviser mes mots ratés. Choix de l’instru en un seul champ.
+- **Réglages repliés au départ** : « ⚙ Personnaliser ma session » les déplie (le bouton Battle, le raccourci 10 mots et les onglets Instrus / Moi les ouvrent tout seuls). Toutes les options sont conservées.
+- **Freestyle** : texte, instru, vitesse et lecture restent visibles ; Générer un texte, Bibliothèque, Entraînement (tempo, mémoire, relais) et Enregistrer ma voix deviennent des volets qu’on déplie. Gros bouton rose « ▶ Lancer le défilement ».
+- Cases à cocher remplacées par des interrupteurs (toujours de vraies cases, utilisables au clavier et au lecteur d’écran), menus déroulants uniformes, barre d’onglets flottante Jouer / Instrus / Moi.
+- **Accessibilité** : textes secondaires agrandis (12-13 px minimum) et plus contrastés, toutes les cibles tactiles à 44 px ou plus, contour de focus visible au clavier partout, onglet actif annoncé (`aria-current` mis à jour), titres des sections Freestyle devenus de vrais intitulés de volets, animations coupées si « Réduire les animations » est activé.
+- Bilan : la notation « placé / raté » est revenue juste sous « Les mots à retravailler » (elle était après les enregistrements). Barre du bas de la session : fond corrigé (variable inexistante).
+- Écran de jeu plein écran inchangé (validé le 29/10). Cache hors ligne passé en `v29`.
+- Tests : nouveau `tests/e2e_design.py` (45 vérifications) ; les tests existants ouvrent maintenant les volets repliés avant d’agir.
+
 ## 2026-10-29 — Rimes de « gentrification » corrigées, Impro en plein écran
 - **Rimes fausses (ex. « gentrification » → sociaux, radio)** : la cause est dans Lexique 4.00 lui-même. Pour certains mots rares (transcrits automatiquement), la finale nasale est notée comme une voyelle orale : « gentrification » Z@tRifikasjO au lieu de …sj§ (« on »), « maintenant » m5tna au lieu de m5tn@, « tremplins » tR@plE au lieu de tR@pl5. L’appli cherchait donc des rimes en « -sio ».
 - Correction : `scripts/phon_fixes.py` rétablit la finale nasale quand l’orthographe française l’impose (-ion, -on, -ant, -ment, -ain, -ins, -ance) et que la prononciation finit sur la voyelle orale correspondante. 191 mots corrigés dans `data/lexique-rimes.json` (`scripts/fix_lexique_rimes.py`, idempotent) ; la correction est aussi branchée dans `scripts/build_lexique_rimes.py` pour les prochaines reconstructions. Les mots anglais (fan, bacon, cartoon) ne sont pas touchés. « gentrification » rime maintenant avec situation, relation, opération.

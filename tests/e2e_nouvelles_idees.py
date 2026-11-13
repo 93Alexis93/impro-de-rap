@@ -1,6 +1,8 @@
 # Tests Playwright (29/10/2026). Lancer depuis la racine : python3 -m http.server 8765 & puis python3 tests/e2e_nouvelles_idees.py
 import sys,time
 from playwright.sync_api import sync_playwright
+# Depuis le design du 30/10/2026, réglages Impro et volets Freestyle sont repliés : on les ouvre avant d'agir dessus.
+OUVRIR="()=>{document.querySelectorAll('#freestyle details').forEach(d=>d.open=true);const g=document.getElementById('setupGrid');if(g&&g.hidden&&!document.getElementById('improApp').classList.contains('hide'))document.getElementById('customizeBtn').click()}"
 URL="http://localhost:8765/index.html"
 res=[]
 def ok(c,m):
@@ -12,7 +14,7 @@ with sync_playwright() as p:
     pg.on("pageerror",lambda e:errs.append(str(e)))
     pg.goto(URL);pg.wait_for_timeout(500)
     # ---- 1. Instrus VirtualBeat dans le Freestyle
-    pg.click("#enterFreestyle")
+    pg.click("#enterFreestyle");pg.evaluate(OUVRIR)
     opts=pg.eval_on_selector_all("#freeBeat option","os=>os.map(o=>o.value)")
     ok(opts==["none","virtual-boom","virtual-lofi","virtual-oriental","virtual-makossa","virtual-trap","file"],"Freestyle : mêmes 5 instrus que l'Impro + sans instru + import")
     pg.select_option("#freeBeat","virtual-trap");ok(pg.input_value("#freeBpm")=="140","Trap règle le tempo à 140")
@@ -61,7 +63,7 @@ with sync_playwright() as p:
     pg.check("#freeRhymeOn")
     pg.click("#freeHome")
     # ---- 4. battle
-    pg.click("#enterImpro");pg.wait_for_timeout(300)
+    pg.click("#enterImpro");pg.evaluate(OUVRIR);pg.wait_for_timeout(300)
     ok(pg.is_visible("#quickBattle") and pg.is_visible('[data-session-mode="battle"]'),"Battle visible : bouton rapide + carte « Mode d'impro »")
     pg.click("#quickBattle");pg.wait_for_timeout(600)
     ok(pg.is_visible("#battleP1") and pg.get_attribute('[data-session-mode="battle"]',"aria-pressed")=="true" and pg.is_checked("#battleMode"),"Bouton rapide : carte Battle sélectionnée, noms des MC affichés")
@@ -83,7 +85,7 @@ with sync_playwright() as p:
     pg.click("#againBtn");pg.wait_for_timeout(800)
     ok("Alexis ouvre la battle" in pg.inner_text("#battleBanner"),"« Rejouer » relance bien une battle")
     pg.click("#finishBtn");pg.wait_for_timeout(300)
-    pg.click("#improHome");pg.click("#enterImpro");pg.click('[data-session-mode="free"]');pg.click("#launch");pg.wait_for_timeout(800)
+    pg.click("#improHome");pg.click("#enterImpro");pg.evaluate(OUVRIR);pg.click('[data-session-mode="free"]');pg.click("#launch");pg.wait_for_timeout(800)
     ok(pg.is_hidden("#battleBanner") and pg.evaluate("()=>settings.bars")==2 and not pg.is_checked("#battleMode"),"Retour sur « Impro libre » : session normale, sans bandeau")
     pg.click("#finishBtn");pg.wait_for_timeout(300)
     # battle désactivée => pas de bandeau
