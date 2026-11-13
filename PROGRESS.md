@@ -1,5 +1,8 @@
 # Suivi du projet
 
+## 13/11/2026 — pistes futures
+- `PISTES.md` : trois améliorations proposées, rien de codé : annonce sonore du mot (scratch + voix), télécommande par les boutons des écouteurs, « Flow-mètre » qui analyse les prises. À valider par Alexis.
+
 ## 13/11/2026 — fusion dans `main`
 - Alexis a testé sur iPhone et validé (« C’est bon, fusionne ») : design épuré + correctifs son / mots / enregistrement fusionnés dans `main`, ce qui relance la mise en ligne GitHub Pages. Cache hors ligne `v30`.
 
