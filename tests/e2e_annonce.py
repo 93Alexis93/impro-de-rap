@@ -16,8 +16,8 @@ def start(b,mode,battle=False):
     pg=b.new_page(viewport={"width":375,"height":812});errs=[];pg.on("pageerror",lambda e:errs.append(str(e)))
     pg.goto(URL);pg.click("#enterImpro")
     if battle: pg.click("#quickBattle");pg.fill("#battleP1","Alexis");pg.fill("#battleP2","Léon")
-    else: pg.click("#customizeBtn")
-    pg.select_option("#announceMode",mode);pg.fill("#bpm","160");pg.select_option("#bars","1");pg.evaluate(SPY)
+    else: pg.click("#customizeBtn");pg.evaluate("()=>document.querySelectorAll('#setupGrid details').forEach(d=>d.open=true)")
+    pg.evaluate("()=>document.querySelectorAll('#setupGrid details').forEach(d=>d.open=true)");pg.select_option("#announceMode",mode);pg.fill("#bpm","160");pg.select_option("#bars","1");pg.evaluate(SPY)
     return pg,errs
 with sync_playwright() as p:
     b=p.chromium.launch(args=["--autoplay-policy=no-user-gesture-required"])

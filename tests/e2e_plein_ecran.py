@@ -1,7 +1,7 @@
 # Tests Playwright plein écran Impro (29/10/2026). Lancer : python3 -m http.server 8765 & puis python3 tests/e2e_plein_ecran.py
 from playwright.sync_api import sync_playwright
 # Depuis le design du 30/10/2026, réglages Impro et volets Freestyle sont repliés : on les ouvre avant d'agir dessus.
-OUVRIR="()=>{document.querySelectorAll('#freestyle details').forEach(d=>d.open=true);const g=document.getElementById('setupGrid');if(g&&g.hidden&&!document.getElementById('improApp').classList.contains('hide'))document.getElementById('customizeBtn').click()}"
+OUVRIR="()=>{document.querySelectorAll('#freestyle details,#setupGrid details').forEach(d=>d.open=true);const g=document.getElementById('setupGrid');if(g&&g.hidden&&!document.getElementById('improApp').classList.contains('hide'))document.getElementById('customizeBtn').click()}"
 import tempfile;SP=tempfile.gettempdir()+"/"
 with sync_playwright() as p:
     b=p.chromium.launch(args=["--autoplay-policy=no-user-gesture-required"])

@@ -11,7 +11,7 @@ def check(nom,cond,info=""):
 SPY="()=>{window.__h={};const f=navigator.mediaSession.setActionHandler.bind(navigator.mediaSession);navigator.mediaSession.setActionHandler=(k,h)=>{__h[k]=h;try{f(k,h)}catch{}}}"
 def start(b,on,custom=False):
     pg=b.new_page(viewport={"width":375,"height":812});errs=[];pg.on("pageerror",lambda e:errs.append(str(e)))
-    pg.goto(URL);pg.click("#enterImpro");pg.click("#customizeBtn")
+    pg.goto(URL);pg.click("#enterImpro");pg.click("#customizeBtn");pg.evaluate("()=>document.querySelectorAll('#setupGrid details').forEach(d=>d.open=true)")
     if on: pg.check("#remoteOn")
     pg.fill("#bpm","160");pg.select_option("#bars","1");pg.evaluate(SPY)
     return pg,errs

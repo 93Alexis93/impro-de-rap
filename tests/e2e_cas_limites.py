@@ -2,7 +2,7 @@
 import sys
 from playwright.sync_api import sync_playwright
 # Depuis le design du 30/10/2026, réglages Impro et volets Freestyle sont repliés : on les ouvre avant d'agir dessus.
-OUVRIR="()=>{document.querySelectorAll('#freestyle details').forEach(d=>d.open=true);const g=document.getElementById('setupGrid');if(g&&g.hidden&&!document.getElementById('improApp').classList.contains('hide'))document.getElementById('customizeBtn').click()}"
+OUVRIR="()=>{document.querySelectorAll('#freestyle details,#setupGrid details').forEach(d=>d.open=true);const g=document.getElementById('setupGrid');if(g&&g.hidden&&!document.getElementById('improApp').classList.contains('hide'))document.getElementById('customizeBtn').click()}"
 import tempfile;SP=tempfile.gettempdir()+"/"
 res=[]
 def ok(c,m):res.append(bool(c));print(("PASS " if c else "FAIL ")+m)

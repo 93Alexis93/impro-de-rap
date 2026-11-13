@@ -214,6 +214,30 @@ body.freestyle-live .free-read-title{display:none!important}
 #freestyle .free-rhymes-toggle{text-transform:none;letter-spacing:0;font-size:14px;color:#D8D8E2;gap:10px;min-height:44px}
 .recordings-list>p{margin:0;font-size:14px;color:var(--muted)}
 #summaryView .actions{margin-top:20px}
+
+/* ---- Flow-mètre (13/11/2026) ---- */
+.flow-btn{min-height:44px;padding:6px 12px;white-space:nowrap}
+.flow-card{margin:-2px 0 10px;padding:14px;border:1px solid rgba(255,210,31,.35);border-radius:16px;background:rgba(255,210,31,.05)}
+.flow-card h4{margin:0 0 10px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--yellow)}
+.flow-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.flow-stats div{background:var(--field);border:1px solid var(--line);border-radius:12px;padding:10px}
+.flow-stats b{display:block;font-family:var(--display);font-size:26px;font-weight:900;color:var(--ink)}
+.flow-stats small{font-size:12px;color:var(--muted)}
+.flow-bars{display:flex;align-items:flex-end;gap:2px;height:46px;margin:12px 0 4px}
+.flow-bars i{flex:1;min-width:2px;background:var(--yellow);border-radius:2px 2px 0 0;opacity:.85}
+.flow-bars i.gap{background:var(--pink);height:4px!important;opacity:1}
+.flow-gaps{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.flow-gaps button{min-height:44px;padding:6px 12px;font-size:13px;border-color:var(--pink);color:#FF9DB5}
+.flow-tip{margin:10px 0 0;font-size:14px;line-height:1.45}
+
+/* ---- Réglages simplifiés (13/11/2026) : l'essentiel visible, le reste dans des volets ---- */
+.more-opts{margin:14px 0 4px;border:1px solid var(--line);border-radius:16px;background:var(--field)}
+.more-opts>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:54px;padding:12px 14px;font-weight:800;font-size:14px;cursor:pointer;border-radius:16px}
+.more-opts>summary::-webkit-details-marker{display:none}
+.more-opts>summary::after{content:"";flex:0 0 9px;width:9px;height:9px;margin-right:4px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translate(-2px,-2px);transition:transform .15s}
+.more-opts[open]>summary::after{transform:rotate(-135deg)}
+.more-opts>:not(summary){margin-left:14px;margin-right:14px}
+.more-opts[open]{padding-bottom:12px}
 </style>
 </head>
 <body>
@@ -254,7 +278,7 @@ body.freestyle-live .free-read-title{display:none!important}
 <div class="hero"><div class="eyebrow">Terrain d'entraînement freestyle</div><h1>Le beat tourne.<br>Les mots tombent.</h1><p>Pose le téléphone, lance l’instru, attrape les mots. Le but n’est pas d’être parfait.</p></div>
 
 <div class="quick"><button id="quickSession" class="primary quick-main"><b>▶ Session</b><small>10 min · polyvalente</small></button><button id="quickWarm"><b>🔥 Échauffement</b><small>3 min · simple et fluide</small></button><button id="quickChallenge"><b>📅 Défi du jour</b><small>3 min · tirage du jour</small></button><button id="quickBattle"><b>⚔️ Battle à deux</b><small>2 MC · micro toutes les 4 mesures</small></button><button id="quickTen"><b>🎯 10 mots</b><small>Les mots de ton public</small></button><button id="quickReview" class="quick-wide"><b>↻ Réviser mes mots ratés</b><small>3 min · focus sur tes difficultés</small></button></div>
-<section class="panel beat-quick" id="quickBeatPanel"><div class="field"><label for="quickBeatChoice">🎧 Instru de l’impro</label><select id="quickBeatChoice"><option value="virtual-boom">VirtualBeat · Boom-bap (90 BPM)</option><option value="virtual-lofi">VirtualBeat · Lo-fi jazzy (82 BPM)</option><option value="virtual-oriental">VirtualBeat · Oriental (96 BPM)</option><option value="virtual-makossa">VirtualBeat · Afro / Makossa (104 BPM)</option><option value="virtual-trap">VirtualBeat · Trap sombre (140 BPM)</option><option value="metro">Métronome simple</option></select><p class="hint">Le son démarre au lancement. Rien ne sort ? Vérifie « Activer le son » dans les réglages.</p></div></section>
+<section class="panel beat-quick" id="quickBeatPanel"><div class="field"><label for="quickBeatChoice">🎧 Instru de l’impro</label><select id="quickBeatChoice"><option value="virtual-boom">VirtualBeat · Boom-bap (90 BPM)</option><option value="virtual-lofi">VirtualBeat · Lo-fi jazzy (82 BPM)</option><option value="virtual-oriental">VirtualBeat · Oriental (96 BPM)</option><option value="virtual-makossa">VirtualBeat · Afro / Makossa (104 BPM)</option><option value="virtual-trap">VirtualBeat · Trap sombre (140 BPM)</option><option value="metro">Métronome simple</option></select><p class="hint">Le son démarre au lancement. Rien ne sort ? Vérifie le bouton silencieux de l’iPhone, puis « Activer le son » dans Personnaliser › Plus d’options.</p></div></section>
 <button id="customizeBtn" class="quiet main-cta" aria-expanded="false" aria-controls="setupGrid" style="margin-bottom:14px">⚙ Personnaliser ma session</button>
 <div class="setup-grid" id="setupGrid" hidden>
 <section class="panel"><div class="panel-head"><h2>Personnalisation</h2><span class="eyebrow">01 / Réglages</span></div>
@@ -263,8 +287,10 @@ body.freestyle-live .free-read-title{display:none!important}
 <button class="mode" data-session-mode="custom" aria-pressed="false"><b>10 mots pour une impro</b><small>Les mots de ton public, à placer un par un.</small></button>
 <button class="mode" data-session-mode="battle" aria-pressed="false"><b>⚔️ Battle à deux</b><small>Deux MC, le micro passe toutes les 4 mesures, un mot par tour.</small></button>
 </div></div><input id="battleMode" type="checkbox" hidden><div id="battleOptions" class="battle-options" hidden><div class="grid2"><div class="field"><label for="battleP1">MC 1</label><input id="battleP1" type="text" maxlength="16" placeholder="MC 1"></div><div class="field"><label for="battleP2">MC 2</label><input id="battleP2" type="text" maxlength="16" placeholder="MC 2"></div></div><div class="field"><label for="battleTurn">Passage de micro</label><select id="battleTurn"><option value="4" selected>Toutes les 4 mesures</option><option value="8">Toutes les 8 mesures</option></select><div class="hint">Un nouveau mot à chaque passage. Choisis ensuite le thème, l’instru et le tempo plus bas, puis lance.</div></div></div>
+<details class="more-opts" id="farOptions"><summary>📱 Téléphone posé loin : annonce du mot, télécommande</summary>
 <div class="field" id="announceField"><label for="announceMode">📣 Annonce du mot (rapper sans regarder)</label><select id="announceMode"><option value="none">Aucune</option><option value="scratch">Scratch avant chaque mot</option><option value="voice">Scratch + voix qui dit le mot</option></select><p class="hint">Un scratch prévient 2 temps avant le mot, puis la voix du téléphone le prononce. Pratique avec des écouteurs ou le téléphone posé loin.</p></div>
 <label class="toggle"><input id="remoteOn" type="checkbox"> 🎧 Télécommande des écouteurs : pause et mot suivant sans toucher le téléphone</label><p class="hint" id="remoteHint">1 appui = pause / reprise · 2 appuis = mot suivant · 3 appuis = garder le mot 4 mesures de plus. Le mot s’affiche aussi sur l’écran verrouillé.</p>
+</details>
 <section class="panel" id="customModePanel" hidden><div class="panel-head"><h2>10 mots pour une impro</h2><span class="eyebrow">À toi de jouer</span></div><p class="hint" style="margin:0 0 12px">Fais proposer 10 mots par ton public, colle-les ici. Un mot apparaît à la fois : appuie quand tu l'as placé pour passer au suivant.</p><label for="customWordsInput" class="field"><span style="display:block;font-size:12px;font-weight:800;margin-bottom:7px">Tes 10 mots (un par ligne, ou séparés par des virgules)</span><textarea id="customWordsInput" class="custom-words" placeholder="Ex. :&#10;Mirage&#10;Béton&#10;Amour&#10;Tempête&#10;Métro&#10;Dragon&#10;Liberté&#10;Miroir&#10;Secret&#10;Victoire"></textarea></label><div class="hint" id="customWordsCount" aria-live="polite">0 / 10 mots</div><div class="field" style="margin-top:14px"><label for="customBeat">Instru</label><select id="customBeat"><option value="virtual-boom">VirtualBeat · Boom-bap (90 BPM)</option><option value="virtual-lofi">VirtualBeat · Lo-fi jazzy (82 BPM)</option><option value="virtual-oriental">VirtualBeat · Oriental (96 BPM)</option><option value="virtual-makossa">VirtualBeat · Afro / Makossa (104 BPM)</option><option value="virtual-trap">VirtualBeat · Trap sombre (140 BPM)</option><option value="metro">Métronome simple</option></select></div><div class="field"><label for="customBpm">Tempo (BPM)</label><input id="customBpm" type="number" min="60" max="160" step="1" value="90"><p class="hint">Le tempo conseillé se met tout seul quand tu changes d’instru ; tu peux l’ajuster.</p></div><div class="field"><label>Mode de jeu</label><div class="custom-options"><label><input type="radio" name="customHelp" value="easy" checked> Facile · propositions de rimes</label><label><input type="radio" name="customHelp" value="none"> Sans aide · juste les mots</label></div></div><button id="startCustom" class="primary main-cta">LANCER MON IMPRO À 10 MOTS →</button></section>
 <div id="freeOptions">
 <div class="field"><label for="focusMode">Objectif de l’impro</label><select id="focusMode"><option value="mot">Flow libre — place les mots naturellement</option><option value="chaine">Chaîne d’idées — relie chaque mot au précédent</option><option value="rime">Rimes ciblées — construis une famille de sons</option><option value="punchline">Punchline — prépare une montée et une chute</option><option value="histoire">Histoire — construis un récit avec rebondissement</option><option value="chaos">Adaptation — relève des contraintes surprises</option></select><p class="hint" id="focusHint">Le choix change les consignes et les défis pendant la session.</p></div>
@@ -273,12 +299,14 @@ body.freestyle-live .free-read-title{display:none!important}
 </div></div>
 <div class="grid2"><div class="field"><label for="level">Niveau</label><select id="level"><option value="easy">Chauffe</option><option value="mixed" selected>Équilibré</option><option value="hard">Technique</option></select><div class="hint" id="levelHint">Vocabulaire mixte · mots toutes les 2 mesures.</div></div><div class="field"><label for="duration">Durée</label><select id="duration"><option value="180">3 minutes</option><option value="300">5 minutes</option><option value="600" selected>10 minutes</option><option value="0">Sans fin</option></select></div></div>
 <div class="grid2"><div class="field"><label for="bpm">Tempo (BPM)</label><input id="bpm" type="number" min="60" max="160" step="1" value="90"></div><div class="field"><label for="bars">Un mot toutes les…</label><select id="bars"><option value="1">1 mesure</option><option value="2" selected>2 mesures</option><option value="4">4 mesures</option><option value="8">8 mesures</option></select></div></div>
+<details class="more-opts" id="moreOptions"><summary>⚙ Plus d’options : instru, son, rimes, aperçu, favoris</summary>
 <div class="field"><label for="beatChoice">Instrumentale</label><select id="beatChoice"><option value="virtual-boom">VirtualBeat intégré · Boom-bap (90 BPM)</option><option value="virtual-lofi">VirtualBeat intégré · Lo-fi jazzy (82 BPM)</option><option value="virtual-oriental">VirtualBeat intégré · Oriental (96 BPM)</option><option value="virtual-makossa">VirtualBeat intégré · Afro / Makossa (104 BPM)</option><option value="virtual-trap">VirtualBeat intégré · Trap sombre (140 BPM)</option><option value="metro">Métronome simple</option></select><p class="hint">VirtualBeat génère un rythme synchronisé directement dans l’application, sans fichier audio externe. Les liens externes restent des pistes d’écoute séparées.</p></div>
 <label class="toggle"><input id="rhymeAssist" type="checkbox" checked> Afficher les suggestions de rimes pendant l’impro</label>
 <label class="toggle"><input id="previewNext" type="checkbox"> Aperçu d'un mot à l'avance (mode Chauffe)</label>
 <label class="toggle"><input id="clickEnabled" type="checkbox" checked> Activer le son du rythme / de l’instrumentale</label>
 <label class="toggle"><input id="zeroMode" type="checkbox"> Mode zéro distraction</label>
 <label class="toggle"><input id="favoritePriority" type="checkbox"> Utiliser mes mots favoris en priorité dans l’impro libre</label>
+</details>
 <div style="margin-top:18px"><button class="primary main-cta" id="launch">LANCER LA SESSION →</button></div>
 </div>
 </section>
@@ -650,8 +678,8 @@ function loadSettings(){try{const s=JSON.parse(localStorage.getItem("improRapSet
 function persistSettings(){settings.level=$("level").value;settings.duration=Number($("duration").value);settings.bpm=Math.max(60,Math.min(160,Number($("bpm").value)||90));settings.bars=Math.max(1,Math.min(8,Number($("bars").value)||2));settings.beat=$("beatChoice").value;settings.preview=$("previewNext").checked;settings.click=$("clickEnabled").checked;settings.zero=$("zeroMode").checked;settings.rhymeAssist=$("rhymeAssist").checked;settings.favoritePriority=$("favoritePriority").checked;try{localStorage.setItem("improRapSettings",JSON.stringify(settings))}catch{}}
 let mediaRecorder=null,recordedChunks=[],recordingStartedAt=0,recordingStream=null,recordingDbPromise=null,activeRecordingUrl=null;
 function recordingDb(){if(recordingDbPromise)return recordingDbPromise;recordingDbPromise=new Promise((resolve,reject)=>{if(!("indexedDB"in window)){reject(new Error("Le stockage audio n’est pas disponible dans ce navigateur."));return}const req=indexedDB.open("improRapAudio",1);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains("recordings"))req.result.createObjectStore("recordings",{keyPath:"id",autoIncrement:true})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error("Ouverture du stockage impossible."))});return recordingDbPromise}
-async function saveRecording(blob,duration){const db=await recordingDb();return new Promise((resolve,reject)=>{const tx=db.transaction("recordings","readwrite");tx.objectStore("recordings").add({blob,duration,createdAt:Date.now(),words:[...new Set(sessionWords)].slice(-10),mode:settings.mode});tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error("Enregistrement non sauvegardé."))})}
-async function listRecordings(){const host=$("recordingsList");if(!host)return;try{const db=await recordingDb();const items=await new Promise((resolve,reject)=>{const tx=db.transaction("recordings","readonly"),req=tx.objectStore("recordings").getAll();req.onsuccess=()=>resolve((req.result||[]).filter(x=>x.kind!=="freestyle"));req.onerror=()=>reject(req.error)});host.replaceChildren();if(!items.length){host.textContent="Aucun enregistrement pour le moment.";return}items.sort((a,b)=>b.createdAt-a.createdAt).slice(0,20).forEach(item=>{const row=document.createElement("div");row.className="recording-item";const info=document.createElement("div"),title=document.createElement("b"),sub=document.createElement("small"),play=document.createElement("audio");title.textContent=new Date(item.createdAt).toLocaleString("fr-FR")+" · "+fmt(Math.round(item.duration/1000));sub.textContent=(MODES[item.mode]||"Impro")+" · "+(item.words||[]).join(", ");info.append(title,sub);play.controls=true;play.preload="none";play.setAttribute("aria-label","Écouter l’impro enregistrée");play.src=URL.createObjectURL(item.blob);row.append(info,play);host.append(row)})}catch(e){host.textContent=e.message||"Impossible de lire les enregistrements locaux."}}
+async function saveRecording(blob,duration){const db=await recordingDb();return new Promise((resolve,reject)=>{const tx=db.transaction("recordings","readwrite");tx.objectStore("recordings").add({blob,duration,createdAt:Date.now(),words:[...new Set(sessionWords)].slice(-10),mode:settings.mode,bpm:settings.click&&settings.beat?settings.bpm:0});tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error("Enregistrement non sauvegardé."))})}
+async function listRecordings(){const host=$("recordingsList");if(!host)return;try{const db=await recordingDb();const items=await new Promise((resolve,reject)=>{const tx=db.transaction("recordings","readonly"),req=tx.objectStore("recordings").getAll();req.onsuccess=()=>resolve((req.result||[]).filter(x=>x.kind!=="freestyle"));req.onerror=()=>reject(req.error)});host.replaceChildren();if(!items.length){host.textContent="Aucun enregistrement pour le moment.";return}items.sort((a,b)=>b.createdAt-a.createdAt).slice(0,20).forEach(item=>{const row=document.createElement("div");row.className="recording-item";const info=document.createElement("div"),title=document.createElement("b"),sub=document.createElement("small"),play=document.createElement("audio");title.textContent=new Date(item.createdAt).toLocaleString("fr-FR")+" · "+fmt(Math.round(item.duration/1000));sub.textContent=(MODES[item.mode]||"Impro")+" · "+(item.words||[]).join(", ");info.append(title,sub);play.controls=true;play.preload="none";play.setAttribute("aria-label","Écouter l’impro enregistrée");play.src=URL.createObjectURL(item.blob);const fm=flowButton(item,()=>play);row.append(info,play,fm.btn);host.append(row,fm.card)})}catch(e){host.textContent=e.message||"Impossible de lire les enregistrements locaux."}}
 /* Micro réglé pour la musique (30/10/2026) : sans annulation d'écho, réduction de bruit ni gain automatique.
    Sur iPhone, ces traitements « appel téléphonique » hachent la voix rappée et baissent fortement le son de l'instru. */
 const MIC_MUSIC={echoCancellation:false,noiseSuppression:false,autoGainControl:false,channelCount:1};
@@ -735,7 +763,7 @@ function startCustomSession(){$("beatChoice").value=$("customBeat").value;$("qui
 $("customWordsInput").addEventListener("input",()=>{const n=parseCustomWords().length;$("customWordsCount").textContent=Math.min(n,10)+" / 10 mots"+(n>10?" · trop de mots":"")});$("startCustom").addEventListener("click",startCustomSession);
 $("recordBtn").addEventListener("click",startVoiceRecording);$("stopRecordBtn").addEventListener("click",stopVoiceRecording);$("pauseBtn").addEventListener("click",()=>running?pauseGame():resumeGame());$("nextGameWord").addEventListener("click",nextManual);$("favoriteWord").addEventListener("click",addFavorite);$("shareBtn").addEventListener("click",shareChallenge);$("finishBtn").addEventListener("click",finishSession);$("finishNowBtn").addEventListener("click",finishSession);$("backSetup").addEventListener("click",goHome);$("againBtn").addEventListener("click",launch);$("homeBtn").addEventListener("click",goHome);
 $("stage").addEventListener("pointerdown",e=>{if(e.target.closest("button"))return;onStagePointerDown()});["pointerup","pointercancel"].forEach(e=>$("stage").addEventListener(e,eve=>{if(eve.target.closest("button")){clearTimeout(longPressTimer);return}onStagePointerUp()}));$("stage").addEventListener("pointerleave",()=>clearTimeout(longPressTimer));$("clearData").addEventListener("click",()=>{if(confirm("Effacer les favoris, bilans et réglages enregistrés sur cet appareil ?")){try{localStorage.removeItem("improRapData");localStorage.removeItem("improRapSettings")}catch{}data={};renderStats()}});
-document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-nav]").forEach(x=>x.setAttribute("aria-current",String(x===b)));if(b.dataset.nav==="beats"||b.dataset.nav==="me"){if($("setupGrid").hidden)$("customizeBtn").click();const target=b.dataset.nav==="beats"?$("beatChoice"):$("clearData");setTimeout(()=>target.scrollIntoView({behavior:"smooth",block:"center"}),80)}else window.scrollTo({top:0,behavior:"smooth"})}));
+document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-nav]").forEach(x=>x.setAttribute("aria-current",String(x===b)));if(b.dataset.nav==="beats"||b.dataset.nav==="me"){if($("setupGrid").hidden)$("customizeBtn").click();const target=b.dataset.nav==="beats"?$("quickBeatChoice"):$("clearData");setTimeout(()=>target.scrollIntoView({behavior:"smooth",block:"center"}),80)}else window.scrollTo({top:0,behavior:"smooth"})}));
 document.addEventListener("keydown",e=>{if($("gameView")?.hidden||["INPUT","TEXTAREA","SELECT","BUTTON"].includes(document.activeElement?.tagName)||document.activeElement?.isContentEditable||e.altKey||e.ctrlKey||e.metaKey)return;if(e.code==="Space"){e.preventDefault();running?pauseGame():resumeGame()}else if(e.key==="ArrowRight"){e.preventDefault();nextManual()}else if(e.key==="Escape"){e.preventDefault();finishSession()}});document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&running)pauseGame();else if(document.visibilityState==="visible"&&running)requestWakeLock()});window.addEventListener("pagehide",()=>{releaseWakeLock();if(raf)cancelAnimationFrame(raf);if(roundTimer)clearTimeout(roundTimer)});
 
 if("serviceWorker" in navigator && location.protocol!=="file:"){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(reg=>reg.update()).catch(()=>{}))}
@@ -1235,7 +1263,7 @@ async function freeRecPrepare(){
  if(!$("freeRecOn").checked)return;
  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){freeStatus("L’enregistrement n’est pas disponible sur ce navigateur : défilement sans enregistrement.");return}
  let mic;try{mic=await navigator.mediaDevices.getUserMedia({audio:MIC_MUSIC})}catch(e){freeStatus("Micro refusé : défilement sans enregistrement.");return}
- const rec={chunks:[],mic,timeline:[],pausedTotal:0,pausedAt:0,startedAt:0,tempo:freeTempo(),title:$("freeTextTitle").value.trim()||"Prise freestyle",beat:$("freeBeat").options[$("freeBeat").selectedIndex].text};
+ const rec={bpm:$("freeBeat").value.startsWith("virtual-")||freeTempo()?Math.max(60,Math.min(170,+$("freeBpm").value||90)):0,chunks:[],mic,timeline:[],pausedTotal:0,pausedAt:0,startedAt:0,tempo:freeTempo(),title:$("freeTextTitle").value.trim()||"Prise freestyle",beat:$("freeBeat").options[$("freeBeat").selectedIndex].text};
  let stream=mic;
  if($("freeBeat").value.startsWith("virtual-")){try{const AC=window.AudioContext||window.webkitAudioContext;freeBeatContext=freeBeatContext||new AC();rec.ctx=freeBeatContext;freeRecMix(rec,freeBeatContext,mic);stream=rec.dest.stream}catch(e){rec.dest=null;stream=mic}}
  const mime=["audio/mp4","audio/webm;codecs=opus","audio/webm"].find(t=>window.MediaRecorder.isTypeSupported?.(t));
@@ -1257,7 +1285,7 @@ function freeRecStop(){
  freeRecSample();const duration=Math.round(freeRecNow()*1000);freeRec=null;
  return new Promise(resolve=>{
   rec.recorder.onstop=async()=>{freeRecRelease(rec);const blob=new Blob(rec.chunks,{type:rec.recorder.mimeType||"audio/webm"});
-   if(blob.size&&duration>800){try{await saveFreeTake({kind:"freestyle",blob,duration,createdAt:Date.now(),title:rec.title,beat:rec.beat,html:rec.html||"",tempo:rec.tempo,timeline:rec.timeline});freeStatus("Prise sauvegardée sur cet appareil · "+fmt(Math.round(duration/1000))+". Réécoute-la dans « Mes prises ».");await listFreeTakes()}catch(e){freeStatus("Prise non sauvegardée : "+(e.message||"stockage indisponible")+".")}}
+   if(blob.size&&duration>800){try{await saveFreeTake({kind:"freestyle",blob,duration,createdAt:Date.now(),title:rec.title,beat:rec.beat,html:rec.html||"",tempo:rec.tempo,timeline:rec.timeline,bpm:rec.bpm||0});freeStatus("Prise sauvegardée sur cet appareil · "+fmt(Math.round(duration/1000))+". Réécoute-la dans « Mes prises ».");await listFreeTakes()}catch(e){freeStatus("Prise non sauvegardée : "+(e.message||"stockage indisponible")+".")}}
    resolve()};
   try{if(rec.recorder.state==="paused")rec.recorder.resume();rec.recorder.stop()}catch(e){freeRecRelease(rec);resolve()}
  });
@@ -1274,7 +1302,7 @@ async function listFreeTakes(){
    const acts=document.createElement("div");acts.className="take-actions";const play=document.createElement("button"),del=document.createElement("button");
    play.textContent="▶ Réécouter";play.setAttribute("aria-label","Réécouter "+item.title+" avec le texte");play.addEventListener("click",()=>openFreeReplay(item));
    del.textContent="🗑";del.setAttribute("aria-label","Supprimer la prise "+item.title);del.addEventListener("click",async()=>{if(!confirm("Supprimer cette prise ?"))return;if(freeReplayItem&&freeReplayItem.id===item.id)closeFreeReplay();try{await deleteFreeTake(item.id)}catch{}listFreeTakes()});
-   acts.append(play,del);row.append(info,acts);host.append(row)})}
+   const fm=flowButton(item,()=>{openFreeReplay(item);return $("freeReplayAudio")});acts.prepend(fm.btn);acts.append(play,del);row.append(info,acts);host.append(row,fm.card)})}
  catch(e){host.textContent=e.message||"Impossible de lire les prises enregistrées."}
 }
 function freeReplayAt(t){
@@ -1371,5 +1399,56 @@ function remoteStop(){if(remoteAudio)remoteAudio.pause();if("mediaSession" in na
 {const _finish=finishSession;finishSession=function(){const r=_finish.apply(this,arguments);remoteStop();return r}}
 ["finishBtn","finishNowBtn","improHome","backSetup","homeBtn"].forEach(id=>$(id)?.addEventListener("click",()=>{if(!running)remoteStop()}));
 {const _home=goHome;goHome=function(){const r=_home.apply(this,arguments);remoteStop();return r}}
+
+/* ---- Flow-mètre : bilan chiffré d'une prise, calculé sur l'appareil (piste 3 de PISTES.md, 13/11/2026) ----
+   Tenue = part des mesures rappées ; densité = syllabes estimées par mesure ; placement = part des syllabes calées
+   sur la grille des croches. Ce sont des estimations (la voix est repérée par son énergie), à lire comme des repères. */
+async function flowDecode(blob){const buf=await blob.arrayBuffer(),OAC=window.OfflineAudioContext||window.webkitOfflineAudioContext,c=new OAC(1,44100,44100);
+ return await new Promise((ok,ko)=>{const p=c.decodeAudioData(buf,ok,ko);if(p&&p.then)p.then(ok,ko)})}
+async function flowVoice(audio){/* Ne garder que la zone de la voix (300-3 400 Hz) : kick et basse de l'instru pèsent moins. */
+ const OAC=window.OfflineAudioContext||window.webkitOfflineAudioContext,sr=audio.sampleRate,c=new OAC(1,audio.length,sr),src=c.createBufferSource(),hp=c.createBiquadFilter(),lp=c.createBiquadFilter();
+ src.buffer=audio;hp.type="highpass";hp.frequency.value=300;lp.type="lowpass";lp.frequency.value=3400;src.connect(hp);hp.connect(lp);lp.connect(c.destination);src.start();
+ const out=await c.startRendering();return {data:out.getChannelData(0),sr}}
+function flowCompute(data,sr,bpm){
+ const hop=Math.round(sr*.02),n=Math.floor(data.length/hop),db=new Float32Array(n);
+ for(let f=0;f<n;f++){let q=0;for(let i=f*hop;i<(f+1)*hop;i++)q+=data[i]*data[i];db[f]=10*Math.log10(q/hop+1e-10)}
+ const sorted=[...db].sort((a,b)=>a-b),p30=sorted[Math.floor(n*.3)]||-100,top=sorted[Math.floor(n*.98)]||-100,thr=Math.max(p30+6,top-30);
+ const voiced=[...db].map(v=>v>thr);
+ const onsets=[];let last=-1e9;for(let f=2;f<n;f++){if(db[f]>thr+3&&db[f]-Math.min(db[f-1],db[f-2])>=4&&(f-last)*.02>=.09&&db[f]>=db[f-1]){onsets.push(f*.02);last=f}}
+ const barDur=bpm>0?240/bpm:2,nb=Math.max(1,Math.ceil(n*.02/barDur)),voicedBar=new Array(nb).fill(0),framesBar=new Array(nb).fill(0),dens=new Array(nb).fill(0);
+ for(let f=0;f<n;f++){const b=Math.min(nb-1,Math.floor(f*.02/barDur));framesBar[b]++;if(voiced[f])voicedBar[b]++}
+ onsets.forEach(t=>dens[Math.min(nb-1,Math.floor(t/barDur))]++);
+ const rapped=voicedBar.map((v,b)=>framesBar[b]>0&&v/framesBar[b]>=.15);
+ const first=rapped.indexOf(true),lastB=rapped.lastIndexOf(true);
+ if(first<0)return {empty:true};
+ const span=lastB-first+1,held=rapped.slice(first,lastB+1).filter(Boolean).length,gaps=[];
+ for(let b=first;b<=lastB;b++){if(!rapped[b]){let e=b;while(e+1<=lastB&&!rapped[e+1])e++;if(e-b+1>=(bpm>0?1:2))gaps.push({t:+(b*barDur).toFixed(2),bars:e-b+1});b=e}}
+ const active=dens.slice(first,lastB+1).filter((d,i)=>rapped[first+i]),density=active.length?active.reduce((a,b)=>a+b,0)/active.length:0;
+ let placement=null;
+ if(bpm>0&&onsets.length>=8){const step=30/bpm,tol=step*.15;let best=0;for(let off=0;off<step;off+=.01){let hit=0;for(const t of onsets){const d=((t-off)%step+step)%step;if(d<=tol||step-d<=tol)hit++}if(hit>best)best=hit}placement=Math.round(best/onsets.length*100)}
+ return {empty:false,bpm,barDur,tenue:Math.round(held/span*100),gaps,density:+density.toFixed(1),placement,bars:dens.slice(first,lastB+1),rapped:rapped.slice(first,lastB+1),offset:+(first*barDur).toFixed(2)}}
+async function flowAnalyze(blob,bpm){const audio=await flowDecode(blob),v=await flowVoice(audio);return flowCompute(v.data,v.sr,bpm||0)}
+function flowTip(r){if(r.gaps.length)return "🎯 Prochaine fois : vise "+(r.gaps.length>1?"moins de "+r.gaps.length+" trous":"zéro trou")+". Un mot qui ne vient pas ? Répète le dernier, le flow continue.";
+ if(r.density<4)return "🎯 Prochaine fois : remplis un peu plus chaque mesure (vise "+Math.ceil(r.density+1)+" syllabes ou plus).";
+ if(r.placement!==null&&r.placement<55)return "🎯 Prochaine fois : cale tes syllabes sur la caisse claire, même si tu rappes moins vite.";
+ return "🔥 Prise solide. Prochain défi : même exercice avec 5 BPM de plus."}
+function flowRender(card,r,getAudio,prev){card.replaceChildren();const h=document.createElement("h4");h.textContent="📊 Flow-mètre · estimation";card.append(h);
+ if(r.empty){const p=document.createElement("p");p.className="n";p.textContent="Pas assez de voix détectée dans cette prise.";card.append(p);return}
+ const st=document.createElement("div");st.className="flow-stats";
+ const tile=(v,l)=>{const d=document.createElement("div"),b=document.createElement("b"),s=document.createElement("small");b.textContent=v;s.textContent=l;d.append(b,s);return d};
+ st.append(tile(r.tenue+" %","Tenue"+(prev&&prev.tenue!==undefined?" ("+(r.tenue>=prev.tenue?"+":"")+(r.tenue-prev.tenue)+")":"")),tile(String(r.density),"Syllabes / mesure"),tile(r.placement===null?"—":r.placement+" %",r.placement===null?"Placement (sans tempo)":"Dans la grille"));card.append(st);
+ const bars=document.createElement("div");bars.className="flow-bars";bars.setAttribute("role","img");const mx=Math.max(1,...r.bars);
+ bars.setAttribute("aria-label","Syllabes par mesure : "+r.bars.join(", "));r.bars.forEach((v,i)=>{const e=document.createElement("i");if(!r.rapped[i])e.className="gap";else e.style.height=Math.max(8,v/mx*100)+"%";bars.append(e)});card.append(bars);
+ if(r.gaps.length){const g=document.createElement("div");g.className="flow-gaps";r.gaps.forEach(x=>{const b=document.createElement("button");b.type="button";b.textContent="⏸ trou à "+fmt(x.t)+" · "+x.bars+" mes.";b.setAttribute("aria-label","Réécouter le trou à "+fmt(x.t));
+  b.addEventListener("click",()=>{const a=getAudio();if(!a)return;const go=()=>{try{a.currentTime=Math.max(0,x.t-2);a.play().catch(()=>{})}catch{}};if(a.readyState>=1)go();else a.addEventListener("loadedmetadata",go,{once:true})});g.append(b)});card.append(g)}
+ const tip=document.createElement("p");tip.className="flow-tip";tip.textContent=flowTip(r);card.append(tip)}
+async function flowSave(item,r){try{const db=await recordingDb();await new Promise((ok,ko)=>{const tx=db.transaction("recordings","readwrite");tx.objectStore("recordings").put({...item,flow:r});tx.oncomplete=ok;tx.onerror=()=>ko(tx.error)})}catch{}}
+async function flowPrevious(item){try{const db=await recordingDb();const all=await new Promise((ok,ko)=>{const q=db.transaction("recordings","readonly").objectStore("recordings").getAll();q.onsuccess=()=>ok(q.result||[]);q.onerror=()=>ko(q.error)});
+ return all.filter(x=>x.flow&&!x.flow.empty&&x.createdAt<item.createdAt&&(x.kind==="freestyle")===(item.kind==="freestyle")).sort((a,b)=>b.createdAt-a.createdAt)[0]?.flow||null}catch{return null}}
+function flowButton(item,getAudio){const btn=document.createElement("button"),card=document.createElement("div");btn.type="button";btn.className="flow-btn";btn.textContent="📊";btn.setAttribute("aria-label","Flow-mètre : analyser cette prise");btn.setAttribute("aria-expanded","false");card.className="flow-card";card.hidden=true;card.setAttribute("aria-live","polite");
+ btn.addEventListener("click",async()=>{if(!card.hidden){card.hidden=true;btn.setAttribute("aria-expanded","false");return}card.hidden=false;btn.setAttribute("aria-expanded","true");
+  if(item.flow){flowRender(card,item.flow,getAudio,await flowPrevious(item));return}
+  card.textContent="📊 Analyse de la prise…";try{const r=await flowAnalyze(item.blob,item.bpm);item.flow=r;flowRender(card,r,getAudio,await flowPrevious(item));if(!r.empty)flowSave(item,r)}catch(e){card.textContent="Analyse impossible sur ce navigateur."}});
+ return {btn,card}}
 </script>
 </body></html>

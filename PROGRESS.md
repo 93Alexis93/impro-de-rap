@@ -1,5 +1,9 @@
 # Suivi du projet
 
+## 13/11/2026 — piste 3 (Flow-mètre) + réglages simplifiés (même branche, non fusionnée)
+- Tests Chromium : `e2e_flowmetre.py` 10/10 (prise de synthèse : trou de 2 mesures retrouvé, tenue 80 %, densité 8, placement 100 % puis 56 % avec syllabes décalées), `e2e_telecommande.py` 14/14, `e2e_annonce.py` 11/11, `e2e_son.py` 19/19, `e2e_design.py` 45/45, `e2e_nouvelles_idees.py` 29/29, `e2e_cas_limites.py` 7/7, `e2e_plein_ecran.py` OK, `smoke.py` OK.
+- À vérifier par Alexis sur iPhone : chiffres du Flow-mètre crédibles sur une vraie prise (avec et sans écouteurs), lecture des prises `audio/mp4` par l’analyse.
+
 ## 13/11/2026 — piste 2 codée : télécommande des écouteurs (même branche, non fusionnée)
 - Tests Chromium : `e2e_telecommande.py` 14/14, `e2e_annonce.py` 11/11, `e2e_son.py` 19/19, `e2e_design.py` 45/45, `e2e_nouvelles_idees.py` 29/29, `e2e_cas_limites.py` 7/7, `e2e_plein_ecran.py` OK sur 4 formats, `smoke.py` OK.
 - À vérifier par Alexis sur iPhone avec écouteurs : les 3 gestes, le mot sur l’écran verrouillé, et si le son silencieux suffit à iOS (sinon, plan B décrit dans PISTES.md : faire passer l’instru par `<audio>`). Effet secondaire possible : le son joue même avec le bouton silencieux activé.

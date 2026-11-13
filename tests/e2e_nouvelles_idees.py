@@ -2,7 +2,7 @@
 import sys,time
 from playwright.sync_api import sync_playwright
 # Depuis le design du 30/10/2026, réglages Impro et volets Freestyle sont repliés : on les ouvre avant d'agir dessus.
-OUVRIR="()=>{document.querySelectorAll('#freestyle details').forEach(d=>d.open=true);const g=document.getElementById('setupGrid');if(g&&g.hidden&&!document.getElementById('improApp').classList.contains('hide'))document.getElementById('customizeBtn').click()}"
+OUVRIR="()=>{document.querySelectorAll('#freestyle details,#setupGrid details').forEach(d=>d.open=true);const g=document.getElementById('setupGrid');if(g&&g.hidden&&!document.getElementById('improApp').classList.contains('hide'))document.getElementById('customizeBtn').click()}"
 URL="http://localhost:8765/index.html"
 res=[]
 def ok(c,m):

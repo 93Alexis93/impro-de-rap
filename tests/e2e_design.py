@@ -20,7 +20,7 @@ with sync_playwright() as p:
         check(f"{w}px Impro : réglages repliés au départ",pg.evaluate("()=>$('setupGrid').hidden&&getComputedStyle($('setupGrid')).display==='none'&&$('customizeBtn').getAttribute('aria-expanded')==='false'"))
         check(f"{w}px Impro : pas de défilement horizontal",not pg.evaluate(DEBORDE))
         check(f"{w}px Impro : cibles tactiles ≥ 44 px",not pg.evaluate(PETITS),pg.evaluate(PETITS))
-        pg.click("#customizeBtn");pg.wait_for_timeout(200)
+        pg.click("#customizeBtn");pg.evaluate("()=>document.querySelectorAll('#setupGrid details').forEach(d=>d.open=true)");pg.wait_for_timeout(200)
         check(f"{w}px Impro : réglages dépliés au clic",pg.evaluate("()=>!$('setupGrid').hidden&&$('customizeBtn').getAttribute('aria-expanded')==='true'"))
         check(f"{w}px réglages : cibles tactiles ≥ 44 px",not pg.evaluate(PETITS),pg.evaluate(PETITS))
         check(f"{w}px réglages : pas de défilement horizontal",not pg.evaluate(DEBORDE))
@@ -47,7 +47,7 @@ with sync_playwright() as p:
     pg.click('[data-nav="home"]');pg.wait_for_timeout(200)
     check("Onglet Jouer : aria-current revient",pg.evaluate("()=>document.querySelector('[data-nav=home]').getAttribute('aria-current')")=="true")
     # Interrupteurs : toujours de vraies cases à cocher, pilotables au clavier
-    pg2=b.new_page(viewport={"width":375,"height":812});pg2.goto(URL);pg2.click("#enterImpro");pg2.click("#customizeBtn")
+    pg2=b.new_page(viewport={"width":375,"height":812});pg2.goto(URL);pg2.click("#enterImpro");pg2.click("#customizeBtn");pg2.evaluate("()=>document.querySelectorAll('#setupGrid details').forEach(d=>d.open=true)")
     before=pg2.evaluate("()=>$('zeroMode').checked");pg2.focus("#zeroMode");pg2.keyboard.press("Space")
     check("Interrupteur « zéro distraction » : basculé au clavier",pg2.evaluate("()=>$('zeroMode').checked")!=before)
     pg2.close()

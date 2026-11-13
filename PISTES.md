@@ -66,6 +66,8 @@ Bonus : l'écran verrouillé de l'iPhone affiche le mot en cours comme « titre 
 
 ## 3. « Flow-mètre » : un bilan chiffré de ta prise, comme un coach
 
+> **Codée le 13/11/2026** (bouton 📊 sur les prises, test `tests/e2e_flowmetre.py`). Historique simplifié : écart de tenue avec la prise précédente (pas encore de courbe sur 10 prises). Reste à valider sur iPhone.
+
 **Le problème** : l'appli sait enregistrer, mais ne dit rien sur la prise. Le bilan « placé / raté » repose sur ton ressenti.
 
 **L'idée** : après une prise (Impro ou Freestyle), l'appli analyse l'enregistrement **sur le téléphone, sans internet**, et affiche trois chiffres simples, avec un conseil :

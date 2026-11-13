@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-13 — Flow-mètre (piste 3) et réglages simplifiés
+- **Flow-mètre** : bouton 📊 sur chaque prise (Freestyle « Mes prises » et enregistrements de l’Impro). Analyse faite sur l’appareil, sans internet : **tenue** (% de mesures rappées, trous repérés et cliquables pour réécouter 2 s avant), **syllabes par mesure** (petite courbe, trous en rose), **placement** dans la grille des croches (si le tempo de la prise est connu). Un conseil pour la prochaine fois, et l’écart de tenue avec la prise précédente. Résultat gardé avec la prise. Présenté comme une estimation.
+- Le tempo est désormais enregistré avec chaque nouvelle prise (sert de grille). Les anciennes prises sont analysées sans placement.
+- **Réglages plus simples** : l’essentiel reste visible (mode, objectif, thème, niveau, durée, tempo, cadence des mots, Lancer). Deux volets repliés : « 📱 Téléphone posé loin » (annonce du mot, télécommande) et « ⚙ Plus d’options » (instru en doublon de l’accueil, son, rimes, aperçu, zéro distraction, favoris). Aucune option supprimée. L’onglet « Instrus » mène au choix d’instru de l’accueil.
+- Cache hors ligne `v33`. Nouveau test `tests/e2e_flowmetre.py` (10 vérifications) ; tests existants adaptés aux nouveaux volets.
+
 ## 2026-11-13 — Télécommande des écouteurs (piste 2 de PISTES.md)
 - Nouvel interrupteur « 🎧 Télécommande des écouteurs » dans Personnaliser ma session (désactivé par défaut, mémorisé). Avec AirPods ou écouteurs à boutons : 1 appui = pause / reprise, 2 appuis = mot suivant (en mode 10 mots : mot placé), 3 appuis = garder le mot 4 mesures de plus. « Mot suivant » à l’écran passe toujours.
 - Le mot en cours s’affiche sur l’écran verrouillé comme titre du morceau (« IMPRO DE RAP »).

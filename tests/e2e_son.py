@@ -17,7 +17,7 @@ out[k]=[+(20*Math.log10(pk)).toFixed(1),+(10*Math.log10(sq/d.length)).toFixed(1)
 SPY="()=>{window.__beats=0;const f=playVirtualBeat;playVirtualBeat=function(){window.__beats++;return f.apply(this,arguments)}}"
 def session(b):
     pg=b.new_page(viewport={"width":375,"height":812});errs=[];pg.on("pageerror",lambda e:errs.append(str(e)))
-    pg.goto(URL);pg.click("#enterImpro");pg.click("#customizeBtn");pg.fill("#bpm","160");pg.select_option("#bars","1")
+    pg.goto(URL);pg.click("#enterImpro");pg.click("#customizeBtn");pg.evaluate("()=>document.querySelectorAll('#setupGrid details').forEach(d=>d.open=true)");pg.fill("#bpm","160");pg.select_option("#bars","1")
     return pg,errs
 def mots(pg,n,ms=500):
     seen=[]
