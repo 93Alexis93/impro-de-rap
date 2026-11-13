@@ -8,6 +8,8 @@ Ordre conseillé : 1 → 2 → 3 (de la plus simple à la plus ambitieuse).
 
 ## 1. « Le DJ t'annonce le mot » : entendre le mot au lieu de le lire
 
+> **Codée le 13/11/2026** (réglage « 📣 Annonce du mot », test `tests/e2e_annonce.py`). Reste à valider sur iPhone.
+
 **Le problème** : le téléphone est posé à 2-3 m. Même avec un mot en très gros, il faut lever les yeux au bon moment, et on perd le flow.
 
 **L'idée** : une demi-mesure avant chaque nouveau mot, un petit **scratch synthétique** (« rrrrip ») prévient l'oreille, puis une **voix annonce le mot** sur le temps 1, comme un DJ ou un host de battle. On peut rapper les yeux fermés.

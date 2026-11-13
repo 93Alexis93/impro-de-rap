@@ -1,5 +1,9 @@
 # Suivi du projet
 
+## 13/11/2026 — piste 1 codée : annonce du mot (branche `claude/tender-lovelace-plb9qb`, non fusionnée)
+- Tests Chromium : `e2e_annonce.py` 11/11, `e2e_son.py` 19/19, `e2e_design.py` 45/45, `e2e_nouvelles_idees.py` 29/29, `e2e_cas_limites.py` OK, `e2e_plein_ecran.py` OK sur 4 formats, `smoke.py` OK.
+- À vérifier par Alexis sur iPhone : la voix française se déclenche bien (Safari exige un toucher : elle est « réveillée » au lancement), elle ne coupe pas l’instru, le scratch s’entend bien et tombe 2 temps avant le mot.
+
 ## 13/11/2026 — pistes futures
 - `PISTES.md` : trois améliorations proposées, rien de codé : annonce sonore du mot (scratch + voix), télécommande par les boutons des écouteurs, « Flow-mètre » qui analyse les prises. À valider par Alexis.
 

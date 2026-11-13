@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-13 — Annonce du mot (piste 1 de PISTES.md)
+- Nouveau réglage « 📣 Annonce du mot » dans Personnaliser ma session : Aucune (par défaut, comme avant), Scratch avant chaque mot, Scratch + voix qui dit le mot. Mémorisé sur l’appareil.
+- Scratch synthétique (bruit filtré qui monte puis redescend) joué 2 temps avant chaque nouveau mot, dans la chaîne de son de l’instru ; pas pendant l’intro, pas en mode 10 mots (le mot y vient au toucher).
+- Voix : synthèse vocale française du téléphone (gratuite, hors ligne). L’instru baisse un instant pendant le mot. En battle : « Micro à Léon… Tempête ». La voix est coupée en pause, à la fin et en quittant.
+- Cache hors ligne `v31`. Nouveau test `tests/e2e_annonce.py` (11 vérifications).
+
 ## 2026-10-30 — Instru plus forte, mot qui ne reste plus bloqué, prise de voix Freestyle
 - **Instru trop faible pendant qu’on rappe** : le niveau moyen des instrus était bas (≈ -17 à -21 dB) et les basses, très graves, passaient mal sur un haut-parleur de téléphone. Nouvelle chaîne de sortie commune Impro + Freestyle (`vbBuildMaster`) : légère saturation qui rend kick et basse audibles sur un petit haut-parleur, compression, limiteur. Mesure hors ligne : ≈ +5,5 à +6,5 dB en moyenne (≈ -11 à -14 dB), crêtes sous -0,9 dB, donc sans saturer.
 - Sur iPhone, le micro était ouvert en mode « appel téléphonique » (annulation d’écho, gain automatique) : iOS baisse alors fortement le son de l’instru. Le micro est maintenant ouvert en mode musique (`MIC_MUSIC`), dans l’Impro comme dans le Freestyle.

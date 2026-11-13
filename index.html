@@ -263,6 +263,7 @@ body.freestyle-live .free-read-title{display:none!important}
 <button class="mode" data-session-mode="custom" aria-pressed="false"><b>10 mots pour une impro</b><small>Les mots de ton public, à placer un par un.</small></button>
 <button class="mode" data-session-mode="battle" aria-pressed="false"><b>⚔️ Battle à deux</b><small>Deux MC, le micro passe toutes les 4 mesures, un mot par tour.</small></button>
 </div></div><input id="battleMode" type="checkbox" hidden><div id="battleOptions" class="battle-options" hidden><div class="grid2"><div class="field"><label for="battleP1">MC 1</label><input id="battleP1" type="text" maxlength="16" placeholder="MC 1"></div><div class="field"><label for="battleP2">MC 2</label><input id="battleP2" type="text" maxlength="16" placeholder="MC 2"></div></div><div class="field"><label for="battleTurn">Passage de micro</label><select id="battleTurn"><option value="4" selected>Toutes les 4 mesures</option><option value="8">Toutes les 8 mesures</option></select><div class="hint">Un nouveau mot à chaque passage. Choisis ensuite le thème, l’instru et le tempo plus bas, puis lance.</div></div></div>
+<div class="field" id="announceField"><label for="announceMode">📣 Annonce du mot (rapper sans regarder)</label><select id="announceMode"><option value="none">Aucune</option><option value="scratch">Scratch avant chaque mot</option><option value="voice">Scratch + voix qui dit le mot</option></select><p class="hint">Un scratch prévient 2 temps avant le mot, puis la voix du téléphone le prononce. Pratique avec des écouteurs ou le téléphone posé loin.</p></div>
 <section class="panel" id="customModePanel" hidden><div class="panel-head"><h2>10 mots pour une impro</h2><span class="eyebrow">À toi de jouer</span></div><p class="hint" style="margin:0 0 12px">Fais proposer 10 mots par ton public, colle-les ici. Un mot apparaît à la fois : appuie quand tu l'as placé pour passer au suivant.</p><label for="customWordsInput" class="field"><span style="display:block;font-size:12px;font-weight:800;margin-bottom:7px">Tes 10 mots (un par ligne, ou séparés par des virgules)</span><textarea id="customWordsInput" class="custom-words" placeholder="Ex. :&#10;Mirage&#10;Béton&#10;Amour&#10;Tempête&#10;Métro&#10;Dragon&#10;Liberté&#10;Miroir&#10;Secret&#10;Victoire"></textarea></label><div class="hint" id="customWordsCount" aria-live="polite">0 / 10 mots</div><div class="field" style="margin-top:14px"><label for="customBeat">Instru</label><select id="customBeat"><option value="virtual-boom">VirtualBeat · Boom-bap (90 BPM)</option><option value="virtual-lofi">VirtualBeat · Lo-fi jazzy (82 BPM)</option><option value="virtual-oriental">VirtualBeat · Oriental (96 BPM)</option><option value="virtual-makossa">VirtualBeat · Afro / Makossa (104 BPM)</option><option value="virtual-trap">VirtualBeat · Trap sombre (140 BPM)</option><option value="metro">Métronome simple</option></select></div><div class="field"><label for="customBpm">Tempo (BPM)</label><input id="customBpm" type="number" min="60" max="160" step="1" value="90"><p class="hint">Le tempo conseillé se met tout seul quand tu changes d’instru ; tu peux l’ajuster.</p></div><div class="field"><label>Mode de jeu</label><div class="custom-options"><label><input type="radio" name="customHelp" value="easy" checked> Facile · propositions de rimes</label><label><input type="radio" name="customHelp" value="none"> Sans aide · juste les mots</label></div></div><button id="startCustom" class="primary main-cta">LANCER MON IMPRO À 10 MOTS →</button></section>
 <div id="freeOptions">
 <div class="field"><label for="focusMode">Objectif de l’impro</label><select id="focusMode"><option value="mot">Flow libre — place les mots naturellement</option><option value="chaine">Chaîne d’idées — relie chaque mot au précédent</option><option value="rime">Rimes ciblées — construis une famille de sons</option><option value="punchline">Punchline — prépare une montée et une chute</option><option value="histoire">Histoire — construis un récit avec rebondissement</option><option value="chaos">Adaptation — relève des contraintes surprises</option></select><p class="hint" id="focusHint">Le choix change les consignes et les défis pendant la session.</p></div>
@@ -1310,5 +1311,35 @@ $("enterFreestyle").addEventListener("click",listFreeTakes);
 
 /* ---- Impro en plein écran, lecture facilitée (29/10/2026) ---- */
 {const _showView=showView;showView=function(which){_showView(which);document.body.classList.toggle("impro-live",which==="game");if(which==="game")requestAnimationFrame(()=>{try{fitOrbitWord()}catch{}})}}
+
+/* ---- Annonce du mot : scratch 2 temps avant + voix du téléphone (piste 1 de PISTES.md, 13/11/2026) ---- */
+const ANNOUNCE_KEY="improRapAnnounce";
+function announceMode(){return $("announceMode").value}
+try{const v=localStorage.getItem(ANNOUNCE_KEY);if(["none","scratch","voice"].includes(v))$("announceMode").value=v}catch{}
+$("announceMode").addEventListener("change",()=>{try{localStorage.setItem(ANNOUNCE_KEY,announceMode())}catch{}});
+/* Un mot arrivera-t-il à la mesure suivante ? (mêmes règles que tick) */
+function wordComingNextBar(){if(customSession)return false;const nb=barIndex+1,bars=Math.max(1,Number(settings.bars)||1);if(nb<INTRO_BARS+1||(nb-INTRO_BARS-1)%bars!==0)return false;if(settings.mode==="rime"&&current&&nb<rimeHoldUntilBar)return false;return true}
+/* Scratch synthétique : un bruit filtré qui monte puis redescend (« wika »), 2 temps avant le mot. */
+let announceNoise=null;
+function announceScratch(time){if(!audioCtx)return;try{const C=audioCtx;if(!announceNoise){announceNoise=C.createBuffer(1,C.sampleRate*.4,C.sampleRate);const d=announceNoise.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+ const src=C.createBufferSource(),f=C.createBiquadFilter(),g=C.createGain();src.buffer=announceNoise;f.type="bandpass";f.Q.value=6;
+ f.frequency.setValueAtTime(400,time);f.frequency.exponentialRampToValueAtTime(2500,time+.12);f.frequency.exponentialRampToValueAtTime(600,time+.24);
+ g.gain.setValueAtTime(.0001,time);g.gain.exponentialRampToValueAtTime(.9,time+.02);g.gain.setValueAtTime(.9,time+.2);g.gain.exponentialRampToValueAtTime(.0001,time+.28);
+ src.connect(f);f.connect(g);g.connect(vbMaster||C.destination);src.start(time);src.stop(time+.3)}catch{}}
+function announceBeat(time){if(announceMode()!=="none"&&beatIndex%4===2&&wordComingNextBar())announceScratch(time)}
+{const _pvb=playVirtualBeat;playVirtualBeat=function(time,step){_pvb.apply(this,arguments);if(settings.click&&audioCtx)announceBeat(time)}}
+{const _click=clickAt;clickAt=function(time,accent){_click.apply(this,arguments);if(settings.click&&audioCtx)announceBeat(time)}}
+/* Voix : la synthèse vocale française du téléphone (gratuite, hors ligne) dit le mot ; l'instru baisse un instant. */
+function announceVoice(){const v=(window.speechSynthesis?.getVoices?.()||[]);return v.find(x=>/^fr[-_]FR/i.test(x.lang))||v.find(x=>/^fr/i.test(x.lang))||null}
+function announceSay(text){if(!window.speechSynthesis||!window.SpeechSynthesisUtterance||!text)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="fr-FR";const v=announceVoice();if(v)u.voice=v;u.rate=1.1;u.pitch=.9;u.volume=1;speechSynthesis.speak(u);
+ if(vbMaster&&audioCtx){const g=vbMaster.gain,t=audioCtx.currentTime;g.cancelScheduledValues(t);g.setValueAtTime(g.value,t);g.linearRampToValueAtTime(.4,t+.05);g.setValueAtTime(.4,t+.75);g.linearRampToValueAtTime(.8,t+.95)}}catch{}}
+{const _draw=draw;draw=function(){const before=current;_draw.apply(this,arguments);if(!running||announceMode()!=="voice"||!current||current===before)return;
+ let text=current;if(battleActive){const played=barIndex-INTRO_BARS-1,tb=battleTurnBars();if(played>=0&&played%tb===0)text="Micro à "+battleNames()[Math.floor(played/tb)%2]+"… "+current}
+ announceSay(text)}}
+/* iPhone : la voix ne marche qu'après un geste ; on la « réveille » au lancement, et on la coupe en pause et à la fin. */
+{const _launch=launch;launch=async function(...args){if(announceMode()==="voice"&&window.speechSynthesis&&window.SpeechSynthesisUtterance){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(" ");u.volume=0;speechSynthesis.speak(u)}catch{}}return _launch.apply(this,args)}}
+{const _pause=pauseGame;pauseGame=function(){try{window.speechSynthesis?.cancel()}catch{}return _pause.apply(this,arguments)}}
+{const _finish=finishSession;finishSession=function(){try{window.speechSynthesis?.cancel()}catch{}return _finish.apply(this,arguments)}}
+["finishBtn","finishNowBtn","backSetup","improHome"].forEach(id=>$(id)?.addEventListener("click",()=>{try{window.speechSynthesis?.cancel()}catch{}}));
 </script>
 </body></html>
